@@ -1,0 +1,28 @@
+{
+    "name": "bybzmt/blog",
+    "autoload": {
+        "psr-4": {
+            "Bybzmt\\Blog\\": "src/"
+        },
+        "psr-0": {},
+        "classmap": []
+    },
+    "require": {
+        "bybzmt/memcached": "^1.0",
+        "psr/cache": "^1.0",
+        "psr/log": "^1.0",
+        "bybzmt/router":"dev-master",
+        "bybzmt/logger":"dev-master",
+        "twig/twig": "^2.4"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "/mnt/bybzmt/code/router/"
+        },
+        {
+            "type": "git",
+            "url": "/mnt/bybzmt/code/logger.php"
+        }
+    ]
+}

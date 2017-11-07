@@ -9,8 +9,12 @@ use Bybzmt\Logger\Syslog;
 
 class Logger
 {
-    public static function get($name): LoggerInterface
+    public static function get($name=null): LoggerInterface
     {
+        if (!$name) {
+            $name = 'debug';
+        }
+
         list($type, $ident, $facility) = Config::get("log.$name");
 
         if ($type == 'syslog') {

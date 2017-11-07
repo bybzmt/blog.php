@@ -13,10 +13,45 @@ return array(
     ],
     //是使用缓存路由
     'routes_cached' => true,
+    //数据库
+    'db' => [
+        'blog_slave' => [
+            ['mysql:host=127.0.0.1;dbname=blog', 'blog', '123456'],
+        ],
+        'blog_master' => [
+            ['mysql:host=127.0.0.1;dbname=blog', 'blog', '123456'],
+        ],
+    ],
     //日志
     'log' => [
+        //抛弃日志
+        'default' => ['null', '', ''],
         'apple-pay' => ['syslog', 'php-apple-pay', 'LOG_USER'],
         'alipay' => ['syslog', 'php-alipay', 'LOG_USER'],
         'debug' => ['syslog', 'php-debug', 'LOG_USER'],
-    ]
+    ],
+    //缓存配置
+    'memcached' => [
+        'default' => [
+            'persistent_id' => null,
+            'servers' => [
+                ['localhost', 11211, 100],
+            ],
+        ],
+    ],
+    'redis' => [
+        'default' => [
+            'host'=>'localhost',
+            'port'=>'',
+            'timeout'=>10,
+            'password'=>null
+        ],
+    ],
+    //锁服务
+    'locker' => [
+        'type' => 'socket',
+        'host' => 'localhost',
+        'port' => 80,
+        'timeout' => 10,
+    ],
 );

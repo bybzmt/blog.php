@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog\Utils;
+namespace Bybzmt\Blog\Common;
 
 class Config
 {
@@ -10,14 +10,13 @@ class Config
         if (!self::$data) {
             self::$data = require CONFIG_PATH . '/config.php';
         }
-        return self::$data;
     }
 
     static public function get(string $keys)
     {
-        $data = self::init();
+        self::init();
 
-        $tmp = $data;
+        $tmp = self::$data;
         $keys = explode('.', $keys);
 
         foreach ($keys as $key) {
@@ -28,6 +27,20 @@ class Config
         }
 
         return $tmp;
+    }
+
+    static public function set(string $keys, $value)
+    {
+        self::init();
+        $tmp = &self::$data;
+
+        $keys = explode('.', $keys);
+
+        foreach ($keys as $key) {
+            $tmp = &$tmp[$key];
+        }
+
+        $tmp = $vlaue;
     }
 
 }

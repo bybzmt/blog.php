@@ -1,10 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Web;
 
-use Bybzmt\Blog\Controller as PController;
-use Exception;
+use Bybzmt\Blog\Common;
 
-abstract class Controller extends PController
+abstract class Controller extends Common\Controller
 {
     public function error($e)
     {

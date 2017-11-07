@@ -1,14 +1,19 @@
 <?php
-namespace Bybzmt\Blog;
+namespace Bybzmt\Blog\Common;
+
+use Twig_Loader_Filesystem;
+use Twig_Environment;
 
 abstract class Controller
 {
+    use Loader;
+
     public function execute()
     {
         try {
             $this->init();
 
-            if ($this->valid()) {
+            if ($this->valid() && $this->exec()) {
                 $this->run();
             } else {
                 $this->fail();
@@ -27,6 +32,11 @@ abstract class Controller
         return true;
     }
 
+    public function exec()
+    {
+        return true;
+    }
+
     public function fail()
     {
     }
@@ -38,16 +48,23 @@ abstract class Controller
 
     abstract public function run();
 
-    public function render(array $data, string $file=null)
+    public function render(array $data, string $name=null)
     {
-        if (!$file) {
-            $file = str_replace('_', '/', strrchr(static::class, "\\"));
-        }
-        $file .= '.tpl';
+        $class = static::class;
+        $idx = strrpos($class, '\\');
+        $idx2 = strlen(__NAMESPACE__);
 
-        $loader = new Twig_Loader_Filesystem(__DIR__ . '/templates');
+        $dir = __DIR__ . str_replace('\\', '/', substr($class, $idx2, $idx - $idx2));
+
+        if (!$name) {
+            $name = str_replace('_', '/', substr($class, $idx + 1));
+        }
+        $file = $name . '.tpl';
+
+        $loader = new Twig_Loader_Filesystem($dir);
         $twig = new Twig_Environment($loader, array(
             'cache' => VAR_PATH . '/cache/templates',
+            'auto_reload' => true,
         ));
 
         echo $twig->render($file, $data);

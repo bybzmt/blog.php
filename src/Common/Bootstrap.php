@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog;
+namespace Bybzmt\Blog\Common;
 
 abstract class Bootstrap
 {

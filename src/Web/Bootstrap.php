@@ -1,9 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Web;
 
-use Bybzmt\Blog\Bootstrap as PBootstrap;
+use Bybzmt\Blog\Common;
 
-class Bootstrap extends PBootstrap
+class Bootstrap extends Common\Bootstrap
 {
     public function run()
     {

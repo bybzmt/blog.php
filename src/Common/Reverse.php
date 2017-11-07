@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog;
+namespace Bybzmt\Blog\Common;
 
 use Bybzmt\Router\Reverse as PReverse;
 use Bybzmt\Blog\Utils\Config;

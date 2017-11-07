@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog\Web;
+namespace Bybzmt\Blog\Service;
 
 use Bybzmt\Blog\Common;
 

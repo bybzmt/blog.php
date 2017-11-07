@@ -9,20 +9,27 @@
     },
     "require": {
         "bybzmt/memcached": "^1.0",
-        "psr/cache": "^1.0",
         "psr/log": "^1.0",
         "bybzmt/router":"dev-master",
         "bybzmt/logger":"dev-master",
-        "twig/twig": "^2.4"
+        "twig/twig": "^2.4",
+        "psr/simple-cache": "^1.0",
+        "cache/memcached-adapter": "^1.0",
+        "bybzmt/phpdb": "dev-master",
+        "bybzmt/tcplock": "^1.0"
     },
     "repositories": [
         {
             "type": "git",
-            "url": "/mnt/bybzmt/code/router/"
+            "url": "/mnt/bybzmt/code/router.php"
         },
         {
             "type": "git",
             "url": "/mnt/bybzmt/code/logger.php"
+        },
+        {
+            "type": "git",
+            "url": "/mnt/bybzmt/code/phpdb"
         }
     ]
 }

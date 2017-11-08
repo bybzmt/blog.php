@@ -1,9 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Common;
 
-use Bybzmt\Blog\Utils\Config;
+use Bybzmt\Blog\Common\Config;
 
-use \Bybzmt\Router\Router as PRouter;
+use Bybzmt\Router\Router as PRouter;
 
 abstract class Router extends PRouter
 {
@@ -44,8 +44,8 @@ abstract class Router extends PRouter
     protected function _loadClass($class)
     {
         if (!class_exists($class, false)) {
-            $file = substr($class, strlen(__NAMESPACE__));
-            $file = __DIR__ . str_replace(array('\\', '_'), '/', $file) . '.php';
+            $file = substr($class, strrpos(__NAMESPACE__, '\\'));
+            $file = __DIR__ . '/..'. str_replace(array('\\', '_'), '/', $file) . '.php';
 
             if (file_exists($file)) {
                 require $file;

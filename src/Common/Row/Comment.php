@@ -20,13 +20,7 @@ class Comment extends Common\Row
     {
         $this->id = $row['id'];
         $this->article = $this->getLazyRowCache('Article', $row['article_id']);
-
-        if ($row['user_id']) {
-            $this->user = $this->getLazyRowCache('User', $row['user_id']);
-        } else {
-            $this->user = $this->getService('User')->guestUser($row['name']);
-        }
-
+        $this->user = $this->getLazyRowCache('User', $row['user_id']);
         $this->content = $row['content'];
         $this->addtime = strtotime($row['addtime']);
         $this->status = (int)$row['status'];
@@ -39,7 +33,7 @@ class Comment extends Common\Row
         if ($offset+$length <= count($this->_cache_replys_id)) {
             $ids = array_slice($this->_cache_replys_id, $offset, $length);
         } else {
-            $ids = $this->getTable('Blog.CommentsReply')->getReplyIds($this->id, $offset, $length);
+            $ids = $this->getTable('CommentsReply')->getReplyIds($this->id, $offset, $length);
         }
 
         $rows = [];
@@ -49,18 +43,32 @@ class Comment extends Common\Row
         return $rows;
     }
 
-    public function addReply(User $user, string $content)
+    public function addReply(User $user, ?CommentReply $reply, string $content)
     {
-        //保存数据
-        $id = $this->getTable('Blog.CommentsReply')->addReply($this->id, $user->id, $user->nickname, $content);
+        $data = array(
+            'comment_id' => $this->id,
+            'reply_id' => $reply ? $reply->id : 0,
+            'user_id' => $user->id,
+            'content' => $content,
+            'addtime' => date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']),
+            'status' => 1,
+        );
 
+        //保存数据
+        $id = $this->getTable('CommentsReply')->insert($data);
+        if (!$id) {
+            return false;
+        }
+
+        //更新缓存
+        $data['id'] = $id;
+        $this->getCache('RowCache', 'CommentReply')->set($id, $data);
+
+        //给被回复的评论修改缓存记录
         if (count($this->_cache_replys_id) < self::max_cache_replys_num) {
             $this->_cache_replys_id[] = $id;
             $this->_setCacheReplysId($this->_cache_replys_id);
         }
-
-        //更新缓存
-        $this->getRowCache('CommentsReply', $id)->del();
     }
 
     private function _setCacheReplysId(array $ids)
@@ -83,7 +91,7 @@ class Comment extends Common\Row
             if (count($this->_cache_replys_id) < self::max_cache_replys_num) {
                 $ids = array_diff($this->_cache_replys_id, [$id]);
             } else {
-                $ids = $this->getTable('Blog.CommentReply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
+                $ids = $this->getTable('CommentReply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
             }
 
             $this->_setCacheReplysId($ids);
@@ -92,13 +100,13 @@ class Comment extends Common\Row
 
     public function del()
     {
-        //删除自身数据
-        $this->getTable('Blog.Article')->update($this->id, ['status'=>2]);
+        //标记删除
+        $this->getTable('Article')->update($this->id, ['status'=>2]);
         $this->status = 2;
 
-        $this->getRowCache('Comment')->update(['status'=>2]);
+        $this->getCache('RowCache', 'Comment')->update(['status'=>2]);
 
-        //添加到列表缓存
-        $this->getListCache('ArticleComments', $this->article->id)->remove($this->id);
+        //从文章评论列表中删除缓存
+        $this->getListCache('ArticleComments', $this->article->id)->delItem($this->id);
     }
 }

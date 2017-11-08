@@ -20,7 +20,7 @@ abstract class LazyLoader
         $this->name = $name;
         $this->id = $id;
 
-        $this->row = $this->_GetCached($name, $id);
+        $this->row = $this->getCached($name, $id);
         $this->initd = $this->row === null ? false : true;
     }
 
@@ -29,7 +29,7 @@ abstract class LazyLoader
     /**
      * 属性访问回调钩子
      */
-    protected function __get($key)
+    public function __get($key)
     {
         if (!$this->initd) {
             $this->init();
@@ -42,7 +42,7 @@ abstract class LazyLoader
     /**
      * 方法访问回调钩子
      */
-    protected function __call($name, $params)
+    public function __call($name, $params)
     {
         if (!$this->initd) {
             $this->init();
@@ -50,6 +50,16 @@ abstract class LazyLoader
         }
 
         return $this->row ? $this->row->$name(...$params) : null;
+    }
+
+    public function _isHit()
+    {
+        if (!$this->initd) {
+            $this->init();
+            $this->initd = true;
+        }
+
+        return (bool)$this->row;
     }
 
     /**
@@ -91,11 +101,7 @@ abstract class LazyLoader
     {
         $ids = array_keys($this->_context->lazyRow[$this->name]);
 
-        $table = $this->getTable($this->name);
-        $primary = $table->getPrimary();
-
-        $rows = $table->finds($ids);
-        $rows = array_column($rows, null, $primary) + $this->_context->lazyRow[$this->name];
+        $rows = $this->getTable($this->name)->finds($ids, true) + $this->_context->lazyRow[$this->name];
 
         foreach ($rows as $id=>$row) {
             $this->_context->cachedRow[$this->name][$id] = $row ? $this->initRow($this->name, $row) : false;
@@ -116,12 +122,12 @@ abstract class LazyLoader
         $rows = $this->getCache('RowCache', $this->name)->getsCached($ids);
         foreach ($rows as $id => $row) {
             if ($row) {
-                $this->_context->cachedRow[$this->name][$this->id] = $this->initRow($this->name, $row);
+                $this->_context->cachedRow[$this->name][$id] = $this->initRow($this->name, $row);
             } else if ($row === null) {
                 //缓存未命中时标记为需要从数据库加载
-                $this->_RowAdd($this->id);
+                $this->rowAdd($id);
             } else {
-                $this->_context->cachedRow[$this->name][$this->id] = false;
+                $this->_context->cachedRow[$this->name][$id] = false;
             }
         }
 

@@ -1,41 +1,18 @@
 <?php
-namespace Bybzmt\Blog\Dao;
+namespace Bybzmt\Blog\Common\Table;
 
-class User extends Base
+use Bybzmt\Blog\Common;
+
+class User extends Common\Table
 {
-    public function get($id)
-    {
-        return Cache\User::get($id);
-    }
-
-    public function gets($id)
-    {
-        return Cache\User::get($id);
-    }
-
-    public function add($user, $pass, $nickname)
-    {
-        $data = array(
-            'user' => $user,
-            'pass' => $pass,
-            'nickname' => $nickname,
-            'status' => 1,
-        );
-
-        return Cache\User::add($data);
-    }
-
-    public function edit($id, $nickname)
-    {
-        $data = ['nickname' => $nickname];
-
-        return Cache\User::update($id, $data);
-    }
-
-    public function del($id)
-    {
-        $data = ['status' => 2];
-
-        return Cache\User::update($id, $data);
-    }
+    protected $_dbName = 'blog';
+    protected $_tableName = 'users';
+    protected $_primary = 'id';
+    protected $_columns = [
+        'id',
+        'user',
+        'pass',
+        'nickname',
+        'status',
+    ];
 }

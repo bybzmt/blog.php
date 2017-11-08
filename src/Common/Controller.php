@@ -8,6 +8,11 @@ abstract class Controller
 {
     use Loader;
 
+    public function __construct()
+    {
+        $this->_context = new Context();
+    }
+
     public function execute()
     {
         try {
@@ -52,9 +57,9 @@ abstract class Controller
     {
         $class = static::class;
         $idx = strrpos($class, '\\');
-        $idx2 = strlen(__NAMESPACE__);
+        $idx2 = strlen(substr(__NAMESPACE__, 0, strrpos(__NAMESPACE__, '\\')));
 
-        $dir = __DIR__ . str_replace('\\', '/', substr($class, $idx2, $idx - $idx2));
+        $dir = __DIR__ . '/../'. str_replace('\\', '/', substr($class, $idx2, $idx - $idx2));
 
         if (!$name) {
             $name = str_replace('_', '/', substr($class, $idx + 1));

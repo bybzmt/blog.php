@@ -6,7 +6,6 @@ use Memcached;
 use Redis;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Bybzmt\Blog\Utils\Config;
 use Bybzmt\Logger\Filelog;
 use Bybzmt\Logger\Syslog;
 use bybzmt\Locker\SocketLock;

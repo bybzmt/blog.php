@@ -22,17 +22,19 @@
                     <a href="{{ article.id }}" class="btn btn-default btn-lg ">继续阅读</a>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <span>
-                        发表在 <a href="{{ article.classify_id }}">漫画</a>&nsbsp;|&nsbsp;
-
+                        发表在 <a href="{{ article.classify_id }}">漫画</a>
                         {% if article.tags %}
+                            &nbsp;|&nbsp;
                             标签有:
                             {% for tag in article.tags %}
                                 <a href="{{ tag.id }}">{{ tag.name }}</a>
-                                {% if not loop.last %} 、{% endfi %}
+                                {% if not loop.last %} 、{% endif %}
                             {% endfor %}
-                        {% endfi %}
+                            &nbsp;|&nbsp;
+                        {% else %}
+                            &nbsp;|&nbsp;
+                        {% endif %}
 
-                        &nsbsp;|&nsbsp;
                         <a href="#">{{ article.comments_num }}&nbsp;条回复</a>
                     </span>
                 </div>

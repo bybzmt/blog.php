@@ -1,6 +1,8 @@
 <?php
 namespace Bybzmt\Blog\Common;
 
+use PDO;
+
 /**
  * 数据库表
  */
@@ -39,7 +41,7 @@ abstract class Table
     /**
      * 按主键查找一批数据
      */
-    public function finds(array $ids)
+    public function finds(array $ids, $kv=false)
     {
         if (!$ids) {
             return [];
@@ -52,7 +54,13 @@ abstract class Table
 
         $stmt = $this->getSlave()->prepare($sql);
         $stmt->execute($ids);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($kv) {
+            return array_column($rows, null, $this->_primary);
+        }
+
+        return $rows;
     }
 
     public function insert(array $row)

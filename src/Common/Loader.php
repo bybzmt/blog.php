@@ -55,7 +55,7 @@ trait Loader
      */
     protected function initRow(string $name, array $row)
     {
-        $class = __NAMESPACE__ . "\\" . str_replace('.', '\\', $name);
+        $class = __NAMESPACE__ . "\\Row\\" . str_replace('.', '\\', $name);
         return new $class($this->_context, $row);
     }
 

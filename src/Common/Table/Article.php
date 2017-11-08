@@ -27,9 +27,23 @@ class Article extends Common\Table
     {
         $sql = "select id from articles where status = 1 order by id desc limit $offset, $length";
 
-        $this->getSlave()->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+        return $this->getSlave()->query($sql)->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    public function getTagListIds(int $tag_id, int $offset, int $length)
+    {
+        $sql = "select article_id from article_tags where tag_id = ? limit $offset, $length";
 
+        $stmt = $this->getSlave()->prepare($sql);
+        $stmt->execute([$tag_id]);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
 
+    public function addCommentsNum($id, $num)
+    {
+        $sql = "update set articles set cache_comments_num = cache_comments_num + ? where id = ?";
+
+        $stmt = $this->getMaster()->prepare($sql);
+        return $stmt->execute([$num, $id]);
+    }
 }

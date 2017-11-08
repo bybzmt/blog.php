@@ -1,13 +1,13 @@
 <?php
 namespace Bybzmt\Blog\Common\Cache;
 
-use Bybzmt\Blog\Utils\Cache;
+use Bybzmt\Blog\Common;
 use Memcached;
 
 /**
  * 行缓存对像
  */
-class RowCache
+class RowCache extends Common\Cache
 {
     //缓存过期时间
     protected $expiration = 1800;
@@ -19,42 +19,49 @@ class RowCache
     protected $_name;
 
     protected $_keyPrefix;
-    protected $_hashPrefix;
-    protected $_primary;
     protected $_table;
 
-    public function __construct(Context $context, string $name)
+    public function __construct(Common\Context $context, string $name)
     {
         $this->_context = $context;
         $this->_name = $name;
 
         $this->_keyPrefix = str_replace('\\', '.', static::class) . $name;
 
-        $this->_table = $this->getTable($this->name);
+        $this->_table = $this->getTable($name);
 
-        $this->_primary = $this->_table->getPrimary();
+        list($dbname, $tablename, $primary, $columns) = $this->_table->_getInfo();
 
-        $this->_hashPrefix = $this->_table->getTableName() . $this->_primary . implode($this->_table->getColumns());
+        $this->_hashPrefix = $dbname.$tablename.$primary.implode($columns);
     }
 
+    /**
+     * 仅从缓存中取得数据
+     */
     public function getCached(string $id)
     {
-        return $this->unserialize(Cache::getCache()->get($this->getKey($id)));
+        return $this->unserialize($this->getMemcached()->get($this->getKey($id)));
     }
 
+    /**
+     * 得到数据,缓存未命中时从数据库中加载
+     */
     public static function get(string $id)
     {
         $key = $this->getKey($id);
 
-        $row = $this->unserialize(Cache::getCache()->get($key));
+        $row = $this->unserialize($this->getMemcached()->get($key));
         if ($row === null) {
             $row = $this->_table->find($id);
-            Cache::getCache()->set($key, $this->serialize($row), $this->expiration);
+            $this->getMemcached()->set($key, $this->serialize($row), $this->expiration);
         }
 
         return $row;
     }
 
+    /**
+     * 批量得到数据,仅从缓存中加载
+     */
     public function getsCached(array $ids)
     {
         $keys = $out = [];
@@ -63,7 +70,7 @@ class RowCache
             $keys[$this->getKey($id)] = $id;
         }
 
-        $rows = Cache::getCache()->getMulti(array_keys($keys), Memcached::GET_PRESERVE_ORDER);
+        $rows = $this->getMemcached()->getMulti(array_keys($keys), Memcached::GET_PRESERVE_ORDER);
         foreach ($rows as $key => $row) {
             $out[$keys[$key]] = $this->unserialize($row);
         }
@@ -71,6 +78,9 @@ class RowCache
         return $out;
     }
 
+    /**
+     * 批量得到数据,缓存未命中时从数据库中加载
+     */
     public function gets(array $ids, $kv=false)
     {
         $keys = $out = $miss = [];
@@ -79,7 +89,7 @@ class RowCache
             $keys[$this->getKey($id)] = $id;
         }
 
-        $rows = Cache::getCache()->getMulti(array_keys($keys), Memcached::GET_PRESERVE_ORDER);
+        $rows = $this->getMemcached()->getMulti(array_keys($keys), Memcached::GET_PRESERVE_ORDER);
         foreach ($rows as $key => $tmp) {
             $row = $this->unserialize($tmp);
             $id = $keys[$key];
@@ -97,9 +107,7 @@ class RowCache
         if ($miss) {
             $new_caches = $found = [];
 
-            $rows = $this->_table->finds(array_keys($miss));
-            $rows = array_column($rows, null, $this->_primary) + $miss;
-
+            $rows = $this->_table->finds(array_keys($miss), true);
             foreach ($rows as $id => $row) {
                 if ($kv) {
                     $out[$id] = $row;
@@ -110,34 +118,66 @@ class RowCache
                 $new_caches[$this->getKey($id)] = $this->serialize($row);
             }
 
-            Cache::getCache()->setMulti($new_caches, $this->expiration);
+            $this->getMemcached()->setMulti($new_caches, $this->expiration);
         }
 
         return $out;
     }
 
+    /**
+     * 修改己缓存的数据(仅保证下次从缓存取出的数据一定是新的)
+     */
+    public function update(string $id, array $row)
+    {
+        $old = $this->getCached($id);
+        if ($old) {
+            foreach ($row as $k => $v) {
+                $old[$k] = $v;
+            }
+            $this->set($id, $old);
+        } else if ($old !== null) {
+            $this->del($id);
+        }
+    }
+
+    /**
+     * 直接设置缓存
+     */
     public function set(string $id, $row)
     {
         $key = $this->getKey($id);
-        return Cache::getCache()->set($key, $this->serialize($row), $this->expiration);
+        return $this->getMemcached()->set($key, $this->serialize($row), $this->expiration);
     }
 
+    /**
+     * 批量设置缓存
+     */
     public function sets(array $rows)
     {
+        if (!$rows) {
+            return true;
+        }
+
         $data = [];
         foreach ($rows as $id => $row) {
             $data[$this->getKey($id)] = $this->serialize($row);
         }
 
-        return Cache::getCache()->setMulti($data, $this->expiration);
+        return $this->getMemcached()->setMulti($data, $this->expiration);
     }
 
+    /**
+     * 删除缓存
+     */
     public function del(string $id): bool
     {
         $key = $this->getKey($id);
-        return Cache::getCache()->delete($key);
+        return $this->getMemcached()->delete($key);
     }
 
+    /**
+     * 批量删除缓存
+     */
     public function dels(array $ids): bool
     {
         $keys = [];
@@ -145,7 +185,7 @@ class RowCache
             $key[] = $this->getKey($id);
         }
 
-        return Cache::getCache()->deleteMulti($key);
+        return $this->getMemcached()->deleteMulti($key);
     }
 
     protected function getKey(string $id): string
@@ -153,37 +193,4 @@ class RowCache
         return $this->_keyPrefix . $id;
     }
 
-    protected function hash(string $str): string
-    {
-        return hash("crc32b", $this->_hashPrefix.$str);
-    }
-
-    protected function serialize($data)
-    {
-        $str = serialize($data);
-        //生成hash前缀
-        return $this->hash($str) . $str;
-    }
-
-    protected function unserialize($data)
-    {
-        if (!$data) {
-            return null;
-        }
-
-        $str = substr($data, 8);
-
-        $hash = $this->hash($str);
-
-        //验证数据是否损坏
-        //实际使用中会发生表结构变动，缓存串key，缓存异常等情况
-        //虽然一般这些损坏都是代码bug或代码改动造成的
-        //理论上代码无bug且没有变动时不会出现损坏，但好的程序应该有
-        //较好的容错性和健壮性，这里推荐坚持验证
-        if (strncmp($hash, $data, 8) != 0) {
-            return null;
-        }
-
-        return unserialize($str);
-    }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog\Common\Table;
+namespace Bybzmt\Blog\Common\Row;
 
 use Bybzmt\Blog\Common;
 

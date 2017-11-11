@@ -2,6 +2,7 @@
 namespace Bybzmt\Blog\Common;
 
 use PDO;
+use Bybzmt\DB\Monitor;
 
 /**
  * 数据库表
@@ -86,9 +87,9 @@ abstract class Table
     {
 		$holds = array();
 
-		$feilds = array_keys(reset($values));
+		$feilds = array_keys(reset($rows));
 
-        $hold = implode(',', array_fill(0, count($feilds), '?'));
+        $hold = '('.implode(',', array_fill(0, count($feilds), '?')).')';
 		$holds = implode(",\n", array_fill(0, count($rows), $hold));
 		$feilds = implode("`,`", $feilds);
 
@@ -119,7 +120,7 @@ abstract class Table
 		$set = array();
         $vals = array();
 
-		foreach ($feilds as $key => $val) {
+		foreach ($row as $key => $val) {
 			$set[] = "`{$key}` = ?";
             $vals[] = $val;
 		}
@@ -154,7 +155,16 @@ abstract class Table
     protected function getDb($name='default')
     {
         if (!isset($this->_context->dbConns[$name])) {
-            $this->_context->dbConns[$name] = Resource::getDb($name);
+            $db = Resource::getDb($name);
+
+            $logger = $this->getLogger('sql');
+
+            $monitor = new Monitor($db, function($time, $sql, $params=[]) use($logger) {
+                $msg = sprintf("time:%0.6f sql:%s", $time, $sql);
+                $logger->info($msg, $params);
+            });
+
+            $this->_context->dbConns[$name] = $monitor;
         }
 
         return $this->_context->dbConns[$name];

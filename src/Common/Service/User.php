@@ -1,13 +1,14 @@
 <?php
-namespace Bybzmt\Blog\Service;
+namespace Bybzmt\Blog\Common\Service;
 
 use Bybzmt\Blog\Common;
 
 class User extends Common\Service
 {
     //得到用户
-    public function get(int $id)
+    public function getUser(int $id)
     {
+        return $this->getRowCache('User', $id);
     }
 
     //添加新用户

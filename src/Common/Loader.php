@@ -5,7 +5,7 @@ trait Loader
 {
     protected $_context;
 
-    public static function getLogger($name='default'): LoggerInterface
+    protected function getLogger($name='default')
     {
 		if (!isset($this->_context->loggers[$name])) {
 			$this->_context->loggers[$name] = Resource::getLogger($name);
@@ -41,13 +41,16 @@ trait Loader
     /**
      * 得到缓存对像
      */
-    protected function getCache(string $name, ...$args)
+    protected function getCache(string $name, string $id='', ...$args)
     {
-        if (!isset($this->_context->caches[$name])) {
+        $cache_id = $name . $id;
+
+        if (!isset($this->_context->caches[$cache_id])) {
             $class = __NAMESPACE__ ."\\Cache\\". str_replace('.', '\\', $name);
-            $this->_context->caches[$name] = new $class($this->_context, ...$args);
+            $this->_context->caches[$cache_id] = new $class($this->_context, $id, ...$args);
         }
-        return $this->_context->caches[$name];
+
+        return $this->_context->caches[$cache_id];
     }
 
     /**
@@ -64,8 +67,8 @@ trait Loader
      */
     protected function getRow(string $name, string $id)
     {
-        $row = $this->getTable($name)->get($id);
-        return $row ? $this->initRow($this->_context, $row) : false;
+        $row = $this->getTable($name)->find($id);
+        return $row ? $this->initRow($name, $row) : false;
     }
 
     /**
@@ -82,7 +85,7 @@ trait Loader
     protected function getRowCache(string $name, string $id)
     {
         $row = $this->getCache('RowCache', $name)->get($id);
-        return $row ? $this->initRow($this->_context, $row) : false;
+        return $row ? $this->initRow($name, $row) : false;
     }
 
     /**

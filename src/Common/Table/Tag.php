@@ -2,6 +2,7 @@
 namespace Bybzmt\Blog\Common\Table;
 
 use Bybzmt\Blog\Common;
+use PDO;
 
 class Tag extends Common\Table
 {
@@ -13,5 +14,13 @@ class Tag extends Common\Table
         'name',
         'sort',
         'status',
+        'top',
     ];
+
+    public function getIndexTagIds()
+    {
+        $sql = "SELECT id FROM tags WHERE top > 0 ORDER BY top ASC";
+
+        return $this->getSlave()->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+    }
 }

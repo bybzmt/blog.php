@@ -89,7 +89,7 @@ class Article extends Common\Row
         return $tags;
     }
 
-    public function setTags(Tags $tags)
+    public function setTags(array $tags)
     {
         if (count($tags) > self::max_tag_num) {
             return false;
@@ -105,11 +105,11 @@ class Article extends Common\Row
         //修改关连关系
         $ok = $this->getTable('ArticleTag')->setTags($this->id, $tag_ids);
         if ($ok) {
-            //修改关连表缓存
-            $this->getTable('Article')->setTags($this->id, $tag_sids);
+            //修改关连缓存
+            $this->getTable('Article')->update($this->id, ['cache_tags' => $tag_sids]);
 
             //修改行缓存
-            $this->getCache('RowCache', 'Article')->update(['cache_tags' => $tag_sids]);
+            $this->getCache('RowCache', 'Article')->update($this->id, ['cache_tags' => $tag_sids]);
 
             //修改当前对像
             $this->_cache_tags = $tag_sids;

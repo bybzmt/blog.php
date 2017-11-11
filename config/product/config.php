@@ -25,7 +25,8 @@ return array(
     //日志
     'log' => [
         //抛弃日志
-        'default' => ['null', '', ''],
+        'default' => ['null'],
+        'sql' => ['PHPlog', 'sql'],
         'apple-pay' => ['syslog', 'php-apple-pay', 'LOG_USER'],
         'alipay' => ['syslog', 'php-alipay', 'LOG_USER'],
         'debug' => ['syslog', 'php-debug', 'LOG_USER'],

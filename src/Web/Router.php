@@ -8,8 +8,11 @@ class Router extends Common\Router
     public function _init()
     {
         $this->get('/', ':Article.List');
+        $this->get('/list/(\d+)', ':Article.List:page');
+        $this->get('/tag/(\d+)', ':Article.List:tag');
+        $this->get('/tag/(\d+)/(\d+)', ':Article.List:tag:page');
         $this->get('/article/(\d+)', ':Article.Show:id');
-        $this->get('/tag/(\d+)', ':Article.Tag:id');
+        $this->get('/user/(\d+)', ':User.Show:id');
     }
 
     protected function default404()

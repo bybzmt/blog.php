@@ -6,25 +6,21 @@ use Bybzmt\Blog\Common;
 class Article extends Common\Service
 {
 
-    //首页列表
+    //首页列表 (从首页列表缓存中取)
     public function getIndexList(int $offset, int $length)
     {
-        //从首页列表缓存中取
-        $rows = $this->getCache('IndexArticles')->gets($offset, $length);
-        return $rows;
+        return $this->getCache('IndexArticles')->gets($offset, $length);
     }
 
-    //标签文章列表
-    public function getTagList(Domain\Tag $tag, int $offset, int $length)
+    //首页列表文章数量 (从首页列表缓存中取)
+    public function getIndexCount()
     {
-        //从标签列表缓存中取
+        return $this->getCache('IndexArticles')->count();
     }
 
-    //文章详情
-    public function get(int $id)
+    public function getIndexTags()
     {
-        return $this->getRowCache('Article', $id);
+        return $this->getCache('IndexTags')->gets(0, 50);
     }
-
 
 }

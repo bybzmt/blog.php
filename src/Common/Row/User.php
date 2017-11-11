@@ -1,7 +1,9 @@
 <?php
-namespace Bybzmt\Blog\Service\Domain;
+namespace Bybzmt\Blog\Common\Row;
 
-class User extends Base
+use Bybzmt\Blog\Common;
+
+class User extends Common\Row
 {
     public $id;
     public $user;

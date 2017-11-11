@@ -134,4 +134,15 @@ abstract class LazyLoader
         $this->_context->lazyRowCache[$this->name] = [];
     }
 
+    public function __debugInfo()
+    {
+        if (!$this->initd) {
+            $this->init();
+            $this->initd = true;
+        }
+
+        return array(
+            'row' => $this->row,
+        );
+    }
 }

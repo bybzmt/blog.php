@@ -46,7 +46,7 @@ class RowCache extends Common\Cache
     /**
      * 得到数据,缓存未命中时从数据库中加载
      */
-    public static function get(string $id)
+    public function get(string $id)
     {
         $key = $this->getKey($id);
 

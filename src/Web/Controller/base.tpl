@@ -45,24 +45,6 @@
     </div>
     <!--END HEADER SECTION-->
 
-    <div class="info-sec">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-10">
-                    Say hello to me at <strong>hello</strong>@yourdomain.com
-                </div>
-                <div class="col-md-2">
-                    <div class="social-link">
-                        <a href="#" class="btn btn-default btn-xs">分享</a>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!--END INFO SECTION-->
-
     {% block content %}{% endblock %}
 
     <!--END HOME PAGE SECTION-->
@@ -70,7 +52,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 foo-inner">
-                    &copy; 2015 bybzmt.me
+                    &copy; 2017 hello@bybzmt.me
                 </div>
             </div>
         </div>

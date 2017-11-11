@@ -1,7 +1,9 @@
 <?php
-namespace Bybzmt\Blog\Service;
+namespace Bybzmt\Blog\Common\Row;
 
-class CommentReply extends Base
+use Bybzmt\Blog\Common;
+
+class CommentReply extends Common\Row
 {
     public $id;
     public $comment;

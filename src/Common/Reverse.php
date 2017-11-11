@@ -10,7 +10,7 @@ abstract class Reverse extends PReverse
     {
         static $ins;
         if (!$ins) {
-            $ins = new self(self::initData());
+            $ins = new static(self::initData());
         }
 
         return $ins;
@@ -19,12 +19,14 @@ abstract class Reverse extends PReverse
     static protected function initData()
     {
         if (Config::get('routes_cached')) {
-            $router = new Router();
-            $tool = new \Bybzmt\Router\Tool($router->getRoutes());
-            return $tool->convertReverse();
-        } else {
             $file = ASSETS_PATH . '/compiled/' . str_replace('\\', '_', static::class) . '_reverse.php';
             return require $file;
+        } else {
+            $class = substr(static::class, 0, strrpos(static::class, '\\')) . '\\Router';
+
+            $router = new $class();
+            $tool = new \Bybzmt\Router\Tool($router->getRoutes());
+            return $tool->convertReverse();
         }
     }
 

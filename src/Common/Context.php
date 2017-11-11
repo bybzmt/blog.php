@@ -35,4 +35,12 @@ class Context
 
     //标记的批量加载id(通过缓存加载)
     public $lazyRowCache;
+
+    //防止var_dump打印太多无用信息
+    public function __debugInfo()
+    {
+        return array(
+            'cachedRowNum' => count($this->cachedRow),
+        );
+    }
 }

@@ -11,7 +11,7 @@ class Article_List extends Controller
     private $tag;
     private $page;
     private $offset;
-    private $length = 10;
+    private $length = 4;
 
     public function init()
     {
@@ -70,7 +70,6 @@ class Article_List extends Controller
                 'title' => $row->title,
                 'intro' => $row->intro,
                 'addtime' => $row->addtime,
-                'author_url' => Reverse::mkUrl('User.Show', ['id'=>$row->author->id]),
                 'author_nickname' => $row->author->nickname,
                 'comments_num' => $row->getCommentsNum(),
                 'tags' => $article_tags,
@@ -96,7 +95,7 @@ class Article_List extends Controller
         }
 
         $data = [
-            'article_list' => $articles,
+            'articles' => $articles,
             'pagination' => $pagination,
             'taglist' => $taglist,
         ];

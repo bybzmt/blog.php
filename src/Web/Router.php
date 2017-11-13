@@ -12,7 +12,8 @@ class Router extends Common\Router
         $this->get('/tag/(\d+)', ':Article.List:tag');
         $this->get('/tag/(\d+)/(\d+)', ':Article.List:tag:page');
         $this->get('/article/(\d+)', ':Article.Show:id');
-        $this->get('/user/(\d+)', ':User.Show:id');
+        $this->get('/about', ':About.Hello');
+        $this->get('/contact', ':About.Contact');
     }
 
     protected function default404()

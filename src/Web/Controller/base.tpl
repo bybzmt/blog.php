@@ -1,65 +1,126 @@
 ﻿<!DOCTYPE html>
-<html>
-  <head>
-    <!--[if IE]>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <!-- Bootstrap styles -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Font-Awesome -->
+    <link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+
+    <!-- Google Webfonts -->
+    <link rel='stylesheet' href='/css/font-open-sans/font.css' type='text/css'>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/style.css" id="theme-styles">
+
+    {% block head %}
+        <title>{% block title %}{% endblock %} - 暴雨不在明天的博客</title>
+    {% endblock %}
+
+    <!--[if lt IE 9]>
+        <script src="/js/html5shiv.js"></script>
+        <script src="/js/respond.min.js"></script>
     <![endif]-->
 
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-    <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="/css/style.css" />
-
-        {% block head %}
-            <title>{% block title %}{% endblock %} - My Webpage</title>
-        {% endblock %}
-    </head>
+</head>
 <body>
-
-<div>
-    <div id="header">
-        <div class="overlay">
+    <header>
+        <div class="widewrapper masthead">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-4 logo-div">
-                        <div class="logo-inner text-center">
-                            <div class="logo-name">
-                                <a href="index.html">
-                                    <img src="/img/me.jpg" class="img-circle" />
-                                </a>
-                            </div>
+                <a href="/" id="logo">
+                    <img src="/img/logo.png" alt="clean Blog">
+                </a>
 
-                        </div>
+                <div id="mobile-nav-toggle" class="pull-right">
+                    <a href="/" data-toggle="collapse" data-target=".clean-nav .navbar-collapse">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div>
 
+                <nav class="pull-right clean-nav">
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav nav-pills navbar-nav">
+                            <li>
+                                <a href="/">Home</a>
+                            </li>
+                            <li>
+                                <a href="/about">About</a>
+                            </li>
+                            <li>
+                                <a href="/contact">Contact</a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="col-md-8 header-text-top " id="about">
-                        <h1>Nice responsive template for blogger.</h1>
-						This blogging template use bootstrap and html to create a very nice blogging page with great responsive. <br /> 
-						Here you can write a general notes about your blog.<br />
-						<h2><strong>Who I am ? </strong></h2>
-                        <i>I am Jhon Deo </i>
-                    </div>
+                </nav>
+
+            </div>
+        </div>
+
+        <div class="widewrapper subheader">
+            <div class="container">
+                <div class="clean-breadcrumb">
+                    {% block breadcrumb %}
+                        <a href="/">Blog</a>
+                    {% endblock %}
+                </div>
+
+                <div class="clean-searchbox">
+                    <form action="/search" method="get" accept-charset="utf-8">
+                        <input class="searchfield" id="searchbox" type="text" placeholder="Search">
+                        <button class="searchbutton" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-    <!--END HEADER SECTION-->
+    </header>
 
     {% block content %}{% endblock %}
 
-    <!--END HOME PAGE SECTION-->
-    <div class="footer-sec" style="margin-top: 0px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 foo-inner">
-                    &copy; 2017 hello@bybzmt.me
+    <footer>
+        <div class="widewrapper footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 footer-widget">
+                       <h3> <i class="fa fa-user"></i>About</h3>
+
+                       <p>这里是关关关于于</p>
+                       <p>这里是关关关于于</p>
+                    </div>
+
+                    <div class="col-md-4 footer-widget">
+                        <h3> <i class="fa fa-pencil"></i> Recent Post</h3>
+                        <ul class="clean-list">
+                            <li><a href="">Clean - Responsive HTML5 Template</a></li>
+                            <li><a href="">Responsive Pricing Table</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-4 footer-widget">
+                        <h3> <i class="fa fa-envelope"></i>Contact Me</h3>
+
+                        <p>联系我.</p>
+                        <p>联系我.</p>
+                         <div class="footer-widget-icon">
+                            <i class="fa fa-facebook"></i><i class="fa fa-twitter"></i><i class="fa fa-google"></i>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </div>
-    <!-- END FOOTER SECTION -->
+        <div class="widewrapper copyright">
+                Copyright 2017
+        </div>
+    </footer>
 
-</div>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/modernizr.js"></script>
 
-  </body>
+</body>
 </html>

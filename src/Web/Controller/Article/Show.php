@@ -39,8 +39,8 @@ class Article_Show extends Controller
             'content' => $this->article->content,
             'addtime' => $this->article->addtime,
             'edittime' => $this->article->edittime,
+            'comments_num' => $this->article->getCommentsNum(),
             'author_nickname' => $this->article->author->nickname,
-            'author_url' => Reverse::mkUrl('User.Show', ['id'=>$this->article->author->id]),
         );
 
         $tag_rows = $this->getService('Article')->getIndexTags();

@@ -2,7 +2,6 @@
 namespace Bybzmt\Blog\Common\Table;
 
 use Bybzmt\Blog\Common;
-use PDO;
 
 class Comment extends Common\Table
 {
@@ -23,9 +22,7 @@ class Comment extends Common\Table
     {
         $sql = "select id from comment_replys where comment_id = ? AND status = 1 order by id desc limit $offset, $length";
 
-        $stmt = $this->getSlave()->prepare($sql);
-        $stmt->execute([$article_id]);
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return $this->getSlave()->fetchColumnAll($sql);
     }
 
 

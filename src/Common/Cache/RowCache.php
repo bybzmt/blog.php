@@ -21,16 +21,20 @@ class RowCache extends Common\Cache
     protected $_keyPrefix;
     protected $_table;
 
+    protected $_primary;
+
     public function __construct(Common\Context $context, string $name)
     {
         $this->_context = $context;
         $this->_name = $name;
 
-        $this->_keyPrefix = str_replace('\\', '.', static::class) . $name;
+        $this->_keyPrefix = str_replace('\\', '.', static::class) . ".$name.";
 
         $this->_table = $this->getTable($name);
 
         list($dbname, $tablename, $primary, $columns) = $this->_table->_getInfo();
+
+        $this->_primary = $primary;
 
         $this->_hashPrefix = $dbname.$tablename.$primary.implode($columns);
     }
@@ -52,7 +56,7 @@ class RowCache extends Common\Cache
 
         $row = $this->unserialize($this->getMemcached()->get($key));
         if ($row === null) {
-            $row = $this->_table->find($id);
+            $row = $this->_table->get($id);
             $this->getMemcached()->set($key, $this->serialize($row), $this->expiration);
         }
 
@@ -71,6 +75,11 @@ class RowCache extends Common\Cache
         }
 
         $rows = $this->getMemcached()->getMulti(array_keys($keys), Memcached::GET_PRESERVE_ORDER);
+        //Memcached连接失败时会返回false修补下数据
+        if (!$rows) {
+            $rows = array_combine(array_keys($keys), array_fill(0, count($keys), false));
+        }
+
         foreach ($rows as $key => $row) {
             $out[$keys[$key]] = $this->unserialize($row);
         }
@@ -107,7 +116,9 @@ class RowCache extends Common\Cache
         if ($miss) {
             $new_caches = $found = [];
 
-            $rows = $this->_table->finds(array_keys($miss), true);
+            $rows = $this->_table->gets(array_keys($miss), true);
+            $rows = array_column($rows, null, $this->_primary);
+
             foreach ($rows as $id => $row) {
                 if ($kv) {
                     $out[$id] = $row;

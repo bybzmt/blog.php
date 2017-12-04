@@ -1,11 +1,10 @@
 <?php
 namespace Bybzmt\Blog\Web\Controller;
 
-use Bybzmt\Blog\Web\Controller;
 use Bybzmt\Blog\Web\Reverse;
 use Bybzmt\Blog\Common\Helper\Pagination;
 
-class Article_List extends Controller
+class Article_List extends Web
 {
     private $tag_id;
     private $tag;
@@ -44,7 +43,7 @@ class Article_List extends Controller
         var_dump($this->msg);
     }
 
-    public function run()
+    public function show()
     {
         //文章列表
         if ($this->tag) {

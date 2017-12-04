@@ -1,8 +1,7 @@
 <?php
 namespace Bybzmt\Blog\Common;
 
-use Twig_Loader_Filesystem;
-use Twig_Environment;
+use Exception;
 
 abstract class Controller
 {
@@ -19,69 +18,42 @@ abstract class Controller
             $this->init();
 
             if ($this->valid() && $this->exec()) {
-                $this->run();
+                $this->show();
             } else {
                 $this->fail();
             }
         } catch(Exception $e) {
-            $this->error($e);
+            $this->onException($e);
         }
     }
 
-    public function init()
-    {
-    }
+    /**
+     * 初始化 接好各种输入并进行适当的格式化, 这部不能报任何错误
+     */
+    abstract public function init();
 
-    public function valid()
-    {
-        return true;
-    }
+    /**
+     * 对接收到的各种数据进行验证 成功返回true
+     */
+    abstract public function valid();
 
-    public function exec()
-    {
-        return true;
-    }
+    /**
+     * 进行数据操作 成功返回true
+     */
+    abstract public function exec();
 
-    public function fail()
-    {
-    }
+    /**
+     * 展示验证或操作失败的结果
+     */
+    abstract public function fail();
 
-    public function error($e)
-    {
-        throw $e;
-    }
+    /**
+     * 异常处理
+     */
+    abstract public function onException($e);
 
-    abstract public function run();
-
-    public function render(array $data, string $name=null)
-    {
-        $class = static::class;
-        $idx = strrpos($class, '\\');
-        $idx2 = strlen(substr(__NAMESPACE__, 0, strrpos(__NAMESPACE__, '\\')));
-
-        $dir = __DIR__ . '/../'. str_replace('\\', '/', substr($class, $idx2, $idx - $idx2));
-
-        if (!$name) {
-            $name = str_replace('_', '/', substr($class, $idx + 1));
-        }
-        $file = $name . '.tpl';
-
-        $loader = new Twig_Loader_Filesystem($dir);
-        $twig = new Twig_Environment($loader, array(
-            'cache' => VAR_PATH . '/cache/templates',
-            'auto_reload' => true,
-        ));
-
-        echo $twig->render($file, $data);
-    }
-
-    public function renderJson($data, int $ret=0)
-    {
-        echo json_encode(array('ret' => $ret, 'data'=> $data), JSON_UNESCAPED_UNICODE);
-    }
-
-    public function redirect($url, $code=302)
-    {
-        header("Location: $url", true, $code);
-    }
+    /**
+     * 展示正常的输出
+     */
+    abstract public function show();
 }

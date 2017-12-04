@@ -4,6 +4,8 @@ namespace Bybzmt\Blog\Common;
 use PDO;
 use Memcached;
 use Redis;
+use Bybzmt\DB\PDOConn;
+use Bybzmt\DB\Monitor;
 use Bybzmt\Logger\Factory;
 use bybzmt\Locker\SocketLock;
 use bybzmt\Locker\FileLock;
@@ -21,7 +23,16 @@ class Resource
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ];
 
-        return new PDO($dsn, $user, $pass, $opts);
+        $db = new PDOConn($dsn, $user, $pass, $opts);
+
+        $logger = self::getLogger('sql');
+
+        $monitor = new Monitor($db, function($time, $sql, $params=[]) use($logger) {
+            $msg = sprintf("time:%0.6f sql:%s", $time, $sql);
+            $logger->info($msg, $params);
+        });
+
+        return $monitor;
     }
 
     public static function getMemcached($name='default')

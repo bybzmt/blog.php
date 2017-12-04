@@ -28,53 +28,27 @@ abstract class Table
     /**
      * 按主键查找一行数据
      */
-    public function find($id)
+    public function get($id)
     {
-        $columns = implode("`,`", $this->_columns);
-
-        $sql = "SELECT `$columns` FROM `{$this->_tableName}` WHERE `{$this->_primary}` = ? LIMIT 1";
-
-        $stmt = $this->getSlave()->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->getSlave()->find($this->_tableName, $this->_columns, array($this->_primary=>$id));
     }
 
     /**
      * 按主键查找一批数据
      */
-    public function finds(array $ids, $kv=false)
+    public function gets(array $ids)
     {
         if (!$ids) {
             return [];
         }
 
-        $columns = implode("`,`", $this->_columns);
-        $holds = implode(',', array_fill(0, count($ids), '?'));
-
-        $sql = "SELECT `$columns` FROM `{$this->_tableName}` WHERE `{$this->_primary}` IN ($holds)";
-
-        $stmt = $this->getSlave()->prepare($sql);
-        $stmt->execute($ids);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if ($kv) {
-            return array_column($rows, null, $this->_primary);
-        }
-
-        return $rows;
+        return $this->getSlave()->findAll($this->_tableName, $this->_columns, array($this->_primary=>$ids));
     }
 
-    public function insert(array $row)
+    public function add(array $row)
     {
-		$keys = implode('`, `', array_keys($row));
-        $holds = implode(',', array_fill(0, count($row), '?'));
-		$vals = array_values($row);
-
-		$sql = "INSERT INTO {$this->_tableName} (`{$keys}`) VALUES({$holds})";
-
         $db = $this->getMaster();
-        $stmt = $db->prepare($sql);
-        $ok = $stmt->execute($vals);
+        $db = $db->insert($this->_tableName, $row);
         if ($ok) {
             if (!isset($row[$this->_primary])) {
                 return $db->lastInsertId();
@@ -83,27 +57,12 @@ abstract class Table
         return $ok;
     }
 
-    public function inserts($rows)
+    public function adds(array $rows)
     {
-		$holds = array();
-
-		$feilds = array_keys(reset($rows));
-
-        $hold = '('.implode(',', array_fill(0, count($feilds), '?')).')';
-		$holds = implode(",\n", array_fill(0, count($rows), $hold));
-		$feilds = implode("`,`", $feilds);
-
-        $vals = [];
-        foreach ($rows as $row) {
-            $vals = array_merge($vals, array_values($row));
-        }
-
-		$sql = "INSERT INTO `{$this->_tableName}` (`{$feilds}`)\n VALUES {$holds}";
-
         $db = $this->getMaster();
-        $stmt = $db->prepare($sql);
-        $ok = $stmt->execute($vals);
+        $ok = $db->inserts($this->_tableName, $rows);
         if ($ok) {
+            $row = reset($rows);
             if (!isset($row[$this->_primary])) {
                 return $db->lastInsertId();
             }
@@ -111,35 +70,14 @@ abstract class Table
         return $ok;
     }
 
-    public function update(string $id, $row)
+    public function edit(string $id, $row)
     {
-        if (!$row) {
-            return;
-        };
-
-		$set = array();
-        $vals = array();
-
-		foreach ($row as $key => $val) {
-			$set[] = "`{$key}` = ?";
-            $vals[] = $val;
-		}
-
-		$set = implode(', ', $set);
-        $vals[] = $id;
-
-		$sql = "UPDATE `{$this->_tableName}` SET {$set} WHERE `{$this->_primary}` = ? LIMIT 1";
-
-        $stmt = $this->getMaster()->prepare($sql);
-        return $stmt->execute($vals);
+        return $this->getMaster()->update($this->_tableName, array($this->_primary=>$id), 1);
     }
 
     public function del(string $id)
     {
-		$sql = "DELETE FROM `{$this->_tableName}` WHERE `{$this->_primary}` = ? LIMIT 1";
-
-        $stmt = $this->getMaster()->prepare($sql);
-        return $stmt->execute([$id]);
+        return $this->getMaster()->delete($this->_tableName, array($this->_primary=>$id), 1);
     }
 
     protected function getMaster()
@@ -156,15 +94,7 @@ abstract class Table
     {
         if (!isset($this->_context->dbConns[$name])) {
             $db = Resource::getDb($name);
-
-            $logger = $this->getLogger('sql');
-
-            $monitor = new Monitor($db, function($time, $sql, $params=[]) use($logger) {
-                $msg = sprintf("time:%0.6f sql:%s", $time, $sql);
-                $logger->info($msg, $params);
-            });
-
-            $this->_context->dbConns[$name] = $monitor;
+            $this->_context->dbConns[$name] = $db;
         }
 
         return $this->_context->dbConns[$name];

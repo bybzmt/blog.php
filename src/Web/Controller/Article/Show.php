@@ -1,10 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Web\Controller;
 
-use Bybzmt\Blog\Web\Controller;
 use Bybzmt\Blog\Web\Reverse;
 
-class Article_Show extends Controller
+class Article_Show extends Web
 {
     private $id;
     private $article;
@@ -32,7 +31,7 @@ class Article_Show extends Controller
         var_dump($this->msg);
     }
 
-    public function run()
+    public function show()
     {
         $article = array(
             'title' => $this->article->title,

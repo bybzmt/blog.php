@@ -8,14 +8,25 @@ abstract class Cache
     //缓存过期时间
     protected $expiration = 1800;
 
+    //key前缀
+    protected $keyPrefix;
+
     //hash前缀
-    protected $_hashPrefix;
+    protected $hashPrefix;
 
     //使用哪个memcached
     protected $memcachedName = 'default';
 
     //使用哪个redis
     protected $redisName = 'default';
+
+    public function __construct(Context $context, string $id='')
+    {
+        $this->_context = $context;
+        $this->id = $id;
+        $this->keyPrefix = str_replace('\\', '.', static::class) .'.'. $id;
+        $this->hashPrefix = $this->keyPrefix;
+    }
 
     protected function getMemcached($name=null)
     {
@@ -40,7 +51,7 @@ abstract class Cache
 
     protected function hash(string $str): string
     {
-        return hash("crc32b", $this->_hashPrefix.$str);
+        return hash("crc32b", $this->hashPrefix.$str);
     }
 
     protected function serialize($data)

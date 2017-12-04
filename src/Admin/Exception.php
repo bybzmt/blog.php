@@ -1,8 +1,8 @@
 <?php
 namespace Bybzmt\Blog\Admin;
 
-use Bybzmt\Blog\Exception as PException;
+use Bybzmt\Blog\Common;
 
-class Exception extends PException
+class Exception extends Common\Exception
 {
 }

@@ -1,12 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Web\Controller;
 
-use Bybzmt\Blog\Web\Controller;
-use Bybzmt\Blog\Web\Reverse;
-
-class About_Hello extends Controller
+class About_Hello extends Web
 {
-    public function run()
+    public function show()
     {
         $data = [
         ];

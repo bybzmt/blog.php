@@ -9,9 +9,6 @@ abstract class ListCache extends Cache
     //缓存的最大id数量
     protected $size = 10000;
 
-    //排序方式(正序或倒序)
-    protected $order = 'desc';
-
     //列表缓存id
     protected $list_id;
 
@@ -20,7 +17,7 @@ abstract class ListCache extends Cache
         $this->_context = $context;
         $this->list_id = $list_id;
         $this->key = str_replace('\\', '.', static::class) .'.'. $list_id;
-        $this->_hashPrefix = $this->key . $this->order;
+        $this->_hashPrefix = $this->key;
     }
 
     abstract protected function getRows(array $ids):array;
@@ -41,19 +38,12 @@ abstract class ListCache extends Cache
     public static function addItem(string $id) : bool
     {
         $ids = $this->getAllIds();
+        $ids = array_diff($ids, [$id]);
 
-        if ($this->order == 'desc') {
-            array_unshift($ids, $id);
+        array_unshift($ids, $id);
 
-            while (count($ids) > $this->size) {
-                array_pop($ids);
-            }
-        } else {
-            array_push($ids, $id);
-
-            while (count($ids) > $this->size) {
-                array_shift($ids);
-            }
+        while (count($ids) > $this->size) {
+            array_pop($ids);
         }
 
         return $this->setAllIds($ids);

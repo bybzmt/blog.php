@@ -5,6 +5,42 @@ trait Loader
 {
     protected $_context;
 
+    /**
+     * 初始化数据表对象
+     */
+    protected function initService(string $name)
+    {
+        $class = __NAMESPACE__ ."\\Service\\". str_replace('.', '\\', $name);
+        return new $class($this->_context);
+    }
+
+    /**
+     * 初始化数据表对象
+     */
+    protected function initTable(string $name)
+    {
+        $class = __NAMESPACE__ ."\\Table\\". str_replace('.', '\\', $name);
+        return new $class($this->_context);
+    }
+
+    /**
+     * 初始化缓存对像
+     */
+    protected function initCache(string $name, string $id='', ...$args)
+    {
+        $class = __NAMESPACE__ ."\\Cache\\". str_replace('.', '\\', $name);
+        return new $class($this->_context, $id, ...$args);
+    }
+
+    /**
+     * 初始化一个数据行对像
+     */
+    protected function initRow(string $name, array $row)
+    {
+        $class = __NAMESPACE__ . "\\Row\\" . str_replace('.', '\\', $name);
+        return new $class($this->_context, $row);
+    }
+
     protected function getLogger($name='default')
     {
 		if (!isset($this->_context->loggers[$name])) {
@@ -20,8 +56,7 @@ trait Loader
     protected function getService(string $name)
     {
         if (!isset($this->_context->services[$name])) {
-            $table = __NAMESPACE__ ."\\Service\\". str_replace('.', '\\', $name);
-            $this->_context->services[$name] = new $table($this->_context);
+            $this->_context->services[$name] = $this->initService($name);
         }
         return $this->_context->services[$name];
     }
@@ -32,8 +67,7 @@ trait Loader
     protected function getTable(string $name)
     {
         if (!isset($this->_context->tables[$name])) {
-            $table = __NAMESPACE__ ."\\Table\\". str_replace('.', '\\', $name);
-            $this->_context->tables[$name] = new $table($this->_context);
+            $this->_context->tables[$name] = $this->initTable($name);
         }
         return $this->_context->tables[$name];
     }
@@ -46,20 +80,10 @@ trait Loader
         $cache_id = $name . $id;
 
         if (!isset($this->_context->caches[$cache_id])) {
-            $class = __NAMESPACE__ ."\\Cache\\". str_replace('.', '\\', $name);
-            $this->_context->caches[$cache_id] = new $class($this->_context, $id, ...$args);
+            $this->_context->caches[$cache_id] = $this->initCache($name, $id, ...$args);
         }
 
         return $this->_context->caches[$cache_id];
-    }
-
-    /**
-     * 初始化一个数据行对像
-     */
-    protected function initRow(string $name, array $row)
-    {
-        $class = __NAMESPACE__ . "\\Row\\" . str_replace('.', '\\', $name);
-        return new $class($this->_context, $row);
     }
 
     /**

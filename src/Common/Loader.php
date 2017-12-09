@@ -91,7 +91,7 @@ trait Loader
      */
     protected function getRow(string $name, string $id)
     {
-        $row = $this->getTable($name)->find($id);
+        $row = $this->getTable($name)->get($id);
         return $row ? $this->initRow($name, $row) : false;
     }
 

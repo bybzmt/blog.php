@@ -17,7 +17,7 @@ class AdminRole extends Admin\Table
 
     public function getAll()
     {
-        $sql = "select * from admin_roles";
+        $sql = "select * from admin_roles where status=1";
 
         return $this->getSlave()->fetchAll($sql);
     }
@@ -32,13 +32,13 @@ class AdminRole extends Admin\Table
         $this->getMaster()->delete('admin_role_permissions', array('role_id'=>$id));
 
         $data = array();
-        foreach ($permission as $permissions) {
+        foreach ($permissions as $permission) {
             $data[] = array(
                 'role_id' => $id,
                 'permission' => $permission,
             );
         }
 
-        $this->getMaster()->inserts('admin_role_permissions', $data);
+        return $this->getMaster()->inserts('admin_role_permissions', $data);
     }
 }

@@ -48,7 +48,7 @@ abstract class Table
     public function add(array $row)
     {
         $db = $this->getMaster();
-        $db = $db->insert($this->_tableName, $row);
+        $ok = $db->insert($this->_tableName, $row);
         if ($ok) {
             if (!isset($row[$this->_primary])) {
                 return $db->lastInsertId();
@@ -72,7 +72,7 @@ abstract class Table
 
     public function edit(string $id, $row)
     {
-        return $this->getMaster()->update($this->_tableName, array($this->_primary=>$id), 1);
+        return $this->getMaster()->update($this->_tableName, $row, array($this->_primary=>$id), 1);
     }
 
     public function del(string $id)
@@ -104,5 +104,10 @@ abstract class Table
     public function _getInfo()
     {
         return [$this->_dbName, $this->_tableName, $this->_primary, $this->_columns];
+    }
+
+    public function _getPrimary()
+    {
+        return $this->_primary;
     }
 }

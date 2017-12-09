@@ -40,6 +40,19 @@ abstract class LazyLoader
     }
 
     /**
+     * 属性判断回调钩子
+     */
+    public function  __isset($key)
+    {
+        if (!$this->initd) {
+            $this->init();
+            $this->initd = true;
+        }
+
+        return $this->row ? isset($this->row->$key) : null;
+    }
+
+    /**
      * 方法访问回调钩子
      */
     public function __call($name, $params)
@@ -101,7 +114,11 @@ abstract class LazyLoader
     {
         $ids = array_keys($this->_context->lazyRow[$this->name]);
 
-        $rows = $this->getTable($this->name)->finds($ids, true) + $this->_context->lazyRow[$this->name];
+        $table = $this->getTable($this->name);
+        $rows = $this->getTable($this->name)->gets($ids);
+        $rows = array_column($rows, null, $table->_getPrimary());
+
+        $rows += $this->_context->lazyRow[$this->name];
 
         foreach ($rows as $id=>$row) {
             $this->_context->cachedRow[$this->name][$id] = $row ? $this->initRow($this->name, $row) : false;

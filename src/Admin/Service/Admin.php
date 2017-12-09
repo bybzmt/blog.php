@@ -40,6 +40,48 @@ class Admin extends PAdmin\Service
         return $users;
     }
 
+    public function register($user, $pass, $nickname)
+    {
+        $data = array(
+            'user' => $user,
+            'pass' => '',
+            'nickname' => $nickname,
+            'addtime' => date('Y-m-d H:i:s', time()),
+            'user_id' => 0,
+            'isroot' => 0,
+            'status' => 1,
+        );
 
+        $id = $this->getTable("AdminUser")->add($data);
+        if (!$id) {
+            return false;
+        }
+
+        $data['id'] = $id;
+
+        $user = $this->initRow("AdminUser", $data);
+        $user->setPass($pass);
+
+        //让首个注册用户成为系统管理员，并自动通过
+        if ($id == 1) {
+            $user->setRoot(true);
+            $user->auditPass();
+        }
+
+        return true;
+    }
+
+    public function roleAdd($name)
+    {
+        $data = array(
+            'name' => $name,
+            'addtime' => date("Y-m-d H:i:s"),
+            'status' => 1,
+        );
+
+        $id = $this->getTable("AdminRole")->add($data);
+
+        return $id ? true : false;
+    }
 
 }

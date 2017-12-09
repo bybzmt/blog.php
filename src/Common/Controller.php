@@ -1,7 +1,7 @@
 <?php
 namespace Bybzmt\Blog\Common;
 
-use Exception;
+use Throwable;
 
 abstract class Controller
 {
@@ -22,7 +22,7 @@ abstract class Controller
             } else {
                 $this->fail();
             }
-        } catch(Exception $e) {
+        } catch(Throwable $e) {
             $this->onException($e);
         }
     }

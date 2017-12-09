@@ -10,7 +10,9 @@ class Router extends Common\Router
     {
         $this->get('/', ':Admin.Dashboard');
         $this->get('/login', ':Admin.Login');
-        $this->post('/json/login', ':Admin.DoLogin');
+        $this->get('/register', ':Admin.Register');
+        $this->post('/json/register', ':Admin.RegisterExec');
+        $this->post('/json/login', ':Admin.LoginExec');
         $this->get('/logout', ':Admin.Logout');
         $this->get('/captcha', ':Admin.Captcha');
 
@@ -19,16 +21,15 @@ class Router extends Common\Router
         $this->get('/admin/user/add', ':Admin.UserAdd');
         $this->get('/admin/user/(\d+)', ':Admin.UserShow:id');
         $this->get('/admin/user/edit/(\d+)', ':Admin.UserEdit:id');
-        $this->get('/admin/user/del/(\d+)', ':Admin.UserDel:id');
         $this->post('/json/admin/user/add', ':Admin.UserAddExec');
+        $this->post('/json/admin/user/audit', ':Admin.UserAuditExec');
         $this->post('/json/admin/user/edit', ':Admin.UserEditExec');
-        $this->post('/json/admin/user/del', ':Admin.UserDel');
+        $this->post('/json/admin/user/del', ':Admin.UserDelExec');
 
         //管理员组管理
         $this->get('/admin/roles', ':Admin.RoleList');
         $this->get('/admin/role/add', ':Admin.RoleAdd');
         $this->get('/admin/role/edit/(\d+)', ':Admin.RoleEdit:id');
-        $this->get('/admin/role/del/(\d+)', ':Admin.RoleDel:id');
         $this->post('/json/admin/role/add', ':Admin.RoleAddExec');
         $this->post('/json/admin/role/edit', ':Admin.RoleEditExec');
         $this->post('/json/admin/role/del', ':Admin.RoleDelExec');

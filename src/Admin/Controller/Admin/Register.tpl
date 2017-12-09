@@ -34,11 +34,13 @@
 	  <div id="login-page">
 	  	<div class="container">
 
-		      <form id="login-form" class="form-login" action="{{ mkUrl('Admin.LoginExec') }}">
-		        <h2 class="form-login-heading">sign in now</h2>
+		      <form id="login-form" class="form-login" action="{{ mkUrl('Admin.RegisterExec') }}">
+		        <h2 class="form-login-heading">Create an accoun</h2>
 		        <div class="login-wrap">
                     <div id="err-msg" class="hidden alert alert-danger">错误信息</div>
 		            <input type="text" name="user" class="form-control" placeholder="User ID" autofocus>
+		            <br>
+		            <input type="text" name="nickname" class="form-control" placeholder="Nickname" autofocus>
 		            <br>
 		            <input type="password" name="pass" class="form-control" placeholder="Password">
                     <br>
@@ -53,11 +55,7 @@
                     <br>
 
 		            <button class="btn btn-theme btn-block" onclick="doSubmit()" type="button">
-                    <i class="fa fa-lock"></i> SIGN IN</button>
-
-                    <div class="registration mt">
-		                <a class="" href="{{ mkUrl('Admin.Register') }}">Create an account</a>
-		            </div>
+                    <i class="fa fa-lock"></i> 注册</button>
 
 		        </div>
 
@@ -82,7 +80,6 @@
         {
             var data = $("#login-form").serialize();
             var url = $("#login-form").attr("action");
-            var go = "{{ go }}";
 
             $.post(url, data, function(json){
                 if (json.ret > 0) {
@@ -95,11 +92,8 @@
                     $("#err-msg").removeClass("hidden");
                     change_captcha();
                 } else {
-                    if (go) {
-                        location.href = go;
-                    } else {
-                        location.href = "/";
-                    }
+                    $("#login-form h2").html("Success!");
+                    $("#login-form .login-wrap").html("<h1 class='alert alert-success'>申请成功！请联系管理员为您通过申请！</h1>");
                 }
             }, 'json');
         }

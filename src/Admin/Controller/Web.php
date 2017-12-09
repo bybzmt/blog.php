@@ -31,7 +31,11 @@ abstract class Web extends Common\Controller
 
     public function onException($e)
     {
-        throw $e;
+        //$e2 = new \Exception($e->getMessage(), $e->getCode(), $e);
+        //throw $e;
+        echo '<pre>';
+        echo ($e);
+        die;
     }
 
     public function render(array $data, string $name=null)
@@ -47,7 +51,9 @@ abstract class Web extends Common\Controller
         $loader = new Twig_Loader_Filesystem($dir);
         $twig = new Twig_Environment($loader, array(
             'cache' => VAR_PATH . '/cache/templates',
+            'debug' => true,
             'auto_reload' => true,
+            'strict_variables' => true,
         ));
         $twig->addExtension(new Admin\Helper\TwigExtension($twig));
 

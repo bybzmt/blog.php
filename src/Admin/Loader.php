@@ -57,4 +57,19 @@ trait Loader
         }
     }
 
+    /**
+     * 从数据库惰性加载一个数据行对像
+     */
+    protected function getLazyRow(string $name, string $id)
+    {
+        return new LazyRow($this->_context, $name, $id);
+    }
+
+    /**
+     * 从缓存惰性加载一个数据行对像
+     */
+    protected function getLazyRowCache(string $name, string $id)
+    {
+        return new LazyRowCache($this->_context, $name, $id);
+    }
 }

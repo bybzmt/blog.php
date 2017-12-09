@@ -34,6 +34,49 @@ class AdminUser extends Admin\Row
 
     public function setPass($pass)
     {
+        $saved = $this->encryptPass($pass);
+
+        $ok = $this->getTable("AdminUser")->edit($this->id, array('pass'=>$saved));
+        if ($ok) {
+            $this->pass = $saved;
+        }
+        return $ok;
+    }
+
+    public function setRoot(bool $bool)
+    {
+        $ok = $this->getTable("AdminUser")->edit($this->id, array('isroot'=>(int)$bool));
+        if ($ok) {
+            $this->isroot = $bool;
+        }
+        return $ok;
+    }
+
+    public function setNickname($nickname)
+    {
+        $ok = $this->getTable("AdminUser")->edit($this->id, array('nickname'=>$nickname));
+        if ($ok) {
+            $this->nickname = $nickname;
+        }
+        return $ok;
+    }
+
+    public function del()
+    {
+        $ok = $this->getTable("AdminUser")->edit($this->id, array('status'=>0));
+        if ($ok) {
+            $this->status = 0;
+        }
+        return $ok;
+    }
+
+    public function auditPass()
+    {
+        $ok = $this->getTable("AdminUser")->edit($this->id, array('status'=>2));
+        if ($ok) {
+            $this->status = 2;
+        }
+        return $ok;
     }
 
     public function validPass($pass)
@@ -42,34 +85,27 @@ class AdminUser extends Admin\Row
         return $this->encryptPass($pass) == $this->pass;
     }
 
+    /**
+     * 得到用户己有的权限标识
+     */
     public function getPermissions()
     {
         $table = $this->getTable('AdminUser');
 
         $permissions1 = $table->getUserPermissions($this->id);
-
         $permissions2 = $table->getUserRolesPermissions($this->id);
 
-        $rows = array_unique(array_merge($permissions1, $permissions2));
-
-        $permissions = array();
-        foreach ($rows as $permission) {
-            $permissions[] = $this->getLazyRow("AdminPermission", $permission);
-        }
-
-        return $permissions;
+        return array_unique(array_merge($permissions1, $permissions2));
     }
 
     public function getUserPermissions()
     {
-        $rows = $this->getTable('AdminUser')->getUserPermissions($this->id);
+        return $this->getTable('AdminUser')->getUserPermissions($this->id);
+    }
 
-        $permissions = array();
-        foreach ($rows as $permission) {
-            $permissions[] = $this->getLazyRow("AdminPermission", $permission);
-        }
-
-        return $permissions;
+    public function setUserPermissions($permissions)
+    {
+        return $this->getTable('AdminUser')->setUserPermissions($this->id, $permissions);
     }
 
     public function getRoles()
@@ -83,5 +119,15 @@ class AdminUser extends Admin\Row
         }
 
         return $roles;
+    }
+
+    public function setRoles($roles)
+    {
+        $role_ids = array();
+        foreach ($roles as $role) {
+            $role_ids[] = $role->id;
+        }
+
+        return $this->getTable("AdminUser")->setUserRoleIds($this->id, $role_ids);
     }
 }

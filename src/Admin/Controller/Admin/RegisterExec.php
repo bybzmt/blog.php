@@ -3,27 +3,27 @@ namespace Bybzmt\Blog\Admin\Controller;
 
 use Bybzmt\Blog\Admin;
 
-class Admin_DoLogin extends Json
+class Admin_RegisterExec extends Json
 {
     //用户名
     private $user;
     //密码
     private $pass;
+    //密码
+    private $nickname;
     //验证码
     private $captcha;
     //session中验证码
     private $se_captcha;
 
-    //管理员对象
-    private $admin_user;
-
     public function init()
     {
         session_start();
 
-        $this->user = isset($_POST['user']) ? $_POST['user'] : '';
-        $this->pass = isset($_POST['pass']) ? $_POST['pass'] : '';
-        $this->captcha = isset($_POST['captcha']) ? strtoupper($_POST['captcha']) : '';
+        $this->user = isset($_POST['user']) ? trim($_POST['user']) : '';
+        $this->pass = isset($_POST['pass']) ? trim($_POST['pass']) : '';
+        $this->nickname = isset($_POST['nickname']) ? trim($_POST['nickname']) : '';
+        $this->captcha = isset($_POST['captcha']) ? strtoupper(trim($_POST['captcha'])) : '';
         $this->se_captcha = isset($_SESSION['admin_captcha']) ? strtoupper($_SESSION['admin_captcha']) : '';
         $_SESSION['admin_captcha'] = "";
     }
@@ -45,16 +45,16 @@ class Admin_DoLogin extends Json
             return false;
         }
 
-        $this->admin_user = $this->getService('Admin')->findUser($this->user);
-        if (!$this->admin_user) {
+        if (!$this->nickname) {
             $this->ret = 1;
-            $this->data = "用户名或密码错误.";
+            $this->data = "昵称不能为空";
             return false;
         }
 
-        if (!$this->admin_user->validPass($this->pass)) {
+        $admin_user = $this->getService('Admin')->findUser($this->user);
+        if ($admin_user) {
             $this->ret = 1;
-            $this->data = "用户名或密码错误.";
+            $this->data = "用户己存在。";
             return false;
         }
 
@@ -63,17 +63,13 @@ class Admin_DoLogin extends Json
 
     public function exec()
     {
-        $_SESSION['admin_id'] = $this->admin_user->id;
-        $_SESSION['admin_isroot'] = $this->admin_user->isroot;
-        if (!$this->admin_user->isroot) {
-            $_SESSION['admin_permissions'] = $this->admin_user->getPermissions();
-        }
+        return $this->getService('Admin')->register($this->user, $this->pass, $this->nickname);
     }
 
     public function show()
     {
         $this->ret = 0;
-        $this->data = '登陆成功';
+        $this->data = '注册成功';
     }
 
 }

@@ -2,6 +2,7 @@
 namespace Bybzmt\Blog\Admin\Row;
 
 use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Helper\Permissions;
 
 class AdminRole extends Admin\Row
 {
@@ -18,15 +19,31 @@ class AdminRole extends Admin\Row
         $this->status = (int)$row['status'];
     }
 
+    public function setName($name)
+    {
+        $ok = $this->getTable("AdminRole")->edit($this->id, array("name"=>$name));
+        if ($ok) {
+            $this->name = $name;
+        }
+        return $ok;
+    }
+
+    public function del()
+    {
+        $ok = $this->getTable("AdminRole")->edit($this->id, array("status"=>0));
+        if ($ok) {
+            $this->status = 0;
+        }
+        return $ok;
+    }
+
+    public function setPermissions($permissions)
+    {
+        return $this->getTable("AdminRole")->setPermissions($this->id, $permissions);
+    }
+
     public function getPermissions()
     {
-        $rows = $this->getTable("AdminRole")->getPermissions();
-
-        $permissions = array();
-        foreach ($rows as $permission) {
-            $permissions[] = $this->getLazyRow("AdminPermission", $permission);
-        }
-
-        return $permissions;
+        return $this->getTable("AdminRole")->getPermissions($this->id);
     }
 }

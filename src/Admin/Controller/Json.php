@@ -47,6 +47,16 @@ abstract class Json extends Common\Controller
 
     public function fail()
     {
+        if (!$this->data) {
+            $this->ret = 1;
+            $this->data = "执行失败";
+        }
+    }
+
+    public function show()
+    {
+        $this->ret = 0;
+        $this->data = "执行成功";
     }
 
     public function onException($e)

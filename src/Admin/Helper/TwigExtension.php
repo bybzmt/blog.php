@@ -83,11 +83,14 @@ class TwigExtension extends Twig_Extension
 
             if (!empty($menu['childs'])) {
                 foreach ($menu['childs'] as &$sub) {
+                    $sub['active'] = false;
                     if (!empty($sub['name']) && $sub['name'] == $active) {
                         $sub['active'] = true;
                         $menu['active'] = true;
                     }
                 }
+            } else {
+                $menu['childs'] = array();
             }
         }
 

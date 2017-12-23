@@ -28,7 +28,7 @@ class Article_List extends Web
     public function valid()
     {
         if ($this->tag_id) {
-            $this->tag = $this->getRowCache('Tag', $this->tag_id);
+            $this->tag = $this->_context->getRow('Tag', $this->tag_id);
             if (!$this->tag) {
                 $this->msg = "tag未定义";
                 return false;
@@ -50,8 +50,8 @@ class Article_List extends Web
             $article_rows = $this->tag->getArticleList($this->offset, $this->length);
             $count = $this->tag->getArticleCount();
         } else {
-            $article_rows = $this->getService('Article')->getIndexList($this->offset, $this->length);
-            $count = $this->getService('Article')->getIndexCount();
+            $article_rows = $this->_context->getService('Article')->getIndexList($this->offset, $this->length);
+            $count = $this->_context->getService('Article')->getIndexCount();
         }
 
         $articles = [];
@@ -84,7 +84,7 @@ class Article_List extends Web
             return Reverse::mkUrl('Article.List', $params);
         });
 
-        $tag_rows = $this->getService('Article')->getIndexTags();
+        $tag_rows = $this->_context->getService('Article')->getIndexTags();
         $taglist = [];
         foreach ($tag_rows as $row) {
             $taglist[] = array(

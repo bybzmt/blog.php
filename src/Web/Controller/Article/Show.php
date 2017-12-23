@@ -16,7 +16,7 @@ class Article_Show extends Web
 
     public function valid()
     {
-        $this->article = $this->getRowCache('Article', $this->id);
+        $this->article = $this->_context->getRow('Article', $this->id);
         if ($this->article) {
             return true;
         }
@@ -42,7 +42,7 @@ class Article_Show extends Web
             'author_nickname' => $this->article->author->nickname,
         );
 
-        $tag_rows = $this->getService('Article')->getIndexTags();
+        $tag_rows = $this->_context->getService('Article')->getIndexTags();
         $taglist = [];
         foreach ($tag_rows as $row) {
             $taglist[] = array(

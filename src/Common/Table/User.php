@@ -3,7 +3,7 @@ namespace Bybzmt\Blog\Common\Table;
 
 use Bybzmt\Blog\Common;
 
-class User extends Common\Table
+class User extends Common\TableRowCache
 {
     protected $_dbName = 'blog';
     protected $_tableName = 'users';
@@ -13,6 +13,7 @@ class User extends Common\Table
         'user',
         'pass',
         'nickname',
+        'addtime',
         'status',
     ];
 }

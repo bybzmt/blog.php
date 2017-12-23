@@ -16,10 +16,10 @@ class CommentReply extends Common\Row
     protected function init($row)
     {
         $this->id = $row['id'];
-        $this->comment = $this->getLazyRowCache('Comment', $row['comment_id']);
-        $this->user = $this->getLazyRowCache('User', $row['user_id']);
+        $this->comment = $this->getLazyRow('Comment', $row['comment_id']);
+        $this->user = $this->getLazyRow('User', $row['user_id']);
         if ($row['reply_id']) {
-            $this->reply = $this->getLazyRowCache('CommentReply', $row['reply_id']);
+            $this->reply = $this->getLazyRow('CommentReply', $row['reply_id']);
         }
         $this->content = $row['content'];
         $this->addtime = strtotime($row['addtime']);
@@ -29,12 +29,13 @@ class CommentReply extends Common\Row
     public function del()
     {
         //删除自身数据
-        $this->getTable('CommentReply')->update($this->id, ['status'=>2]);
-        $this->status = 2;
+        $ok = $this->getTable('CommentReply')->update($this->id, ['status'=>2]);
+        if ($ok) {
+            $this->status = 2;
 
-        $this->getCache('RowCache', 'CommentReply')->update(['status'=>2]);
-
-        //将自身从评论回id缓存中去掉
-        $this->getRowCache('Comment', $this->comment->id)->_removeCacheReplysId($this->id);
+            //将自身从评论回id缓存中去掉
+            $this->getRow('Comment', $this->comment->id)->_removeCacheReplysId($this->id);
+        }
+        return $ok;
     }
 }

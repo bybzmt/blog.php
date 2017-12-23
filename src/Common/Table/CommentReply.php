@@ -3,7 +3,7 @@ namespace Bybzmt\Blog\Common\Table;
 
 use Bybzmt\Blog\Common;
 
-class Comment extends Common\Table
+class Comment extends Common\TableRowCache
 {
     protected $_dbName = 'blog';
     protected $_tableName = 'comment_replys';

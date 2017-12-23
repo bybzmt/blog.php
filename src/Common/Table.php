@@ -9,7 +9,7 @@ use Bybzmt\DB\Monitor;
  */
 abstract class Table
 {
-    use Loader;
+    protected $_context;
 
     //数据库名
     protected $_dbName;
@@ -28,7 +28,7 @@ abstract class Table
     /**
      * 按主键查找一行数据
      */
-    public function get($id)
+    public function get(string $id)
     {
         return $this->getSlave()->find($this->_tableName, $this->_columns, array($this->_primary=>$id));
     }
@@ -36,16 +36,27 @@ abstract class Table
     /**
      * 按主键查找一批数据
      */
-    public function gets(array $ids)
+    public function gets(array $ids, $missEmpty=true)
     {
         if (!$ids) {
             return [];
         }
 
-        return $this->getSlave()->findAll($this->_tableName, $this->_columns, array($this->_primary=>$ids));
+        $rows = $this->getSlave()->findAll($this->_tableName, $this->_columns, array($this->_primary=>$ids));
+
+        $rows = array_column($rows, null, $this->_primary);
+
+        //不能跳过空时
+        if (!$missEmpty) {
+            foreach (array_diff($ids, array_keys($rows)) as $id) {
+                $rows[$id] = false;
+            }
+        }
+
+        return $rows;
     }
 
-    public function add(array $row)
+    public function create(array $row)
     {
         $db = $this->getMaster();
         $ok = $db->insert($this->_tableName, $row);
@@ -57,57 +68,24 @@ abstract class Table
         return $ok;
     }
 
-    public function adds(array $rows)
-    {
-        $db = $this->getMaster();
-        $ok = $db->inserts($this->_tableName, $rows);
-        if ($ok) {
-            $row = reset($rows);
-            if (!isset($row[$this->_primary])) {
-                return $db->lastInsertId();
-            }
-        }
-        return $ok;
-    }
-
-    public function edit(string $id, $row)
+    public function update(string $id, array $row)
     {
         return $this->getMaster()->update($this->_tableName, $row, array($this->_primary=>$id), 1);
     }
 
-    public function del(string $id)
+    public function delete(string $id)
     {
         return $this->getMaster()->delete($this->_tableName, array($this->_primary=>$id), 1);
     }
 
     protected function getMaster()
     {
-        return $this->getDb($this->_dbName . "_master");
+        return $this->_context->getDb($this->_dbName . "_master");
     }
 
     protected function getSlave()
     {
-        return $this->getDb($this->_dbName . "_slave");
+        return $this->_context->getDb($this->_dbName . "_slave");
     }
 
-    protected function getDb($name='default')
-    {
-        if (!isset($this->_context->dbConns[$name])) {
-            $db = Resource::getDb($name);
-            $this->_context->dbConns[$name] = $db;
-        }
-
-        return $this->_context->dbConns[$name];
-    }
-
-    //给框架内部提供些信息
-    public function _getInfo()
-    {
-        return [$this->_dbName, $this->_tableName, $this->_primary, $this->_columns];
-    }
-
-    public function _getPrimary()
-    {
-        return $this->_primary;
-    }
 }

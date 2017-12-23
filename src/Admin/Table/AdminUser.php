@@ -19,11 +19,46 @@ class AdminUser extends Admin\Table
         'status',
     ];
 
-    public function getAll(int $offset, int $length)
+    public function getUserList(int $type, string $search, int $offset, int $length)
     {
-        $sql = "select * from admin_users where status > 0 limit $offset, $length";
+        $sql = "select * from admin_users where status > 0";
 
-        return $this->getSlave()->fetchAll($sql);
+        if ($search) {
+            switch ($type) {
+            case 1: $sql .= " AND id = ?"; break;
+            case 2: $sql .= " AND user LIKE ?"; break;
+            case 3: $sql .= " AND nickname LIKE ?"; break;
+            default: return [];
+            }
+
+            $vals = [$search];
+        } else {
+            $vals = [];
+        }
+
+        $sql .= " LIMIT $offset, $length";
+
+        return $this->getSlave()->fetchAll($sql, $vals);
+    }
+
+    public function getUserListCount(int $type, string $search)
+    {
+        $sql = "select COUNT(*) from admin_users where status > 0";
+
+        if ($search) {
+            switch ($type) {
+            case 1: $sql .= " AND id = ?"; break;
+            case 1: $sql .= " AND user LIKE ?"; break;
+            case 1: $sql .= " AND nickname LIKE ?"; break;
+            default: return [];
+            }
+
+            $vals = [$search];
+        } else {
+            $vals = [];
+        }
+
+        return $this->getSlave()->fetchColumn($sql, $vals);
     }
 
     public function getUserRoleIds($admin_id)

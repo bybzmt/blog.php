@@ -39,37 +39,13 @@ class TwigExtension extends Twig_Extension
                 array('name'=>'角色管理', 'href'=>$this->mkUrl('Admin.RoleList')),
             )),
 
-            array('name'=>'文章管理', 'icons'=>'fa-book', 'childs'=>array(
-                array('name'=>'文章管理', 'href'=>'/general.html'),
-                array('name'=>'评论管理', 'href'=>'/buttons.html'),
+            array('name'=>'博客管理', 'icons'=>'fa-book', 'childs'=>array(
+                array('name'=>'文章管理', 'href'=>$this->mkUrl('Blog.ArticleList')),
+                array('name'=>'评论管理', 'href'=>$this->mkUrl('Blog.CommentList')),
             )),
 
-            array('name'=>'会员管理', 'icons'=>'fa-user', 'href'=>'#'),
-
-            array('name'=>'Components', 'icons'=>'fa-cogs', 'childs'=>array(
-                array('name'=>'Calendar', 'href'=>'/calendar.html'),
-                array('name'=>'Gallery', 'href'=>'/gallery.html'),
-                array('name'=>'Todo List', 'href'=>'/todo_list.html'),
-            )),
-
-            array('name'=>'Extra Pages', 'icons'=>'fa-book', 'childs'=>array(
-                array('name'=>'Blank Page', 'href'=>'/blank.html'),
-                array('name'=>'Login', 'href'=>'/login.html'),
-                array('name'=>'Lock Screen', 'href'=>'/lock_screen.html'),
-            )),
-
-            array('name'=>'Forms', 'icons'=>'fa-tasks', 'childs'=>array(
-                array('name'=>'Form Components', 'href'=>'/form_component.html'),
-            )),
-
-            array('name'=>'Data Tables', 'icons'=>'fa-th', 'childs'=>array(
-                array('name'=>'Basic Table', 'href'=>'/basic_table.html'),
-                array('name'=>'Responsive Table', 'href'=>'/responsive_table.html'),
-            )),
-
-            array('name'=>'Charts', 'icons'=>'fa-bar-chart-o', 'childs'=>array(
-                array('name'=>'Morris', 'href'=>'/morris.html'),
-                array('name'=>'Chartjs', 'href'=>'/chartjs.html'),
+            array('name'=>'会员管理', 'icons'=>'fa-user', 'childs'=>array(
+                array('name'=>'会员管理', 'href'=>$this->mkUrl('Member.UserList')),
             )),
         );
 

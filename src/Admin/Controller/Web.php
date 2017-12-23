@@ -7,10 +7,8 @@ use Twig_Environment;
 use Bybzmt\Blog\Common;
 use Bybzmt\Blog\Admin;
 
-abstract class Web extends Common\Controller
+abstract class Web extends Base
 {
-    use Admin\Loader;
-
     public function init()
     {
     }

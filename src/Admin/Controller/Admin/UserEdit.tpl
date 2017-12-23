@@ -8,23 +8,17 @@
 
 {% block content %}
 
-<!-- BASIC FORM ELELEMNTS -->
-<div class="row mt">
-    <div class="col-md-12">
-
-
-
-      <div class="form-panel">
-
-
 <h4>
     <ol class="breadcrumb">
       <li><i class="fa fa-angle-right"></i> <a href="{{ mkUrl("Admin.UserList") }}">用户管理</a></li>
       <li class="active">用户详情</li>
     </ol>
 </h4>
-<hr/>
 
+<!-- BASIC FORM ELELEMNTS -->
+<div class="row">
+    <div class="col-md-12">
+      <div class="form-panel">
           <form id="form" class="form-horizontal style-form" action="{{ mkUrl("Admin.UserEditExec") }}">
             <input type="hidden" name="id" value="{{ user.id }}" />
 

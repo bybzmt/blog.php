@@ -8,7 +8,7 @@ class User extends Common\Service
     //得到用户
     public function getUser(int $id)
     {
-        return $this->getRowCache('User', $id);
+        return $this->_context->getRow('User', $id);
     }
 
     //添加新用户

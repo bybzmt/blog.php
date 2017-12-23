@@ -7,12 +7,17 @@
 {% endblock %}
 
 {% block content %}
-<h3><i class="fa fa-angle-right"></i> 角色管理</h3>
+<h4 class="mt">
+    <ol class="breadcrumb">
+      <li><i class="fa fa-angle-right"></i> <a href="{{ mkUrl("Admin.RoleList") }}">角色管理</a></li>
+      <li class="active">角色详情</li>
+    </ol>
+</h4>
+
 <!-- BASIC FORM ELELEMNTS -->
 <div class="row mt">
     <div class="col-md-12">
       <div class="form-panel">
-          <h4 class="mb"><i class="fa fa-angle-right"></i> 角色详情 </h4>
           <form id="form" class="form-horizontal style-form" action="{{ mkUrl("Admin.RoleEditExec") }}">
 
             <input type="hidden" name="id" value="{{ role.id }}" />

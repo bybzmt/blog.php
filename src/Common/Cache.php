@@ -3,7 +3,7 @@ namespace Bybzmt\Blog\Common;
 
 abstract class Cache
 {
-    use Loader;
+    protected $_context;
 
     //缓存过期时间
     protected $expiration = 1800;
@@ -17,9 +17,6 @@ abstract class Cache
     //使用哪个memcached
     protected $memcachedName = 'default';
 
-    //使用哪个redis
-    protected $redisName = 'default';
-
     public function __construct(Context $context, string $id='')
     {
         $this->_context = $context;
@@ -28,26 +25,10 @@ abstract class Cache
         $this->hashPrefix = $this->keyPrefix;
     }
 
-    protected function getMemcached($name=null)
+    protected function getMemcached()
     {
-        $name = $name ?? $this->memcachedName;
-        if (!isset($this->_context->memcachedConns[$name])) {
-            $this->_context->memcachedConns[$name] = Resource::getMemcached($name);
-        }
-
-        return $this->_context->memcachedConns[$name];
+        return $this->_context->getMemcached($this->memcachedName);
     }
-
-	protected function getRedis($name=null)
-	{
-        $name = $name ?? $this->redisName;
-
-		if (!isset($this->_context->redisConns[$name])) {
-			$this->_context->redisConns[$name] = Resource::getRedis($name);
-		}
-
-		return $this->_context->redisConns;
-	}
 
     protected function hash(string $str): string
     {

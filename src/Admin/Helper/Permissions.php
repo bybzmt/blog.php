@@ -47,14 +47,13 @@ class Permissions
 
         //将新添加的入库（方便编辑）
         if ($miss) {
-            $data = array();
             foreach ($miss as $key) {
-                $data[] = array(
+                $data = array(
                     'permission' => $key,
                     'about' => $key,
                 );
+                $table->create($data);
             }
-            $table->adds($data);
         }
 
         //去掉己删除的

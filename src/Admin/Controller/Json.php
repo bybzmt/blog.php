@@ -7,10 +7,8 @@ use Twig_Environment;
 use Bybzmt\Blog\Common;
 use Bybzmt\Blog\Admin;
 
-abstract class Json extends Common\Controller
+abstract class Json extends Base
 {
-    use Admin\Loader;
-
     /*
      * 反回码
      *

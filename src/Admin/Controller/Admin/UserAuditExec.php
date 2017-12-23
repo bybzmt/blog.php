@@ -24,7 +24,7 @@ class Admin_UserAuditExec extends AuthJson
             return false;
         }
 
-        $this->user = $this->getRow("AdminUser", $this->id);
+        $this->user = $this->_context->getRow("AdminUser", $this->id);
 
         if (!$this->user) {
             $this->ret = 1;

@@ -5,5 +5,4 @@ use Bybzmt\Blog\Common;
 
 abstract class Service extends Common\Service
 {
-    use Loader;
 }

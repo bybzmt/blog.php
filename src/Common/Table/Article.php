@@ -2,8 +2,9 @@
 namespace Bybzmt\Blog\Common\Table;
 
 use Bybzmt\Blog\Common;
+use PDO;
 
-class Article extends Common\Table
+class Article extends Common\TableRowCache
 {
     protected $_dbName = 'blog';
     protected $_tableName = 'articles';
@@ -17,6 +18,8 @@ class Article extends Common\Table
         'addtime',
         'edittime',
         'status',
+        'locked',
+        'deleted',
         'top',
         'cache_tags',
         'cache_comments_num',
@@ -29,10 +32,41 @@ class Article extends Common\Table
         return $this->getSlave()->fetchColumnAll($sql);
     }
 
-    public function addCommentsNum($id, $num)
+    public function incrCommentsNum(int $id, int $num)
     {
-        $sql = "update set articles set cache_comments_num = cache_comments_num + ? where id = ?";
+        $sql = "update articles set cache_comments_num = cache_comments_num + ? where id = ?";
 
-        return $this->getMaster()->execute($sql, [$num, $id]);
+        $db = $this->getMaster();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(1, $num, PDO::PARAM_INT);
+        $stmt->bindValue(2, $id, PDO::PARAM_INT);
+        $ok = $stmt->execute();
+
+        if ($ok) {
+            $this->updateCache($id, function($row) use ($num) {
+                $row['cache_comments_num'] += $num;
+                return $row;
+            });
+        }
+
+        return $ok;
+    }
+
+    public function decrCommentsNum(int $id, int $num)
+    {
+        $sql = "update articles set cache_comments_num = cache_comments_num - ? where id = ?";
+
+        $db = $this->getMaster();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(1, $num, PDO::PARAM_INT);
+        $stmt->bindValue(2, $id, PDO::PARAM_INT);
+        $ok = $stmt->execute();
+        if ($ok) {
+            $this->updateCache($id, function($row) use ($num) {
+                $row['cache_comments_num'] -= $num;
+                return $row;
+            });
+        }
+        return $ok;
     }
 }

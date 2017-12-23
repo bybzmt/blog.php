@@ -3,7 +3,7 @@ namespace Bybzmt\Blog\Common\Table;
 
 use Bybzmt\Blog\Common;
 
-class Tag extends Common\Table
+class Tag extends Common\TableRowCache
 {
     protected $_dbName = 'blog';
     protected $_tableName = 'tags';

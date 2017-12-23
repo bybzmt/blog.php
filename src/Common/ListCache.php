@@ -35,7 +35,7 @@ abstract class ListCache extends Cache
         return count($this->getAllIds());
     }
 
-    public static function addItem(string $id) : bool
+    public function addItem(string $id) : bool
     {
         $ids = $this->getAllIds();
         $ids = array_diff($ids, [$id]);
@@ -49,7 +49,7 @@ abstract class ListCache extends Cache
         return $this->setAllIds($ids);
     }
 
-    public static function delItem(string $id) : bool
+    public function delItem(string $id) : bool
     {
         $ids = array_diff($this->getAllIds(), [$id]);
         return $this->setAllIds($ids);
@@ -57,7 +57,7 @@ abstract class ListCache extends Cache
 
     public function getAllIds()
     {
-        $ids = $this->unserialize($this->getMemcached()->get($this->key));
+        $ids = $this->unserialize($this->_context->getMemcached()->get($this->key));
         if ($ids === null) {
             $ids = $this->loadData($this->size);
             $this->setAllIds($ids);
@@ -67,12 +67,12 @@ abstract class ListCache extends Cache
 
     public function setAllIds(array $ids)
     {
-        $this->getMemcached()->set($this->key, $this->serialize($ids), $this->expiration);
+        return $this->_context->getMemcached()->set($this->key, $this->serialize($ids), $this->expiration);
     }
 
     public function del()
     {
-        return $this->getMemcached()->delete($this->key);
+        return $this->_context->getMemcached()->delete($this->key);
     }
 
 

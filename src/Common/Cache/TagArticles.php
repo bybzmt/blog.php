@@ -12,14 +12,14 @@ class TagArticles extends Common\ListCache
     {
         $articles = [];
         foreach ($ids as $id) {
-            $articles[] = $this->getLazyRowCache('Article', $id);
+            $articles[] = $this->_context->getLazyRow('Article', $id);
         }
         return $articles;
     }
 
     protected function loadData(int $length):array
     {
-        return $this->getTable('ArticleTag')->getArticleIds($this->list_id, 0, $length);
+        return $this->_context->getTable('ArticleTag')->getArticleIds($this->list_id, 0, $length);
     }
 
 

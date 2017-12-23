@@ -12,14 +12,14 @@ class IndexTags extends Common\ListCache
     {
         $articles = [];
         foreach ($ids as $id) {
-            $articles[] = $this->getLazyRowCache('Tag', $id);
+            $articles[] = $this->_context->getLazyRow('Tag', $id);
         }
         return $articles;
     }
 
     protected function loadData(int $length):array
     {
-        return $this->getTable('Tag')->getIndexTagIds();
+        return $this->_context->getTable('Tag')->getIndexTagIds();
     }
 
 

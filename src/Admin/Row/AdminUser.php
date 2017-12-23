@@ -36,7 +36,7 @@ class AdminUser extends Admin\Row
     {
         $saved = $this->encryptPass($pass);
 
-        $ok = $this->getTable("AdminUser")->edit($this->id, array('pass'=>$saved));
+        $ok = $this->_context->getTable("AdminUser")->update($this->id, array('pass'=>$saved));
         if ($ok) {
             $this->pass = $saved;
         }
@@ -45,7 +45,7 @@ class AdminUser extends Admin\Row
 
     public function setRoot(bool $bool)
     {
-        $ok = $this->getTable("AdminUser")->edit($this->id, array('isroot'=>(int)$bool));
+        $ok = $this->_context->getTable("AdminUser")->update($this->id, array('isroot'=>(int)$bool));
         if ($ok) {
             $this->isroot = $bool;
         }
@@ -54,7 +54,7 @@ class AdminUser extends Admin\Row
 
     public function setNickname($nickname)
     {
-        $ok = $this->getTable("AdminUser")->edit($this->id, array('nickname'=>$nickname));
+        $ok = $this->_context->getTable("AdminUser")->update($this->id, array('nickname'=>$nickname));
         if ($ok) {
             $this->nickname = $nickname;
         }
@@ -63,7 +63,7 @@ class AdminUser extends Admin\Row
 
     public function del()
     {
-        $ok = $this->getTable("AdminUser")->edit($this->id, array('status'=>0));
+        $ok = $this->_context->getTable("AdminUser")->update($this->id, array('status'=>0));
         if ($ok) {
             $this->status = 0;
         }
@@ -72,7 +72,7 @@ class AdminUser extends Admin\Row
 
     public function auditPass()
     {
-        $ok = $this->getTable("AdminUser")->edit($this->id, array('status'=>2));
+        $ok = $this->_context->getTable("AdminUser")->update($this->id, array('status'=>2));
         if ($ok) {
             $this->status = 2;
         }
@@ -81,7 +81,6 @@ class AdminUser extends Admin\Row
 
     public function validPass($pass)
     {
-        return true;
         return $this->encryptPass($pass) == $this->pass;
     }
 
@@ -90,7 +89,7 @@ class AdminUser extends Admin\Row
      */
     public function getPermissions()
     {
-        $table = $this->getTable('AdminUser');
+        $table = $this->_context->getTable('AdminUser');
 
         $permissions1 = $table->getUserPermissions($this->id);
         $permissions2 = $table->getUserRolesPermissions($this->id);
@@ -100,22 +99,22 @@ class AdminUser extends Admin\Row
 
     public function getUserPermissions()
     {
-        return $this->getTable('AdminUser')->getUserPermissions($this->id);
+        return $this->_context->getTable('AdminUser')->getUserPermissions($this->id);
     }
 
     public function setUserPermissions($permissions)
     {
-        return $this->getTable('AdminUser')->setUserPermissions($this->id, $permissions);
+        return $this->_context->getTable('AdminUser')->setUserPermissions($this->id, $permissions);
     }
 
     public function getRoles()
     {
-        $table = $this->getTable("AdminUser");
+        $table = $this->_context->getTable("AdminUser");
         $role_ids = $table->getUserRoleIds($this->id);
 
         $roles = [];
         foreach ($role_ids as $role_id) {
-            $roles[] = $this->getLazyRow("AdminRole", $role_id);
+            $roles[] = $this->_context->getLazyRow("AdminRole", $role_id);
         }
 
         return $roles;
@@ -128,6 +127,6 @@ class AdminUser extends Admin\Row
             $role_ids[] = $role->id;
         }
 
-        return $this->getTable("AdminUser")->setUserRoleIds($this->id, $role_ids);
+        return $this->_context->getTable("AdminUser")->setUserRoleIds($this->id, $role_ids);
     }
 }

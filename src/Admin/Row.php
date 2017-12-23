@@ -5,5 +5,4 @@ use Bybzmt\Blog\Common;
 
 abstract class Row extends Common\Row
 {
-    use Loader;
 }

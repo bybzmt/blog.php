@@ -19,13 +19,13 @@ class Comment extends Common\Row
     protected function init(array $row)
     {
         $this->id = $row['id'];
-        $this->article = $this->getLazyRowCache('Article', $row['article_id']);
-        $this->user = $this->getLazyRowCache('User', $row['user_id']);
+        $this->article = $this->_context->getLazyRow('Article', $row['article_id']);
+        $this->user = $this->_context->getLazyRow('User', $row['user_id']);
         $this->content = $row['content'];
         $this->addtime = strtotime($row['addtime']);
         $this->status = (int)$row['status'];
 
-        $this->_cache_replys_id = unpack('N*', $this->cache_replys_id);
+        $this->_cache_replys_id = unpack('N*', $row['cache_replys_id']);
     }
 
     public function getReply(int $offset, int $length)
@@ -33,17 +33,17 @@ class Comment extends Common\Row
         if ($offset+$length <= count($this->_cache_replys_id)) {
             $ids = array_slice($this->_cache_replys_id, $offset, $length);
         } else {
-            $ids = $this->getTable('CommentsReply')->getReplyIds($this->id, $offset, $length);
+            $ids = $this->_context->getTable('CommentsReply')->getReplyIds($this->id, $offset, $length);
         }
 
         $rows = [];
         foreach ($ids as $id) {
-            $rows[] = $this->getLazyRowCache('CommentsReply', $id);
+            $rows[] = $this->_context->getLazyRow('CommentsReply', $id);
         }
         return $rows;
     }
 
-    public function addReply(User $user, ?CommentReply $reply, string $content)
+    public function addReply(User $user, CommentReply $reply, string $content)
     {
         $data = array(
             'comment_id' => $this->id,
@@ -55,14 +55,10 @@ class Comment extends Common\Row
         );
 
         //保存数据
-        $id = $this->getTable('CommentsReply')->insert($data);
+        $id = $this->_context->getTable('CommentsReply')->create($data);
         if (!$id) {
             return false;
         }
-
-        //更新缓存
-        $data['id'] = $id;
-        $this->getCache('RowCache', 'CommentReply')->set($id, $data);
 
         //给被回复的评论修改缓存记录
         if (count($this->_cache_replys_id) < self::max_cache_replys_num) {
@@ -79,10 +75,7 @@ class Comment extends Common\Row
         }
 
         //更新评论记录
-        $this->getTable('CommentsReply')->update($this->id, ['cache_replys_id'=>$str]);
-
-        //更新评论缓存
-        $this->getRowCache('Comment', $this->id)->update(['cache_replys_id'=>$str]);
+        $this->_context->getTable('Comment')->update($this->id, ['cache_replys_id'=>$str]);
     }
 
     public function _removeCacheReplysId(int $id)
@@ -91,7 +84,7 @@ class Comment extends Common\Row
             if (count($this->_cache_replys_id) < self::max_cache_replys_num) {
                 $ids = array_diff($this->_cache_replys_id, [$id]);
             } else {
-                $ids = $this->getTable('CommentReply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
+                $ids = $this->_context->getTable('CommentReply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
             }
 
             $this->_setCacheReplysId($ids);
@@ -101,12 +94,28 @@ class Comment extends Common\Row
     public function del()
     {
         //标记删除
-        $this->getTable('Article')->update($this->id, ['status'=>2]);
-        $this->status = 2;
+        $ok = $this->_context->getTable('Comment')->update($this->id, ['status'=>0]);
+        if ($ok) {
+            $this->status = 0;
 
-        $this->getCache('RowCache', 'Comment')->update(['status'=>2]);
+            //删除文章中的评论缓存
+            $this->article->delCommentCache($this->id);
+        }
 
-        //从文章评论列表中删除缓存
-        $this->getListCache('ArticleComments', $this->article->id)->delItem($this->id);
+        return $ok;
+    }
+
+    //恢复评论
+    public function restore()
+    {
+        $ok = $this->_context->getTable("Comment")->update($this->id, array('status'=>1));
+        if ($ok) {
+            $this->status = 1;
+
+            //重置文章的评论缓存
+            $this->article->restCommentCacheNum();
+        }
+
+        return $ok;
     }
 }

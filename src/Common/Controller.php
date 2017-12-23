@@ -5,7 +5,7 @@ use Throwable;
 
 abstract class Controller
 {
-    use Loader;
+    protected $_context;
 
     public function __construct()
     {

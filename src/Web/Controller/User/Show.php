@@ -17,7 +17,7 @@ class User_Show extends Controller
 
     public function valid()
     {
-        $this->user = $this->getService('User')->getUser($this->id);
+        $this->user = $this->_context->getService('User')->getUser($this->id);
         if ($this->user) {
             return true;
         }

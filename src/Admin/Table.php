@@ -8,5 +8,4 @@ use Bybzmt\Blog\Common;
  */
 abstract class Table extends Common\Table
 {
-    use Loader;
 }

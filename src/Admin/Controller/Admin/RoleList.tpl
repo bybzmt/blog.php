@@ -13,27 +13,29 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="row mt">
+    <div class="col-md-2">
+        <h4 class="navbar-text"><i class="fa fa-angle-right"></i> 角色管理</h4>
+    </div>
+    <div class="col-md-10">
+        <form class="navbar-form navbar-right" role="search">
+            <a href="{{ mkUrl("Admin.RoleAdd") }}">
+                <button type="button" class="btn btn-default">添加</button>
+            </a>
+        </form>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-12">
         <div class="content-panel">
             <table class="table table-striped table-advance table-hover">
-                <div class="row">
-                    <div class="col-md-10">
-                        <h4><i class="fa fa-angle-right"></i> 角色管理</h4>
-                    </div>
-
-                    <div class="col-md-2">
-                        <a href="{{ mkUrl("Admin.RoleAdd") }}">
-                            <button type="button" class="btn btn-info">添加</button>
-                        </a>
-                    </div>
-                </div>
-                <hr>
                 <thead>
                     <tr>
                         <th><i class="fa fa-bullhorn"></i> ID</th>
                         <th class="hidden-phone"><i class="fa fa-question-circle"></i> 名称</th>
-                        <th><i class="fa fa-bookmark"></i> 添加时间</th>
+                        <th><i class="fa fa-clock-o"></i> 添加时间</th>
                         <th></th>
                     </tr>
                 </thead>

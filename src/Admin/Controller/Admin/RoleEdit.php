@@ -16,7 +16,7 @@ class Admin_RoleEdit extends AuthWeb
 
     public function valid()
     {
-        $this->role = $this->getRow('AdminRole', $this->role_id);
+        $this->role = $this->_context->getRow('AdminRole', $this->role_id);
 
         if (!$this->role) {
             return false;
@@ -32,7 +32,7 @@ class Admin_RoleEdit extends AuthWeb
         $permissions = $this->role->getPermissions();
 
         //重新整理下格式
-        $rows = Permissions::reorganize($this->getTable("AdminPermission"), $permissions);
+        $rows = Permissions::reorganize($this->_context->getTable("AdminPermission"), $permissions);
 
         $data = array(
             'sidebarMenu' => '角色管理',

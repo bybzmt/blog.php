@@ -21,7 +21,7 @@ class Admin_RoleDelExec extends AuthJson
             return false;
         }
 
-        $this->role = $this->getRow("AdminRole", $this->id);
+        $this->role = $this->_context->getRow("AdminRole", $this->id);
 
         if (!$this->role) {
             $this->ret = 1;

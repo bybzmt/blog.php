@@ -12,14 +12,14 @@ class ArticleComments extends Common\ListCache
     {
         $articles = [];
         foreach ($ids as $id) {
-            $articles[] = $this->getLazyRowCache('Comment', $id);
+            $articles[] = $this->_context->getLazyRow('Comment', $id);
         }
         return $articles;
     }
 
     protected function loadData(int $length):array
     {
-        return $this->getTable('Comment')->getList($this->list_id, 0, $length);
+        return $this->_context->getTable('Comment')->getList($this->list_id, 0, $length);
     }
 
 

@@ -7,12 +7,17 @@
 {% endblock %}
 
 {% block content %}
-<h3><i class="fa fa-angle-right"></i> 角色管理</h3>
+<h4 class="mt">
+    <ol class="breadcrumb">
+      <li><i class="fa fa-angle-right"></i> <a href="{{ mkUrl("Admin.RoleList") }}">角色管理</a></li>
+      <li class="active">添加角色</li>
+    </ol>
+</h4>
+
 <!-- BASIC FORM ELELEMNTS -->
 <div class="row mt">
     <div class="col-lg-12">
       <div class="form-panel">
-          <h4 class="mb"><i class="fa fa-angle-right"></i> 添加角色</h4>
           <form id="form" class="form-horizontal style-form" action="{{ mkUrl("Admin.RoleAddExec") }}">
               <div class="form-group">
                   <label class="col-sm-2 col-sm-2 control-label">角色名</label>
@@ -53,8 +58,11 @@
 
 {% block script %}
 <script>
+var is_ok = false;
 $('#ResultModal').on('hidden.bs.modal', function (e) {
-    history.back();
+    if (is_ok) {
+        history.back();
+    }
 });
 
 function doSubmit()
@@ -65,6 +73,8 @@ function doSubmit()
     var url = $("#form").attr("action");
 
     $.post(url, data, function(json){
+        is_ok = json.ret == 0;
+
         if (json.ret > 0) {
             if (json.ret == 3) {
                 $("#ResultModal .modal-body").html("<pre class='alert alert-danger'>" + json.data + "</pre>");

@@ -36,6 +36,143 @@ class Context
     //标记的批量加载id(通过缓存加载)
     public $lazyRowCache;
 
+    ####################
+    ## 初始化基础对像 ##
+
+    /**
+     * 初始化数据表对象
+     */
+    public function initService(string $name)
+    {
+        $class = __NAMESPACE__ ."\\Service\\". str_replace('.', '\\', $name);
+        return new $class($this);
+    }
+
+    /**
+     * 初始化数据表对象
+     */
+    public function initTable(string $name)
+    {
+        $class = __NAMESPACE__ ."\\Table\\". str_replace('.', '\\', $name);
+        return new $class($this);
+    }
+
+    /**
+     * 初始化缓存对像
+     */
+    public function initCache(string $name, string $id='', ...$args)
+    {
+        $class = __NAMESPACE__ ."\\Cache\\". str_replace('.', '\\', $name);
+        return new $class($this, $id, ...$args);
+    }
+
+    /**
+     * 初始化一个数据行对像
+     */
+    public function initRow(string $name, array $row)
+    {
+        $class = __NAMESPACE__ . "\\Row\\" . str_replace('.', '\\', $name);
+        return new $class($this, $row);
+    }
+
+    ##################
+    ## 加载基本服务 ##
+
+    /**
+     * 得到数据表对象
+     */
+    public function getService(string $name)
+    {
+        if (!isset($this->services[$name])) {
+            $this->services[$name] = $this->initService($name);
+        }
+        return $this->services[$name];
+    }
+
+    /**
+     * 得到数据表对象
+     */
+    public function getTable(string $name)
+    {
+        if (!isset($this->tables[$name])) {
+            $this->tables[$name] = $this->initTable($name);
+        }
+        return $this->tables[$name];
+    }
+
+    /**
+     * 得到缓存对像
+     */
+    public function getCache(string $name, string $id='', ...$args)
+    {
+        $cache_id = $name . $id;
+
+        if (!isset($this->caches[$cache_id])) {
+            $this->caches[$cache_id] = $this->initCache($name, $id, ...$args);
+        }
+
+        return $this->caches[$cache_id];
+    }
+
+    ##############
+    ## 数据加截 ##
+
+    /**
+     * 直接加载一个数据行对像
+     */
+    public function getRow(string $name, string $id)
+    {
+        $row = $this->getTable($name)->get($id);
+        return $row ? $this->initRow($name, $row) : false;
+    }
+
+    /**
+     * 惰性加载一个数据行对像
+     */
+    public function getLazyRow(string $name, string $id)
+    {
+        return new LazyRow($this, $name, $id);
+    }
+
+    ######################
+    ## 连接各种外部资源 ##
+
+    public function getMemcached($name='default')
+    {
+        if (!isset($this->memcachedConns[$name])) {
+            $this->memcachedConns[$name] = Resource::getMemcached($name);
+        }
+
+        return $this->memcachedConns[$name];
+    }
+
+	public function getRedis($name='default')
+	{
+		if (!isset($this->redisConns[$name])) {
+			$this->redisConns[$name] = Resource::getRedis($name);
+		}
+
+		return $this->redisConns;
+	}
+
+    public function getDb($name='default')
+    {
+        if (!isset($this->dbConns[$name])) {
+            $this->dbConns[$name] = Resource::getDb($name);
+        }
+
+        return $this->dbConns[$name];
+    }
+
+    public function getLogger($name='default')
+    {
+		if (!isset($this->loggers[$name])) {
+			$this->loggers[$name] = Resource::getLogger($name);
+		}
+
+		return $this->loggers[$name];
+    }
+
     //防止var_dump打印太多无用信息
     public function __debugInfo()
     {

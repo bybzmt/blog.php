@@ -30,7 +30,7 @@ class Admin_RoleEditExec extends AuthJson
             return false;
         }
 
-        $this->role = $this->getRow("AdminRole", $this->id);
+        $this->role = $this->_context->getRow("AdminRole", $this->id);
         if (!$this->role) {
             $this->ret = 1;
             $this->data = "角色组不存在。";

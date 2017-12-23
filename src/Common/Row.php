@@ -3,7 +3,7 @@ namespace Bybzmt\Blog\Common;
 
 abstract class Row
 {
-    use Loader;
+    protected $_context;
 
     public function __construct(Context $context, array $row)
     {

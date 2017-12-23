@@ -8,36 +8,37 @@ class Admin extends PAdmin\Service
 
     public function findUser($user)
     {
-        $row = $this->getTable('AdminUser')->findByUser($user);
+        $row = $this->_context->getTable('AdminUser')->findByUser($user);
         if (!$row) {
             return false;
         }
 
-        return $this->initRow('AdminUser', $row);
+        return $this->_context->initRow('AdminUser', $row);
     }
 
     public function getRoles()
     {
-        $rows = $this->getTable("AdminRole")->getAll();
+        $rows = $this->_context->getTable("AdminRole")->getAll();
         $roles = [];
 
         foreach ($rows as $row) {
-            $roles[] = $this->initRow("AdminRole", $row);
+            $roles[] = $this->_context->initRow("AdminRole", $row);
         }
 
         return $roles;
     }
 
-    public function getUserList($offset, $length)
+    public function getUserList($type, $search, $offset, $length)
     {
-        $rows = $this->getTable("AdminUser")->getAll(0, 10);
+        $rows = $this->_context->getTable("AdminUser")->getUserList($type, $search, $offset, $length);
+        $count = $this->_context->getTable("AdminUser")->getUserListCount($type, $search);
         $users = [];
 
         foreach ($rows as $row) {
-            $users[] = $this->initRow("AdminUser", $row);
+            $users[] = $this->_context->initRow("AdminUser", $row);
         }
 
-        return $users;
+        return [$users, $count];
     }
 
     public function register($user, $pass, $nickname)
@@ -52,14 +53,14 @@ class Admin extends PAdmin\Service
             'status' => 1,
         );
 
-        $id = $this->getTable("AdminUser")->add($data);
+        $id = $this->_context->getTable("AdminUser")->add($data);
         if (!$id) {
             return false;
         }
 
         $data['id'] = $id;
 
-        $user = $this->initRow("AdminUser", $data);
+        $user = $this->_context->initRow("AdminUser", $data);
         $user->setPass($pass);
 
         //让首个注册用户成为系统管理员，并自动通过
@@ -79,7 +80,7 @@ class Admin extends PAdmin\Service
             'status' => 1,
         );
 
-        $id = $this->getTable("AdminRole")->add($data);
+        $id = $this->_context->getTable("AdminRole")->add($data);
 
         return $id ? true : false;
     }

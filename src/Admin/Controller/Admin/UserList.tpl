@@ -13,29 +13,50 @@
 {% endblock %}
 
 {% block content %}
-              <div class="row mt">
+
+<div class="row mt">
+    <div class="col-md-2">
+        <h4 class="navbar-text"><i class="fa fa-angle-right"></i> 管理员管理</h4>
+    </div>
+    <div class="col-md-10">
+    <form class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+            <select class="form-control" name="type">
+                <option {% if search_type == 1 %}selected="selected"{% endif %} value="1">ID</option>
+                <option {% if search_type == 2 %}selected="selected"{% endif %} value="2">用户名</option>
+                <option {% if search_type == 3 %}selected="selected"{% endif %} value="3">呢称</option>
+            </select>
+            </div>
+            <div class="form-group">
+            <input type="text" class="form-control" name="search" value="{{ search_keyword }}" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">搜索</button>
+
+        <a target="_blank" href="{{ mkUrl("Admin.Register") }}">
+            <button type="button" class="btn btn-default">添加</button>
+        </a>
+    </form>
+    </div>
+</div>
+
+
+
+              <div class="row">
                   <div class="col-md-12">
+
+
+
                       <div class="content-panel">
                           <table class="table table-striped table-advance table-hover">
-                <div class="row">
-                    <div class="col-md-10">
-                        <h4><i class="fa fa-angle-right"></i> 管理员管理</h4>
-                    </div>
 
-                    <div class="col-md-2">
-                        <a target="_blank" href="{{ mkUrl("Admin.Register") }}">
-                            <button type="button" class="btn btn-info">添加</button>
-                        </a>
-                    </div>
-                </div>
-                <hr>
+
                               <thead>
                               <tr>
                                   <th><i class="fa fa-bullhorn"></i> ID</th>
                                   <th class="hidden-phone"><i class="fa fa-question-circle"></i> 用户名</th>
                                   <th class="hidden-phone"><i class="fa fa-question-circle"></i> 呢称</th>
                                   <th class="hidden-phone"><i class="fa fa-question-circle"></i> 归属角色</th>
-                                  <th><i class="fa fa-bookmark"></i> 添加时间</th>
+                                  <th><i class="fa fa-clock-o"></i> 添加时间</th>
                                   <th><i class="fa fa-edit"></i> Status</th>
                                   <th></th>
                               </tr>
@@ -84,6 +105,8 @@
                       </div><!-- /content-panel -->
                   </div><!-- /col-md-12 -->
               </div><!-- /row -->
+
+        {% include "pagination.tpl" %}
 
 <div id="AuditModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">

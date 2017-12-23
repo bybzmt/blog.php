@@ -9,6 +9,7 @@ class User extends Common\Row
     public $user;
     public $pass;
     public $nickname;
+    public $addtime;
     public $status;
 
     protected function init(array $row)
@@ -17,7 +18,18 @@ class User extends Common\Row
         $this->user = $row['user'];
         $this->pass = $row['pass'];
         $this->nickname = $row['nickname'];
+        $this->addtime = strtotime($row['addtime']);
         $this->status = (int)$row['status'];
+    }
+
+    //修改昵称
+    public function setNickname($nickname)
+    {
+        $ok = $this->_context->getTable("User")->update($this->id, array('nickname'=>$nickname));
+        if ($ok) {
+            $this->nickname = $nickname;
+        }
+        return $ok;
     }
 
     public function addArticle($title, $intro, $content)
@@ -36,13 +48,7 @@ class User extends Common\Row
         );
 
         //保存数据
-        $id = $this->getTable('Article')->insert($data);
-        if ($id) {
-            $data['id'] = $id;
-
-            //更新缓存
-            $this->getCache('RowCache', 'Article')->set($id, $data);
-        }
+        $id = $this->_context->getTable('Article')->create($data);
 
         return $id;
     }

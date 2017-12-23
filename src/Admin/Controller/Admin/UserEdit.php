@@ -16,7 +16,7 @@ class Admin_UserEdit extends AuthWeb
 
     public function valid()
     {
-        $this->user = $this->getRow('AdminUser', $this->user_id);
+        $this->user = $this->_context->getRow('AdminUser', $this->user_id);
 
         if (!$this->user) {
             return false;
@@ -34,7 +34,7 @@ class Admin_UserEdit extends AuthWeb
         $roles = $this->user->getRoles();
         $roles = array_column($roles, null, 'id');
 
-        $all_roles = $this->getService("Admin")->getRoles();
+        $all_roles = $this->_context->getService("Admin")->getRoles();
         $role_rows = array();
         foreach ($all_roles as $role) {
             $role_rows[] = array(
@@ -45,7 +45,7 @@ class Admin_UserEdit extends AuthWeb
         }
 
         //重新整理下格式
-        $rows = Permissions::reorganize($this->getTable("AdminPermission"), $permissions);
+        $rows = Permissions::reorganize($this->_context->getTable("AdminPermission"), $permissions);
 
         $data = array(
             'sidebarMenu' => '管理员管理',

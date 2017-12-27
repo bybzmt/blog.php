@@ -2,6 +2,7 @@
 namespace Bybzmt\Blog\Common\Table;
 
 use Bybzmt\Blog\Common;
+use PDO;
 
 class Tag extends Common\TableRowCache
 {
@@ -20,6 +21,6 @@ class Tag extends Common\TableRowCache
     {
         $sql = "SELECT id FROM tags WHERE top > 0 ORDER BY top ASC";
 
-        return $this->getSlave()->fetchColumnAll($sql);
+        return $this->query($sql)->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 }

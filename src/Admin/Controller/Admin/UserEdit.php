@@ -1,11 +1,14 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Controller\AuthWeb;
 use Bybzmt\Blog\Admin\Helper\Permissions;
 
-class Admin_UserEdit extends AuthWeb
+class UserEdit extends AuthWeb
 {
+    public $sidebarMenu = '管理员管理';
+    public $permissions;
+    public $roles = [];
     public $user_id;
     public $user;
 
@@ -35,9 +38,8 @@ class Admin_UserEdit extends AuthWeb
         $roles = array_column($roles, null, 'id');
 
         $all_roles = $this->_context->getService("Admin")->getRoles();
-        $role_rows = array();
         foreach ($all_roles as $role) {
-            $role_rows[] = array(
+            $this->roles[] = array(
                 'id' => $role->id,
                 'name' => $role->name,
                 'status' => isset($roles[$role->id]),
@@ -45,15 +47,9 @@ class Admin_UserEdit extends AuthWeb
         }
 
         //重新整理下格式
-        $rows = Permissions::reorganize($this->_context->getTable("AdminPermission"), $permissions);
+        $this->permissions = Permissions::reorganize($this->_context->getTable("AdminPermission"), $permissions);
 
-        $data = array(
-            'sidebarMenu' => '管理员管理',
-            'user' => $this->user,
-            'permissions' => $rows,
-            'roles' => $role_rows,
-        );
-        $this->render($data);
+        $this->render();
     }
 
 

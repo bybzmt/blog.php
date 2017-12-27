@@ -1,7 +1,9 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
-class Admin_Logout extends Web
+use Bybzmt\Blog\Admin\Controller\Web;
+
+class Logout extends Web
 {
 
     public function show()

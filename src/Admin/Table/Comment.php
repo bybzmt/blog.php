@@ -3,10 +3,11 @@ namespace Bybzmt\Blog\Admin\Table;
 
 use Bybzmt\Blog\Common;
 use Bybzmt\Blog\Admin;
+use PDO;
 
 class Comment extends Common\Table\Comment
 {
-    private function buildWhere(int $type, string $search)
+    private function buildType(int $type, string $search)
     {
         if ($search) {
             switch ($type) {
@@ -48,7 +49,7 @@ class Comment extends Common\Table\Comment
     //得到后台列表
     public function getAdminList(int $type, string $search, int $offset, int $length)
     {
-        $tmps = $this->buildWhere($type, $search);
+        $tmps = $this->buildType($type, $search);
         $str = [];
         $vals = [];
         foreach ($tmps as $key => $val) {
@@ -66,9 +67,8 @@ class Comment extends Common\Table\Comment
         $sql = "select * from comments where status > 0 $where LIMIT $offset, $length";
         $sql2 = "select COUNT(*) from comments where status > 0 " . $where;
 
-        $rows = $this->getSlave()->fetchAll($sql, $vals);
-
-        $count = $this->getSlave()->fetchColumn($sql2, $vals);
+        $rows = $this->query($sql, $vals)->fetchAll();
+        $count = $this->query($sql2, $vals)->fetchColumn();
 
         return [$rows, $count];
     }

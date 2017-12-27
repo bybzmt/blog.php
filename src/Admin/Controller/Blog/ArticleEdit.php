@@ -1,25 +1,25 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Blog;
 
 use Bybzmt\Blog\Common\Helper\Pagination;
 use Bybzmt\Blog\Admin\Reverse;
+use Bybzmt\Blog\Admin\Controller\AuthWeb;
 
-class Blog_ArticleEdit extends AuthWeb
+class ArticleEdit extends AuthWeb
 {
-    public $id;
+    public $sidebarMenu = '文章管理';
     public $article;
 
-    public $offset;
-    public $length = 10;
+    public $_id;
 
     public function init()
     {
-        $this->id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
+        $this->_id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
     }
 
     public function valid()
     {
-        $this->article = $this->_context->getRow("Article", $this->id);
+        $this->article = $this->_context->getRow("Article", $this->_id);
 
         if (!$this->article) {
             return false;
@@ -30,12 +30,7 @@ class Blog_ArticleEdit extends AuthWeb
 
     public function show()
     {
-        $data = [
-            'sidebarMenu' => '文章管理',
-            'article' => $this->article,
-        ];
-
-        $this->render($data);
+        $this->render();
     }
 
 

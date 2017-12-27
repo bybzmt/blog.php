@@ -55,7 +55,7 @@ class Comment extends Common\Row
         );
 
         //保存数据
-        $id = $this->_context->getTable('CommentsReply')->create($data);
+        $id = $this->_context->getTable('CommentsReply')->insert($data);
         if (!$id) {
             return false;
         }

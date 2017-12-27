@@ -3,10 +3,11 @@ namespace Bybzmt\Blog\Admin\Table;
 
 use Bybzmt\Blog\Common;
 use Bybzmt\Blog\Admin;
+use PDO;
 
 class Article extends Common\Table\Article
 {
-    private function buildWhere(int $type, string $search)
+    private function buildType(int $type, string $search)
     {
         if ($search) {
             switch ($type) {
@@ -42,27 +43,16 @@ class Article extends Common\Table\Article
     //得到后台列表
     public function getAdminList(int $type, string $search, int $offset, int $length)
     {
-        $tmps = $this->buildWhere($type, $search);
-        $str = [];
+        $tmps = $this->buildType($type, $search);
         $vals = [];
-        foreach ($tmps as $key => $val) {
-            if (is_array($val)) {
-                $str[] = "`key` in (?".str_repeat(", ?", count($val)-1).")";
-                $vals = array_merge($vals, $val);
-            } else {
-                $str[] = "`$key` = ?";
-                $vals[] = $val;
-            }
-        }
 
-        $where = $str ? " AND " . implode(" AND ", $str) : "";
+        $where = $tmps ? " AND " . $this->buildWhere($tmps, $vals) : "";
 
         $sql = "select * from articles where status > 0 $where order by id desc LIMIT $offset, $length";
         $sql2 = "select COUNT(*) from articles where status > 0 " . $where;
 
-        $rows = $this->getSlave()->fetchAll($sql, $vals);
-
-        $count = $this->getSlave()->fetchColumn($sql2, $vals);
+        $rows = $this->query($sql, $vals)->fetchAll();
+        $count = $this->query($sql2, $vals)->fetchColumn();
 
         return [$rows, $count];
     }

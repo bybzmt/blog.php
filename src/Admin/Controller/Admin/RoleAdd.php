@@ -1,17 +1,15 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Controller\AuthWeb;
 
-class Admin_RoleAdd extends AuthWeb
+class RoleAdd extends AuthWeb
 {
+    public $sidebarMenu = '角色管理';
 
     public function show()
     {
-        $data = array(
-            'sidebarMenu' => '角色管理',
-        );
-        $this->render($data);
+        $this->render();
     }
 
 

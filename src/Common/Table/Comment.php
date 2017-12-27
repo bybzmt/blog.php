@@ -2,6 +2,7 @@
 namespace Bybzmt\Blog\Common\Table;
 
 use Bybzmt\Blog\Common;
+use PDO;
 
 class Comment extends Common\TableRowCache
 {
@@ -21,17 +22,17 @@ class Comment extends Common\TableRowCache
     //得到文章评论列表
     public function getList(int $article_id, int $offset, int $length)
     {
-        $sql = "select id from comments where article_id = ? AND status = 1 order by id desc limit $offset, $length";
+        $sql = "SELECT id FROM {$this->_tableName} WHERE article_id = ? AND status = 1 ORDER BY id DESC LIMIT $offset, $length";
 
-        return $this->getSlave()->fetchColumnAll($sql, array($article_id));
+        return $this->query($sql, [$article_id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     //得到文章评论数量
     public function getArticleCommentNum(int $article_id)
     {
-        $sql = "select count(*) from comments where article_id = ? AND status = 1";
+        $sql = "SELECT count(*) FROM {$this->_tableName} WHERE article_id = ? AND status = 1";
 
-        return $this->getSlave()->fetchColumn($sql, array($article_id));
+        return $this->query($sql, array($article_id))->fetch(PDO::FETCH_COLUMN, 0);
     }
 
 

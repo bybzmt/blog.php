@@ -2,11 +2,13 @@
 namespace Bybzmt\Blog\Admin\Table;
 
 use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Common;
+use PDO;
 
 /**
  * 权限说明
  */
-class AdminPermission extends Admin\Table
+class AdminPermission extends Common\Table
 {
     protected $_dbName = 'blog';
     protected $_tableName = 'admin_permissions';
@@ -19,7 +21,8 @@ class AdminPermission extends Admin\Table
     public function getAll()
     {
         $sql = "select * from admin_permissions";
-        return $this->getSlave()->fetchAll($sql);
+
+        return $this->query($sql)->fetchAll();
     }
 
 }

@@ -2,6 +2,7 @@
 namespace Bybzmt\Blog\Common\Table;
 
 use Bybzmt\Blog\Common;
+use PDO;
 
 class Comment extends Common\TableRowCache
 {
@@ -22,7 +23,7 @@ class Comment extends Common\TableRowCache
     {
         $sql = "select id from comment_replys where comment_id = ? AND status = 1 order by id desc limit $offset, $length";
 
-        return $this->getSlave()->fetchColumnAll($sql);
+        return $this->query($sql)->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
 

@@ -61,7 +61,7 @@ class Article extends Common\Row
         );
 
         //保存回复
-        $id = $this->_context->getTable('Comment')->create($data);
+        $id = $this->_context->getTable('Comment')->insert($data);
 
         if ($id) {
             //修改文章回复数缓存

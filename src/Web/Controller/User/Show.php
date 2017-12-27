@@ -1,10 +1,10 @@
 <?php
-namespace Bybzmt\Blog\Web\Controller;
+namespace Bybzmt\Blog\Web\Controller\User;
 
-use Bybzmt\Blog\Web\Controller;
+use Bybzmt\Blog\Web\Controller\AuthWeb;
 use Bybzmt\Blog\Web\Reverse;
 
-class User_Show extends Controller
+class Show extends AuthWeb
 {
     private $id;
     private $user;
@@ -12,6 +12,7 @@ class User_Show extends Controller
 
     public function init()
     {
+        $this->_uid = isset($_SESSION['uid']) ? (int)$_SESSION['uid'] : 0;
         $this->id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     }
 
@@ -32,7 +33,7 @@ class User_Show extends Controller
         var_dump($this->msg);
     }
 
-    public function run()
+    public function show()
     {
         var_dump($this->user);
         die;

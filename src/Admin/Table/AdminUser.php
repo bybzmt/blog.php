@@ -2,8 +2,10 @@
 namespace Bybzmt\Blog\Admin\Table;
 
 use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Common;
+use PDO;
 
-class AdminUser extends Admin\Table
+class AdminUser extends Common\Table
 {
     protected $_dbName = 'blog';
     protected $_tableName = 'admin_users';
@@ -38,7 +40,7 @@ class AdminUser extends Admin\Table
 
         $sql .= " LIMIT $offset, $length";
 
-        return $this->getSlave()->fetchAll($sql, $vals);
+        return $this->query($sql, $vals)->fetchAll();
     }
 
     public function getUserListCount(int $type, string $search)
@@ -48,8 +50,8 @@ class AdminUser extends Admin\Table
         if ($search) {
             switch ($type) {
             case 1: $sql .= " AND id = ?"; break;
-            case 1: $sql .= " AND user LIKE ?"; break;
-            case 1: $sql .= " AND nickname LIKE ?"; break;
+            case 2: $sql .= " AND user LIKE ?"; break;
+            case 3: $sql .= " AND nickname LIKE ?"; break;
             default: return [];
             }
 
@@ -58,34 +60,39 @@ class AdminUser extends Admin\Table
             $vals = [];
         }
 
-        return $this->getSlave()->fetchColumn($sql, $vals);
+        return $this->query($sql, $vals)->fetchColumn();
     }
 
     public function getUserRoleIds($admin_id)
     {
         $sql = "SELECT role_id FROM `admin_user_roles` where admin_id = ?";
 
-        return $this->getSlave()->fetchColumnAll($sql, array($admin_id));
+        return $this->query($sql, [$admin_id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function setUserRoleIds($admin_id, $role_ids)
     {
-        $this->getMaster()->delete('admin_user_roles', array('admin_id'=>$admin_id));
+        $sql = "delete from admin_user_roles where admin_id = ?";
+        $this->exec($sql, [$admin_id]);
+
+        $db = $this->getDB(true);
+
+        $sql = "insert admin_user_roles (admin_id, role_id) values";
 
         $data = array();
         foreach ($role_ids as $role_id) {
-            $data[] = array(
-                'admin_id' => $admin_id,
-                'role_id' => $role_id,
-            );
+            $data[] = "(". $db->quote($admin_id). "," . $db->quote($role_id) . ")";
         }
+        $sql .= implode(",", $data);
 
-        return $this->getMaster()->inserts('admin_user_roles', $data);
+        return $db->exec($sql);
     }
 
     public function findByUser($user)
     {
-        return $this->getSlave()->find($this->_tableName, $this->_columns, array('user'=>$user));
+        $sql = "select `".implode("`,`", $this->_columns)."` from {$this->_tableName} where user = ?";
+
+        return $this->query($sql, [$user])->fetch();
     }
 
     //用户角色所有的权限
@@ -96,28 +103,33 @@ class AdminUser extends Admin\Table
             left join admin_role_permissions AS C ON(B.role_id = C.role_id)
             where A.id = ?";
 
-        return $this->getSlave()->fetchColumnAll($sql, array($id));
+        return $this->query($sql, [$id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     //用户自身特殊权限
     public function getUserPermissions($id)
     {
-        return $this->getSlave()->findColumnAll('admin_user_permissions', 'permission', array('admin_id'=>$id));
+        $sql = "select permission from admin_user_permissions where admin_id = ?";
+
+        return $this->query($sql, [$id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     //设置用户自身的权限
     public function setUserPermissions($admin_id, array $permissions)
     {
-        $this->getMaster()->delete('admin_user_permissions', array('admin_id'=>$admin_id));
+        $sql = "delete from admin_user_permissions where admin_id = ?";
+        $this->exec($sql, [$admin_id]);
+
+        $db = $this->getDB(true);
+
+        $sql = "insert admin_user_permissions (admin_id, permission) values";
 
         $data = array();
         foreach ($permissions as $permission) {
-            $data[] = array(
-                'admin_id' => $admin_id,
-                'permission' => $permission,
-            );
+            $data[] = "(". $db->quote($id). "," . $db->quote($permission) . ")";
         }
+        $sql .= implode(",", $data);
 
-        return $this->getMaster()->inserts('admin_user_permissions', $data);
+        return $db->exec($sql);
     }
 }

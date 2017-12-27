@@ -27,6 +27,10 @@ abstract class Web extends Base
     {
     }
 
+    public function show()
+    {
+    }
+
     public function onException($e)
     {
         //$e2 = new \Exception($e->getMessage(), $e->getCode(), $e);
@@ -36,7 +40,7 @@ abstract class Web extends Base
         die;
     }
 
-    public function render(array $data, string $name=null)
+    public function render(string $name=null)
     {
         $dir = __DIR__;
 
@@ -55,7 +59,11 @@ abstract class Web extends Base
         ));
         $twig->addExtension(new Admin\Helper\TwigExtension($twig));
 
-        echo $twig->render($file, $data);
+        echo $twig->render($file, array_filter(
+            get_object_vars($this),
+            function($key){return $key[0] != '_';},
+            ARRAY_FILTER_USE_KEY
+        ));
     }
 
 }

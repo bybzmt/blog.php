@@ -1,17 +1,14 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
-class Admin_Dashboard extends AuthWeb
+use Bybzmt\Blog\Admin\Controller\AuthWeb;
+
+class Dashboard extends AuthWeb
 {
+    public $sidebarMenu = 'Dashboard';
 
     public function show()
     {
-        $data = [
-            'sidebarMenu' => 'Dashboard'
-        ];
-
-        $this->render($data);
+        $this->render();
     }
-
-
 }

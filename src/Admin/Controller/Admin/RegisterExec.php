@@ -1,9 +1,9 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Controller\Json;
 
-class Admin_RegisterExec extends Json
+class RegisterExec extends Json
 {
     //用户名
     private $user;

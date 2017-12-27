@@ -1,13 +1,14 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Member;
 
-use Bybzmt\Blog\Admin;
 use Bybzmt\Blog\Admin\Helper\Permissions;
+use Bybzmt\Blog\Admin\Controller\AuthWeb;
 
-class Member_UserEdit extends AuthWeb
+class UserEdit extends AuthWeb
 {
     public $user_id;
     public $user;
+    public $sidebarMenu = '会员管理';
 
     public function init()
     {
@@ -27,12 +28,7 @@ class Member_UserEdit extends AuthWeb
 
     public function show()
     {
-        $data = array(
-            'sidebarMenu' => '会员管理',
-            'user' => $this->user,
-        );
-        $this->render($data);
+        $this->render();
     }
-
 
 }

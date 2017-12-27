@@ -1,9 +1,9 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Controller\AuthJson;
 
-class Admin_RoleDelExec extends AuthJson
+class RoleDelExec extends AuthJson
 {
     public $id;
     public $role;

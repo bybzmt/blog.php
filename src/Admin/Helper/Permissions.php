@@ -52,7 +52,7 @@ class Permissions
                     'permission' => $key,
                     'about' => $key,
                 );
-                $table->create($data);
+                $table->insert($data);
             }
         }
 
@@ -60,7 +60,7 @@ class Permissions
         $dels = array_diff(array_keys($about), $allkey);
         if ($dels) {
             foreach ($dels as $key) {
-                $table->del($key);
+                $table->delete($key);
             }
         }
 
@@ -90,17 +90,15 @@ class Permissions
                         $name = substr($file, strlen($basedir) + 1, -4);
 
                         $namespace = "Bybzmt\\Blog\\Admin\\Controller\\";
-                        $class = $namespace . str_replace("/", "_", $name);
-                        if (!class_exists($class, false)) {
-                            require_once $file;
-                        }
+                        $class = $namespace . str_replace("/", "\\", $name);
 
                         $classAuth1 = $namespace . "AuthWeb";
                         $classAuth2 = $namespace . "AuthJson";
 
                         $ref = new ReflectionClass($class);
                         if ($ref->isSubclassOf($classAuth1) || $ref->isSubclassOf($classAuth2)) {
-                            $out[] = substr($class, strlen($namespace));
+                            $key = substr($class, strlen($namespace));
+                            $out[] = str_replace("\\", ".", $key);
                         }
                     }
                 }

@@ -1,11 +1,16 @@
 <?php
-namespace Bybzmt\Blog\Web\Controller;
+namespace Bybzmt\Blog\Web\Controller\Article;
 
+use Bybzmt\Blog\Web\Controller\Web;
 use Bybzmt\Blog\Web\Reverse;
 use Bybzmt\Blog\Common\Helper\Pagination;
 
-class Article_List extends Web
+class Lists extends Web
 {
+    public $taglist = [];
+    public $pagination;
+    public $articles;
+
     private $tag_id;
     private $tag;
     private $page;
@@ -54,17 +59,16 @@ class Article_List extends Web
             $count = $this->_context->getService('Article')->getIndexCount();
         }
 
-        $articles = [];
         foreach ($article_rows as $row) {
             $article_tags = [];
             foreach ($row->getTags() as $tag) {
                 $article_tags[] = array(
                     'name'=>$tag->name,
-                    'url' => Reverse::mkUrl('Article.List', ['tag'=>$tag->id]),
+                    'url' => Reverse::mkUrl('Article.Lists', ['tag'=>$tag->id]),
                 );
             }
 
-            $articles[] = [
+            $this->articles[] = [
                 'url' => Reverse::mkUrl('Article.Show', ['id'=>$row->id]),
                 'title' => $row->title,
                 'intro' => $row->intro,
@@ -75,31 +79,23 @@ class Article_List extends Web
             ];
         }
 
-
-        $pagination = Pagination::style1($count, $this->length, $this->page, function($page){
+        $this->pagination = Pagination::style1($count, $this->length, $this->page, function($page){
             $params = $this->tag_id ? ['tag' => $this->tag_id] : [];
             if ($page > 1) {
                 $params['page'] = $page;
             }
-            return Reverse::mkUrl('Article.List', $params);
+            return Reverse::mkUrl('Article.Lists', $params);
         });
 
         $tag_rows = $this->_context->getService('Article')->getIndexTags();
-        $taglist = [];
         foreach ($tag_rows as $row) {
-            $taglist[] = array(
+            $this->taglist[] = array(
                 'name' => $row->name,
-                'url' => Reverse::mkUrl('Article.List', ['tag'=>$row->id])
+                'url' => Reverse::mkUrl('Article.Lists', ['tag'=>$row->id])
             );
         }
 
-        $data = [
-            'articles' => $articles,
-            'pagination' => $pagination,
-            'taglist' => $taglist,
-        ];
-
-        $this->render($data);
+        $this->render();
     }
 
 

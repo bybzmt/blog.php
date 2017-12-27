@@ -50,7 +50,7 @@
                                 <a href="/about">About</a>
                             </li>
                             <li>
-                                <a href="/contact">Contact</a>
+                                <a href="/user">User</a>
                             </li>
                         </ul>
                     </div>
@@ -86,7 +86,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 footer-widget">
-                       <h3> <i class="fa fa-user"></i>About</h3>
+                       <h3> <i class="fa fa-user"></i><a href="/about">About</a></h3>
 
                        <p>这里是关关关于于</p>
                        <p>这里是关关关于于</p>
@@ -101,7 +101,7 @@
                     </div>
 
                     <div class="col-md-4 footer-widget">
-                        <h3> <i class="fa fa-envelope"></i>Contact Me</h3>
+                        <h3> <i class="fa fa-envelope"></i><a href="/contact">Contact Me</a></h3>
 
                         <p>联系我.</p>
                         <p>联系我.</p>

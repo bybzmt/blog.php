@@ -48,7 +48,7 @@ class User extends Common\Row
         );
 
         //保存数据
-        $id = $this->_context->getTable('Article')->create($data);
+        $id = $this->_context->getTable('Article')->insert($data);
 
         return $id;
     }

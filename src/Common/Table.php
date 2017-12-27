@@ -2,7 +2,8 @@
 namespace Bybzmt\Blog\Common;
 
 use PDO;
-use Bybzmt\DB\Monitor;
+use PDOStatement;
+use Bybzmt\Blog\Common\Helper\SQLBuilder;
 
 /**
  * 数据库表
@@ -30,7 +31,10 @@ abstract class Table
      */
     public function get(string $id)
     {
-        return $this->getSlave()->find($this->_tableName, $this->_columns, array($this->_primary=>$id));
+        $sql = "SELECT `".implode("`,`", $this->_columns)."`
+            FROM `{$this->_tableName}` WHERE `{$this->_primary}` = ?";
+
+        return $this->query($sql, [$id])->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -42,7 +46,9 @@ abstract class Table
             return [];
         }
 
-        $rows = $this->getSlave()->findAll($this->_tableName, $this->_columns, array($this->_primary=>$ids));
+        list($sql, $params) = SQLBuilder::select($this->_columns, $this->_tableName, [$this->_primary=>$ids]);
+
+        $rows = $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
 
         $rows = array_column($rows, null, $this->_primary);
 
@@ -56,36 +62,99 @@ abstract class Table
         return $rows;
     }
 
-    public function create(array $row)
+    public function insert(array $row)
     {
-        $db = $this->getMaster();
-        $ok = $db->insert($this->_tableName, $row);
-        if ($ok) {
+        if (!$row) {
+            return false;
+        }
+
+        list($sql, $vals) = SQLBuilder::insert($this->_tableName, $row);
+
+        $affected = $this->exec($sql, $vals);
+        if ($affected) {
             if (!isset($row[$this->_primary])) {
-                return $db->lastInsertId();
+                return $this->getDB(true)->lastInsertId();
             }
         }
-        return $ok;
+        return $affected;
     }
+
+	public function inserts(array $rows)
+	{
+        if (!$rows) {
+            return false;
+        }
+
+        list($sql, $vals) = SQLBuilder::inserts($this->_tableName, $rows);
+
+        $affected = $this->exec($sql, $vals);
+        if ($affected) {
+            if (!isset($row[$this->_primary])) {
+                return $this->getDB(true)->lastInsertId();
+            }
+        }
+        return $affected;
+	}
 
     public function update(string $id, array $row)
     {
-        return $this->getMaster()->update($this->_tableName, $row, array($this->_primary=>$id), 1);
+        if (!$row) {
+            return false;
+        }
+
+        list($sql, $vals) = SQLBuilder::update($this->_tableName, $row, [$this->_primary=>$id]);
+
+        return $this->exec($sql, $vals);
     }
 
     public function delete(string $id)
     {
-        return $this->getMaster()->delete($this->_tableName, array($this->_primary=>$id), 1);
+		$sql = "DELETE FROM `{$this->_tableName}` WHERE `{$this->_primary}` = ? LIMIT 1";
+
+        return $this->exec($sql, [$id]);
     }
 
-    protected function getMaster()
+    protected function getDB(bool $isMaster=false)
     {
-        return $this->_context->getDb($this->_dbName . "_master");
+        return $this->_context->getDb($this->_dbName . ($isMaster?'_master':'_slave'));
     }
 
-    protected function getSlave()
+    protected function query(string $sql, array $params=[], bool $isMaster=false):PDOStatement
     {
-        return $this->_context->getDb($this->_dbName . "_slave");
+        if ($params) {
+            $stmt = $this->getDB($isMaster)->prepare($sql);
+            if (!$stmt) {
+                return false;
+            }
+
+            $ok = $stmt->execute($params);
+            if (!$ok) {
+                return false;
+            }
+
+            return $stmt;
+        } else {
+            return $this->getDB()->query($sql);
+        }
+    }
+
+    protected function exec(string $sql, array $params=[])
+    {
+        if ($params) {
+            $stmt = $this->getDB()->prepare($sql);
+            if (!$stmt) {
+                return false;
+            }
+
+            $ok = $stmt->execute($params);
+            if (!$ok) {
+                return false;
+            }
+
+            return $stmt->rowCount();
+        } else {
+            return $this->getDB()->exec($sql);
+        }
     }
 
 }

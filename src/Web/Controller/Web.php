@@ -31,7 +31,11 @@ abstract class Web extends Common\Controller
         throw $e;
     }
 
-    public function render(array $data, string $name=null)
+    public function show()
+    {
+    }
+
+    public function render(string $name=null)
     {
         $dir = __DIR__;
 
@@ -44,10 +48,16 @@ abstract class Web extends Common\Controller
         $loader = new Twig_Loader_Filesystem($dir);
         $twig = new Twig_Environment($loader, array(
             'cache' => VAR_PATH . '/cache/templates',
+            'debug' => true,
             'auto_reload' => true,
+            'strict_variables' => true,
         ));
 
-        echo $twig->render($file, $data);
+        echo $twig->render($file, array_filter(
+            get_object_vars($this),
+            function($key){return $key[0] != '_';},
+            ARRAY_FILTER_USE_KEY
+        ));
     }
 
 }

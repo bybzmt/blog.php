@@ -8,8 +8,8 @@ use Memcached;
  */
 abstract class TableRowCache extends Table
 {
-    private $_keyPrefix;
-    private $_hashPrefix;
+    protected $_keyPrefix;
+    protected $_hashPrefix;
 
     protected $_expiration = 1800;
 
@@ -242,10 +242,10 @@ abstract class TableRowCache extends Table
     protected function getKey(string $id): string
     {
         if (!$this->_keyPrefix) {
-            $this->_keyPrefix = str_replace('\\', '.', static::class) . ".";
+            $this->_keyPrefix = static::class;
         }
 
-        return $this->_keyPrefix . $id;
+        return $this->_keyPrefix .":". $id;
     }
 
     protected function serialize($data)
@@ -277,7 +277,7 @@ abstract class TableRowCache extends Table
         return unserialize($str);
     }
 
-    private function hash(string $str): string
+    protected function hash(string $str): string
     {
         if (!$this->_hashPrefix) {
             $this->_hashPrefix = $this->_dbName.$this->_tableName.$this->_primary.implode($this->_columns);

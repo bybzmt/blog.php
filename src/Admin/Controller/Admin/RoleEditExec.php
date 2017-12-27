@@ -1,10 +1,10 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Controller\AuthJson;
 use Bybzmt\Blog\Admin\Helper\Permissions;
 
-class Admin_RoleEditExec extends AuthJson
+class RoleEditExec extends AuthJson
 {
     public $id;
     public $name;

@@ -1,12 +1,15 @@
 <?php
-namespace Bybzmt\Blog\Web\Controller;
+namespace Bybzmt\Blog\Web\Controller\Article;
 
+use Bybzmt\Blog\Web\Controller\Web;
 use Bybzmt\Blog\Web\Reverse;
 
-class Article_Show extends Web
+class Show extends Web
 {
+    public $article;
+    public $taglist;
+
     private $id;
-    private $article;
     private $msg;
 
     public function init()
@@ -33,7 +36,7 @@ class Article_Show extends Web
 
     public function show()
     {
-        $article = array(
+        $this->article = array(
             'title' => $this->article->title,
             'content' => $this->article->content,
             'addtime' => $this->article->addtime,
@@ -45,18 +48,13 @@ class Article_Show extends Web
         $tag_rows = $this->_context->getService('Article')->getIndexTags();
         $taglist = [];
         foreach ($tag_rows as $row) {
-            $taglist[] = array(
+            $this->taglist[] = array(
                 'name' => $row->name,
-                'url' => Reverse::mkUrl('Article.List', ['tag'=>$row->id])
+                'url' => Reverse::mkUrl('Article.Lists', ['tag'=>$row->id])
             );
         }
 
-        $data = [
-            'article' => $article,
-            'taglist' => $taglist,
-        ];
-
-        $this->render($data);
+        $this->render();
     }
 
 

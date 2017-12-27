@@ -1,9 +1,9 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Controller\Web;
 
-class Admin_Login extends Web
+class Login extends Web
 {
     public $go;
 
@@ -14,8 +14,7 @@ class Admin_Login extends Web
 
     public function show()
     {
-        $this->render(['go'=>$this->go]);
+        $this->render();
     }
-
 
 }

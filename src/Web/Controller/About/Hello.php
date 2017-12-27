@@ -1,14 +1,13 @@
 <?php
-namespace Bybzmt\Blog\Web\Controller;
+namespace Bybzmt\Blog\Web\Controller\About;
 
-class About_Hello extends Web
+use Bybzmt\Blog\Web\Controller\Web;
+
+class Hello extends Web
 {
     public function show()
     {
-        $data = [
-        ];
-
-        $this->render($data);
+        $this->render();
     }
 
 

@@ -1,15 +1,14 @@
 <?php
-namespace Bybzmt\Blog\Web\Controller;
+namespace Bybzmt\Blog\Web\Controller\About;
 
-class About_Contact extends Web
+use Bybzmt\Blog\Web\Controller\Web;
+
+class Contact extends Web
 {
 
     public function show()
     {
-        $data = [
-        ];
-
-        $this->render($data);
+        $this->render();
     }
 
 

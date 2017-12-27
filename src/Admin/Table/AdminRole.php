@@ -2,6 +2,7 @@
 namespace Bybzmt\Blog\Admin\Table;
 
 use Bybzmt\Blog\Admin;
+use PDO;
 
 class AdminRole extends Admin\Table
 {
@@ -19,26 +20,31 @@ class AdminRole extends Admin\Table
     {
         $sql = "select * from admin_roles where status=1";
 
-        return $this->getSlave()->fetchAll($sql);
+        return $this->query($sql)->fetchAll();
     }
 
     public function getPermissions($id)
     {
-        return $this->getSlave()->findColumnAll('admin_role_permissions', 'permission', array('role_id'=>$id));
+        $sql = "select permission from admin_role_permissions where role_id = ?";
+
+        return $this->query($sql, [$id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function setPermissions($id, array $permissions)
     {
-        $this->getMaster()->delete('admin_role_permissions', array('role_id'=>$id));
+        $sql = "delete from admin_role_permissions where role_id = ?";
+        $this->exec($sql, [$id]);
+
+        $db = $this->getDB(true);
+
+        $sql = "insert admin_role_permissions (role_id, permission) values";
 
         $data = array();
         foreach ($permissions as $permission) {
-            $data[] = array(
-                'role_id' => $id,
-                'permission' => $permission,
-            );
+            $data[] = "(". $db->quote($id). "," . $db->quote($permission) . ")";
         }
+        $sql .= implode(",", $data);
 
-        return $this->getMaster()->inserts('admin_role_permissions', $data);
+        return $db->exec($sql);
     }
 }

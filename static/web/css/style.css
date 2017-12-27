@@ -99,6 +99,9 @@ Font Awesome Icons
   font-size: 14px;
 }
 
+.widewrapper.footer h3 a {
+  color: #e6e6e6;
+}
 .widewrapper.footer a {
   color: #7b8690;
 }

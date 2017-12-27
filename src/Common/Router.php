@@ -33,7 +33,7 @@ abstract class Router extends PRouter
             $names = implode('\\', array_slice(explode('\\', static::class), 0, -1));
         }
 
-        $str = str_replace($this->_separator_method, '_', $map);
+        $str = str_replace($this->_separator_method, '\\', $map);
 
         $class = $names .'\\Controller\\'. $str;
         $method = 'execute';
@@ -41,17 +41,4 @@ abstract class Router extends PRouter
         return array($class, $method);
     }
 
-    protected function _loadClass($class)
-    {
-        if (!class_exists($class, false)) {
-            $file = substr($class, strrpos(__NAMESPACE__, '\\'));
-            $file = __DIR__ . '/..'. str_replace(array('\\', '_'), '/', $file) . '.php';
-
-            if (file_exists($file)) {
-                require $file;
-            }
-        }
-
-        return class_exists($class, false);
-    }
 }

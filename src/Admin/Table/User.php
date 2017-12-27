@@ -25,7 +25,7 @@ class User extends Common\Table\User
 
         $sql .= " LIMIT $offset, $length";
 
-        return $this->getSlave()->fetchAll($sql, $vals);
+        return $this->query($sql, $vals)->fetchAll();
     }
 
     public function getListCount(int $type, string $search)
@@ -45,7 +45,7 @@ class User extends Common\Table\User
             $vals = [];
         }
 
-        return $this->getSlave()->fetchColumn($sql, $vals);
+        return $this->query($sql, $vals)->fetchColumn();
     }
 
 }

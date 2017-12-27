@@ -1,9 +1,9 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Blog;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Controller\AuthJson;
 
-class Blog_ArticleAuditExec extends AuthJson
+class ArticleAuditExec extends AuthJson
 {
     public $id;
     public $type;

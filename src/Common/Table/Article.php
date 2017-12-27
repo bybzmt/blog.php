@@ -6,6 +6,7 @@ use PDO;
 
 class Article extends Common\TableRowCache
 {
+    protected $_keyPrefix = __CLASS__;
     protected $_dbName = 'blog';
     protected $_tableName = 'articles';
     protected $_primary = 'id';
@@ -29,19 +30,14 @@ class Article extends Common\TableRowCache
     {
         $sql = "select id from articles where status = 1 order by id desc limit $offset, $length";
 
-        return $this->getSlave()->fetchColumnAll($sql);
+        return $this->query($sql)->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function incrCommentsNum(int $id, int $num)
     {
         $sql = "update articles set cache_comments_num = cache_comments_num + ? where id = ?";
 
-        $db = $this->getMaster();
-        $stmt = $db->prepare($sql);
-        $stmt->bindValue(1, $num, PDO::PARAM_INT);
-        $stmt->bindValue(2, $id, PDO::PARAM_INT);
-        $ok = $stmt->execute();
-
+        $ok = $this->exec($sql, [$num, $id]);
         if ($ok) {
             $this->updateCache($id, function($row) use ($num) {
                 $row['cache_comments_num'] += $num;
@@ -56,11 +52,7 @@ class Article extends Common\TableRowCache
     {
         $sql = "update articles set cache_comments_num = cache_comments_num - ? where id = ?";
 
-        $db = $this->getMaster();
-        $stmt = $db->prepare($sql);
-        $stmt->bindValue(1, $num, PDO::PARAM_INT);
-        $stmt->bindValue(2, $id, PDO::PARAM_INT);
-        $ok = $stmt->execute();
+        $ok = $this->exec($sql, [$num, $id]);
         if ($ok) {
             $this->updateCache($id, function($row) use ($num) {
                 $row['cache_comments_num'] -= $num;

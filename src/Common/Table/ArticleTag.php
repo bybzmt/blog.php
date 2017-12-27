@@ -2,6 +2,7 @@
 namespace Bybzmt\Blog\Common\Table;
 
 use Bybzmt\Blog\Common;
+use PDO;
 
 class ArticleTag extends Common\Table
 {
@@ -17,17 +18,22 @@ class ArticleTag extends Common\Table
 
     public function getArticleIds(int $tag_id, int $offset, int $length)
     {
-        return $this->getSlave()->findColumnAll($this->_tableName, 'article_id', array('tag_id'=>$tag_id), $offset, $length);
+        $sql = "SELECT article_id FROM {$this->_tableName} WHERE tag_id = ? LIMIT $offset,$length";
+
+        return $this->query($sql, [$tag_id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function getTags(int $article_id)
     {
-        return $this->getSlave()->findColumnAll($this->_tableName, 'tag_id', array('article_tags'=>$article_id));
+        $sql = "select tag_id FROM {$this->_tableName} where article_id = ?";
+
+        return $this->query($sql, [$article_id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function setTags(int $article_id, array $tag_ids)
     {
-        $this->getMaster()->delete($this->_tableName, array('article_id'=>$article_id));
+        $sql = "DELETE FROM {$this->_tableName} WHERE article_id = ?";
+        $this->exec($sql, [$article_id]);
 
         $data = [];
         foreach ($tag_ids as $sort => $tag_id) {
@@ -38,6 +44,6 @@ class ArticleTag extends Common\Table
             );
         }
 
-        return $this->adds($data);
+        return $this->inserts($data);
     }
 }

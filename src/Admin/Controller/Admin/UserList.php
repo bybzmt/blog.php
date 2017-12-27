@@ -1,45 +1,50 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
 use Bybzmt\Blog\Common\Helper\Pagination;
 use Bybzmt\Blog\Admin\Reverse;
+use Bybzmt\Blog\Admin\Controller\AuthWeb;
 
-class Admin_UserList extends AuthWeb
+class UserList extends AuthWeb
 {
-    public $page;
-    public $type;
-    public $search;
+    public $sidebarMenu = '管理员管理';
+    public $search_type;
+    public $search_keyword;
+    public $pagination;
+    public $users;
 
-    public $offset;
-    public $length = 10;
+    public $_page;
+    public $_offset;
+    public $_length = 10;
 
     public function init()
     {
-        $this->page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $this->type = isset($_GET['type']) ? (int)$_GET['type'] : 1;
-        $this->search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $this->_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $this->search_type = isset($_GET['type']) ? (int)$_GET['type'] : 1;
+        $this->search_keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-        if ($this->page < 1) {
-            $this->page = 1;
+        if ($this->_page < 1) {
+            $this->_page = 1;
         }
-        $this->offset = ($this->page-1) * $this->length;
+        $this->_offset = ($this->_page-1) * $this->_length;
 
-        if (!in_array($this->type, [1,2,3])) {
-            $this->type = 1;
+        if (!in_array($this->search_type, [1,2,3])) {
+            $this->search_type = 1;
         }
     }
 
     public function show()
     {
         //查出所有管理组
-        list($users, $count) = $this->_context->getService("Admin")->getUserList($this->type, $this->search, $this->offset, $this->length);
+        list($this->users, $count) = $this->_context->getService("Admin")
+            ->getUserList($this->search_type, $this->search_keyword, $this->_offset, $this->_length);
 
-        $pagination = Pagination::style1($count, $this->length, $this->page, function($page){
+        $this->pagination = Pagination::style1($count, $this->_length, $this->_page, function($page){
             $params = array();
 
-            if ($this->search) {
-                $params['type'] = $this->page;
-                $params['search'] = $this->search;
+            if ($this->search_keyword) {
+                $params['type'] = $this->search_type;
+                $params['search'] = $this->search_keyword;
             }
 
             if ($page > 1) {
@@ -49,15 +54,7 @@ class Admin_UserList extends AuthWeb
             return Reverse::mkUrl('Admin.UserList', $params);
         });
 
-        $data = [
-            'sidebarMenu' => '管理员管理',
-            'users' => $users,
-            'pagination' => $pagination,
-            'search_type' => $this->type,
-            'search_keyword' => $this->search,
-        ];
-
-        $this->render($data);
+        $this->render();
     }
 
 

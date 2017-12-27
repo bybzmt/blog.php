@@ -1,14 +1,14 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Controller\Web;
 
-class Admin_Register extends Web
+class Register extends Web
 {
 
     public function show()
     {
-        $this->render([]);
+        $this->render();
     }
 
 

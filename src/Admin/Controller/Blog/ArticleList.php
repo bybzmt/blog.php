@@ -1,47 +1,50 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Blog;
 
 use Bybzmt\Blog\Common\Helper\Pagination;
 use Bybzmt\Blog\Admin\Reverse;
+use Bybzmt\Blog\Admin\Controller\AuthWeb;
 
-class Blog_ArticleList extends AuthWeb
+class ArticleList extends AuthWeb
 {
-    public $page;
+    public $sidebarMenu = '文章管理';
     public $type;
     public $search;
     public $status;
 
-    public $offset;
-    public $length = 10;
+    public $_page;
+    public $_offset;
+    public $_length = 10;
 
     public function init()
     {
-        $this->page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $this->type = isset($_GET['type']) ? (int)$_GET['type'] : 1;
-        $this->status = isset($_GET['status']) ? (int)$_GET['status'] : 0;
-        $this->search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $this->_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $this->search_type = isset($_GET['type']) ? (int)$_GET['type'] : 1;
+        $this->search_status = isset($_GET['status']) ? (int)$_GET['status'] : 0;
+        $this->search_keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-        if ($this->page < 1) {
-            $this->page = 1;
+        if ($this->_page < 1) {
+            $this->_page = 1;
         }
-        $this->offset = ($this->page-1) * $this->length;
+        $this->_offset = ($this->_page-1) * $this->_length;
 
-        if (!in_array($this->type, [1,2,3,4,5])) {
-            $this->type = 1;
+        if (!in_array($this->search_type, [1,2,3,4,5])) {
+            $this->search_type = 1;
         }
     }
 
     public function show()
     {
         //查出所有管理组
-        list($articles, $count) = $this->_context->getService("Blog")->getArticleList($this->type, $this->search, $this->offset, $this->length);
+        list($this->articles, $count) = $this->_context->getService("Blog")
+            ->getArticleList($this->search_type, $this->search_keyword, $this->_offset, $this->_length);
 
-        $pagination = Pagination::style1($count, $this->length, $this->page, function($page){
+        $this->pagination = Pagination::style1($count, $this->_length, $this->_page, function($page){
             $params = array();
 
-            if ($this->search) {
-                $params['type'] = $this->page;
-                $params['search'] = $this->search;
+            if ($this->search_keyword) {
+                $params['type'] = $this->search_type;
+                $params['search'] = $this->search_status;
             }
 
             if ($page > 1) {
@@ -51,16 +54,7 @@ class Blog_ArticleList extends AuthWeb
             return Reverse::mkUrl('Blog.ArticleList', $params);
         });
 
-        $data = [
-            'sidebarMenu' => '文章管理',
-            'articles' => $articles,
-            'pagination' => $pagination,
-            'search_type' => $this->type,
-            'search_keyword' => $this->search,
-            'search_status' => $this->status,
-        ];
-
-        $this->render($data);
+        $this->render();
     }
 
 

@@ -1,10 +1,10 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller;
+namespace Bybzmt\Blog\Admin\Controller\Admin;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Controller\Web;
 use Bybzmt\Blog\Common\Helper;
 
-class Admin_Captcha extends Web
+class Captcha extends Web
 {
     public function init()
     {

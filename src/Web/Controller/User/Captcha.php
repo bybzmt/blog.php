@@ -2,18 +2,19 @@
 namespace Bybzmt\Blog\Web\Controller\User;
 
 use Bybzmt\Blog\Web\Controller\Web;
-use Bybzmt\Blog\Web\Reverse;
+use Bybzmt\Blog\Common\Helper;
 
-class Logout extends AuthWeb
+
+class Captcha extends Web
 {
-    public function exec()
+    public function show()
     {
         session_start();
-        session_destroy();
 
-        $go = $_SERVER['REQUEST_SCHEME'] . '://'. $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        header("Location: $url");
-        echo "Location: $url";
-        die;
+        $obj = new Helper\CaptchaCode2(118, 36);
+
+        $_SESSION['captcha'] = $obj->getCode();
+
+        $obj->show([0xDD,0xDD,0xDD], [0x99,0x99,0x99]);
     }
 }

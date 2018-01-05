@@ -3,9 +3,7 @@ namespace Bybzmt\Blog\Admin\Controller;
 
 use Twig_Loader_Filesystem;
 use Twig_Environment;
-
-use Bybzmt\Blog\Common;
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Admin\Helper\TwigExtension;
 
 abstract class Web extends Base
 {
@@ -57,7 +55,7 @@ abstract class Web extends Base
             'auto_reload' => true,
             'strict_variables' => true,
         ));
-        $twig->addExtension(new Admin\Helper\TwigExtension($twig));
+        $twig->addExtension(new TwigExtension($twig));
 
         echo $twig->render($file, array_filter(
             get_object_vars($this),

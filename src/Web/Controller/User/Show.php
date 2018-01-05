@@ -6,19 +6,16 @@ use Bybzmt\Blog\Web\Reverse;
 
 class Show extends AuthWeb
 {
-    private $id;
     private $user;
     private $msg;
 
     public function init()
     {
-        $this->_uid = isset($_SESSION['uid']) ? (int)$_SESSION['uid'] : 0;
-        $this->id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     }
 
     public function valid()
     {
-        $this->user = $this->_context->getService('User')->getUser($this->id);
+        $this->user = $this->_context->getRow('User', $this->_uid);
         if ($this->user) {
             return true;
         }
@@ -38,20 +35,7 @@ class Show extends AuthWeb
         var_dump($this->user);
         die;
 
-        $article = array(
-            'title' => $this->article->title,
-            'content' => $this->article->content,
-            'addtime' => $this->article->addtime,
-            'edittime' => $this->article->edittime,
-            'author_nickname' => $this->article->author->nickname,
-            'author_id' => $this->article->author->id,
-        );
-
-        $data = [
-            'article' => $article,
-        ];
-
-        $this->render($data);
+        $this->render();
     }
 
 

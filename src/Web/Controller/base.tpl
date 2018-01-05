@@ -30,12 +30,12 @@
     <header>
         <div class="widewrapper masthead">
             <div class="container">
-                <a href="/" id="logo">
+                <a href="{{ mkUrl("Article.Lists") }}" id="logo">
                     <img src="/img/logo.png" alt="clean Blog">
                 </a>
 
                 <div id="mobile-nav-toggle" class="pull-right">
-                    <a href="/" data-toggle="collapse" data-target=".clean-nav .navbar-collapse">
+                    <a href="{{ mkUrl("Article.Lists") }}" data-toggle="collapse" data-target=".clean-nav .navbar-collapse">
                         <i class="fa fa-bars"></i>
                     </a>
                 </div>
@@ -44,13 +44,13 @@
                     <div class="collapse navbar-collapse">
                         <ul class="nav nav-pills navbar-nav">
                             <li>
-                                <a href="/">Home</a>
+                                <a href="{{ mkUrl("Article.Lists") }}">Home</a>
                             </li>
                             <li>
-                                <a href="/about">About</a>
+                                <a href="{{ mkUrl("About.Hello") }}">About</a>
                             </li>
                             <li>
-                                <a href="/user">User</a>
+                                <a href="{{ mkUrl("User.Show") }}">User</a>
                             </li>
                         </ul>
                     </div>
@@ -63,7 +63,7 @@
             <div class="container">
                 <div class="clean-breadcrumb">
                     {% block breadcrumb %}
-                        <a href="/">Blog</a>
+                        <a href="{{ mkUrl("Article.Lists") }}">Blog</a>
                     {% endblock %}
                 </div>
 
@@ -86,7 +86,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 footer-widget">
-                       <h3> <i class="fa fa-user"></i><a href="/about">About</a></h3>
+                       <h3> <i class="fa fa-user"></i><a href="{{ mkUrl("About.Hello") }}">About</a></h3>
 
                        <p>这里是关关关于于</p>
                        <p>这里是关关关于于</p>
@@ -101,7 +101,7 @@
                     </div>
 
                     <div class="col-md-4 footer-widget">
-                        <h3> <i class="fa fa-envelope"></i><a href="/contact">Contact Me</a></h3>
+                        <h3> <i class="fa fa-envelope"></i><a href="{{ mkUrl("About.Contact") }}">Contact Me</a></h3>
 
                         <p>联系我.</p>
                         <p>联系我.</p>

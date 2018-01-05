@@ -8,6 +8,7 @@ class Router extends Common\Router
 {
     public function _init()
     {
+        $this->get('/index', ':Article.Index');
         $this->get('/', ':Article.Lists');
         $this->get('/list/(\d+)', ':Article.Lists:page');
         $this->get('/tag/(\d+)', ':Article.Lists:tag');
@@ -21,8 +22,8 @@ class Router extends Common\Router
         $this->get('/logout', ':User.Logout');
         $this->get('/captcha', ':User.Captcha');
         $this->get('/register', ':User.Register');
-        $this->post('/json/register', ':User.RegisterExec');
-        $this->post('/json/login', ':User.LoginExec');
+        $this->post('/post/register', ':User.RegisterExec');
+        $this->post('/post/login', ':User.LoginExec');
     }
 
     protected function default404()

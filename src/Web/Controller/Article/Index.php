@@ -5,7 +5,7 @@ use Bybzmt\Blog\Web\Controller\Web;
 use Bybzmt\Blog\Web\Reverse;
 use Bybzmt\Blog\Common\Helper\Pagination;
 
-class Lists extends Web
+class Index extends Web
 {
     public $taglist = [];
     public $pagination;

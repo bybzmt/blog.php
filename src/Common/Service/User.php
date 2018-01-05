@@ -6,9 +6,14 @@ use Bybzmt\Blog\Common;
 class User extends Common\Service
 {
     //得到用户
-    public function getUser(int $id)
+    public function getUser(string $username)
     {
-        return $this->_context->getRow('User', $id);
+        $row = $this->_context->getTable('User')->findByUsername($username);
+        if (!$row) {
+            return false;
+        }
+
+        return $this->_context->initRow("User", $row);
     }
 
     //添加新用户
@@ -16,10 +21,7 @@ class User extends Common\Service
     {
     }
 
-    //验证用户密码
-    public function validPass(Domain\User $user, string $pass)
-    {
-    }
+
 
 
 }

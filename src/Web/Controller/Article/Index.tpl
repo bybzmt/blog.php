@@ -11,22 +11,28 @@
                 <div class="col-md-8 blog-main">
 
                 {% for article in articles %}
-                    <div class="col-md-6 col-sm-6">
-                        <article class="blog-teaser">
-                            <header>
-                                <img src="/img/1.jpg" alt="{{ article.title }}">
-                                <h3><a href="{{ mkUrl('Article.Show', {id:article.id}) }}">{{ article.title }}</a></h3>
-                                <span class="meta">{{ article.author.nickname }} {{ article.addtime | date('Y-m-d') }}</span>
-                                <hr>
-                            </header>
-                            <div class="body">
-                                {{ article.intro }}
-                            </div>
-                            <div class="clearfix">
-                                <a href="{{ mkUrl('Article.Show', {id:article.id}) }}" class="btn btn-clean-one">Read more</a>
-                            </div>
-                        </article>
+                    {% if loop.index0 % 2 == 0 %}
+                    <div class="row">
+                    {% endif %}
+                        <div class="col-md-6 col-sm-6">
+                            <article class=" blog-teaser">
+                                <header>
+                                    <img src="/img/1.jpg" alt="{{ article.title }}">
+                                    <h3><a href="{{ mkUrl('Article.Show', {id:article.id}) }}">{{ article.title }}</a></h3>
+                                    <span class="meta">{{ article.author.nickname }} {{ article.addtime | date('Y-m-d') }}</span>
+                                    <hr>
+                                </header>
+                                <div class="body">
+                                    {{ article.intro }}
+                                </div>
+                                <div class="clearfix">
+                                    <a href="{{ mkUrl('Article.Show', {id:article.id}) }}" class="btn btn-clean-one">Read more</a>
+                                </div>
+                            </article>
+                        </div>
+                    {% if loop.last or loop.index0 % 2 == 1 %}
                     </div>
+                    {% endif %}
                 {% endfor %}
 
                     <div class="paging">

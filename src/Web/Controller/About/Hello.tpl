@@ -3,7 +3,7 @@
 {% block title %}About Me{% endblock %}
 
 {% block breadcrumb %}
-    <a href="/about">About Me</a>
+    <a href="{{ mkUrl("About.Hello") }}">About Me</a>
 {% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui quo sint asperiores, ut doloremque eum commodi, odit nisi sed repellendus earum recusandae pariatur consectetur minus rerum, magni dolores officiis magnam.</p>
 
             <div class="about-button">
-                <a class="btn btn-xlarge btn-clean-one" href="/contact">Contact Me</a>
+                <a class="btn btn-xlarge btn-clean-one" href="{{ mkUrl("About.Contact") }}">Contact Me</a>
             </div>
             <hr>
         </div>

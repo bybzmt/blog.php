@@ -5,6 +5,7 @@ use Twig_Loader_Filesystem;
 use Twig_Environment;
 
 use Bybzmt\Blog\Common;
+use Bybzmt\Blog\Web\Helper\TwigExtension;
 
 abstract class Web extends Common\Controller
 {
@@ -24,6 +25,7 @@ abstract class Web extends Common\Controller
 
     public function fail()
     {
+        echo 'fail';
     }
 
     public function onException($e)
@@ -52,6 +54,7 @@ abstract class Web extends Common\Controller
             'auto_reload' => true,
             'strict_variables' => true,
         ));
+        $twig->addExtension(new TwigExtension($twig));
 
         echo $twig->render($file, array_filter(
             get_object_vars($this),

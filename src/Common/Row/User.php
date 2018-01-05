@@ -22,6 +22,29 @@ class User extends Common\Row
         $this->status = (int)$row['status'];
     }
 
+    public function encryptPass($pass)
+    {
+        //密码摘要，密钥确定后不可更改
+        return hash_hmac('md5', $pass, $this->id.'encryptkey');
+    }
+
+    //验证用户密码
+    public function validPass(string $pass)
+    {
+        return $this->encryptPass($pass) == $this->pass;
+    }
+
+    public function setPass(string $pass)
+    {
+        $saved = $this->encryptPass($pass);
+
+        $ok = $this->_context->getTable("User")->update($this->id, array('pass'=>$saved));
+        if ($ok) {
+            $this->pass = $saved;
+        }
+        return $ok;
+    }
+
     //修改昵称
     public function setNickname($nickname)
     {
@@ -73,4 +96,21 @@ class User extends Common\Row
     {
     }
 
+    public function disable()
+    {
+        $ok = $this->_context->getTable("User")->update($this->id, array('status'=>0));
+        if ($ok) {
+            $this->status = 0;
+        }
+        return $ok;
+    }
+
+    public function enable()
+    {
+        $ok = $this->_context->getTable("User")->update($this->id, array('status'=>1));
+        if ($ok) {
+            $this->status = 1;
+        }
+        return $ok;
+    }
 }

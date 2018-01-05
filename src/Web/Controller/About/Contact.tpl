@@ -3,7 +3,7 @@
 {% block title %}Contact Me{% endblock %}
 
 {% block breadcrumb %}
-    <a href="/contact">Contact Me</a>
+    <a href="{{ mkUrl("About.Contact") }}">Contact Me</a>
 {% endblock %}
 
 {% block content %}

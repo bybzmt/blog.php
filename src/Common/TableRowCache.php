@@ -6,11 +6,10 @@ use Memcached;
 /**
  * 数据库表
  */
-abstract class TableRowCache extends Table
+trait TableRowCache
 {
     protected $_keyPrefix;
     protected $_hashPrefix;
-
     protected $_expiration = 1800;
 
     /**
@@ -29,13 +28,14 @@ abstract class TableRowCache extends Table
     /**
      * 批量得到数据,缓存未命中时从数据库中加载
      */
-    public function gets(array $ids, $missEmpty=true)
+    public function gets(array $ids)
     {
         $out = $miss = array();
 
-        $out = $this->getCaches($ids);
-        foreach ($out as $id=>$row) {
-            if ($row===null) {
+        foreach ($this->getCaches($ids) as $id=>$row) {
+            if ($row) {
+                $out[$id] = $row;
+            } else if ($row===null) {
                 $miss[] = $id;
             }
         }
@@ -57,20 +57,16 @@ abstract class TableRowCache extends Table
             $this->setCaches($new_caches);
         }
 
-        if ($missEmpty) {
-            return array_filter($out);
-        }
-
         return $out;
     }
 
     //添加一条记录(同时更新数据库和缓存)
-    public function create(array $row)
+    public function insert(array $row)
     {
-        $ok = parent::create($row);
-        if ($ok) {
+        $id = parent::insert($row);
+        if ($id) {
             if (!isset($row[$this->_primary])) {
-                $row[$this->_primary] = $ok;
+                $row[$this->_primary] = $id;
             }
             //字段数量一至时直接缓存，否则仅册除缓存
             if (count($row) == count($this->_columns)) {
@@ -80,7 +76,7 @@ abstract class TableRowCache extends Table
             }
         }
 
-        return $ok;
+        return $id;
     }
 
     //修改数据(同时更新数据库和缓存)
@@ -141,7 +137,7 @@ abstract class TableRowCache extends Table
      *
      * @param $row k/v数组或回调函数function(array $row):array
      */
-    protected function updateCache(string $id, $fn)
+    public function updateCache(string $id, $row_or_fn)
     {
         $key = $this->getKey($id);
         $memcached = $this->_context->getMemcached();
@@ -166,13 +162,13 @@ abstract class TableRowCache extends Table
                 break;
             }
 
-            if (is_array($row)) {
-                foreach ($row as $k => $v) {
+            if (is_array($row_or_fn)) {
+                foreach ($row_or_fn as $k => $v) {
                     $old[$k] = $v;
                 }
             } else {
                 //回调函数
-                $old = $row($old);
+                $old = $row_or_fn($old);
             }
 
             $ok = $memcached->cas($cas, $key, $old);
@@ -220,7 +216,7 @@ abstract class TableRowCache extends Table
     /**
      * 删除缓存
      */
-    protected function delCache(string $id): bool
+    public function delCache(string $id): bool
     {
         $key = $this->getKey($id);
         return $this->_context->getMemcached()->delete($key);
@@ -229,7 +225,7 @@ abstract class TableRowCache extends Table
     /**
      * 批量删除缓存
      */
-    protected function delCaches(array $ids): bool
+    public function delCaches(array $ids): bool
     {
         $keys = [];
         foreach ($ids as $id) {
@@ -257,7 +253,7 @@ abstract class TableRowCache extends Table
 
     protected function unserialize($data)
     {
-        if (!$data) {
+        if (!is_string($data) || !$data) {
             return null;
         }
 

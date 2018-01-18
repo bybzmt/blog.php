@@ -18,18 +18,14 @@
             <div class="row">
                 <div class="col-md-8 blog-main">
                     <article class="blog-post">
-                        <header>
-                            <div class="lead-image">
-                                <img src="/img/single-post.jpg" alt="{{ article.title}}" class="img-responsive">
-                            </div>
-                        </header>
+
                         <div class="body">
                             <h1>{{ article.title}}</h1>
                             <div class="meta">
-                                <i class="fa fa-user"></i> {{ article.author_nickname }}
+                                <i class="fa fa-user"></i> {{ author.nickname }}
                                 <i class="fa fa-calendar"></i> {{ article.addtime | date('Y-m-d') }}
                                 <i class="fa fa-comments"></i>
-                                <span class="data"><a href="#comments"> {{ article.comments_num }} Comments</a></span>
+                                <span class="data"><a href="#comments"> {{ commentsNum }} Comments</a></span>
                             </div>
 
                             {{ article.content }}
@@ -37,25 +33,27 @@
                         </div>
                     </article>
 
+<!--
                     <aside class="social-icons clearfix">
                         <h3>Share on </h3>
                         <a href="#"><i class="fa fa-facebook"></i></a>
                         <a href="#"><i class="fa fa-twitter"></i></a>
                         <a href="#"><i class="fa fa-google"></i></a>
                     </aside>
+-->
 
                     <aside class="comments" id="comments">
                         <hr>
 
-                        <h2><i class="fa fa-comments"></i> {{ article.comments_num }} Comments</h2>
+                        <h2><i class="fa fa-comments"></i> {{ commentsNum }} Comments</h2>
 
+                        {% for comment in comments %}
                         <article class="comment">
                             <header class="clearfix">
-                                <img src="/img/avatar.png" alt="A Smart Guy" class="avatar">
                                 <div class="meta">
-                                    <h3><a href="#">John Doe</a></h3>
+                                    <h3><a href="#">{{ comment.user.nickname }}</a></h3>
                                     <span class="date">
-                                        24 August 2015
+                                        {{ comment.addtime | date('Y-m-d H:i') }}
                                     </span>
                                     <span class="separator">
                                         -
@@ -65,69 +63,32 @@
                                 </div>
                             </header>
                              <div class="body">
-                               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere sit perspiciatis debitis, vel ducimus praesentium expedita, assumenda ipsum cum corrupti dolorum modi. Rem ipsam similique sapiente obcaecati tenetur beatae voluptatibus.
+                             {{ comment.content }}
                             </div>
                         </article>
 
-                        <article class="comment reply">
-                            <header class="clearfix">
-                                <img src="/img/avatar.png" alt="A Smart Guy" class="avatar">
-                                <div class="meta">
-                                    <h3><a href="#">John Doe</a></h3>
-                                    <span class="date">
-                                        24 August 2015
-                                    </span>
-                                    <span class="separator">
-                                        -
-                                    </span>
+                            {% for reply in comment.replys %}
+                            <article class="comment reply">
+                                <header class="clearfix">
+                                    <div class="meta">
+                                        <h3><a href="#">{{ reply.user.nickname }}</a></h3>
+                                        <span class="date">
+                                            {{ reply.addtime | date('Y-m-d H:i') }}
+                                        </span>
+                                        <span class="separator">
+                                            -
+                                        </span>
 
-                                    <a href="#create-comment" class="reply-link">Reply</a>
+                                        <a href="#create-comment" class="reply-link">Reply</a>
+                                    </div>
+                                </header>
+                                <div class="body">
+                                {{ reply.content }}
                                 </div>
-                            </header>
-                             <div class="body">
-                               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere sit perspiciatis debitis, vel ducimus praesentium expedita, assumenda ipsum cum corrupti dolorum modi. Rem ipsam similique sapiente obcaecati tenetur beatae voluptatibus.
-                            </div>
-                        </article>
+                            </article>
+                            {% endfor %}
 
-                        <article class="comment ">
-                            <header class="clearfix">
-                                <img src="/img/avatar.png" alt="A Smart Guy" class="avatar">
-                                <div class="meta">
-                                    <h3><a href="#">John Doe</a></h3>
-                                    <span class="date">
-                                        24 August 2015
-                                    </span>
-                                    <span class="separator">
-                                        -
-                                    </span>
-
-                                    <a href="#create-comment" class="reply-link">Reply</a>
-                                </div>
-                            </header>
-                             <div class="body">
-                               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere sit perspiciatis debitis, vel ducimus praesentium expedita, assumenda ipsum cum corrupti dolorum modi. Rem ipsam similique sapiente obcaecati tenetur beatae voluptatibus.
-                            </div>
-                        </article>
-
-                        <article class="comment">
-                            <header class="clearfix">
-                                <img src="/img/avatar.png" alt="A Smart Guy" class="avatar">
-                                <div class="meta">
-                                    <h3><a href="#">John Doe</a></h3>
-                                    <span class="date">
-                                        24 August 2015
-                                    </span>
-                                    <span class="separator">
-                                        -
-                                    </span>
-
-                                    <a href="#create-comment" class="reply-link">Reply</a>
-                                </div>
-                            </header>
-                             <div class="body">
-                               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere sit perspiciatis debitis, vel ducimus praesentium expedita, assumenda ipsum cum corrupti dolorum modi. Rem ipsam similique sapiente obcaecati tenetur beatae voluptatibus.
-                            </div>
-                        </article>
+                        {% endfor %}
                     </aside>
 
                     <aside class="create-comment" id="create-comment">
@@ -135,22 +96,13 @@
 
                         <h2><i class="fa fa-pencil"></i> Add Comment</h2>
 
-                        <form action="#" method="get" accept-charset="utf-8">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <input type="text" name="name" id="comment-name" placeholder="Your Name" class="form-control input-lg">    
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="email" name="email" id="comment-email" placeholder="Email" class="form-control input-lg">    
-                                </div>
-                            </div>
+                        <form action="{{ mkUrl("Article.Comment") }}" method="post">
+                            <input type="hidden" name="id" value="{{ article.id }}" />
 
-                            <input type="url" name="name" id="comment-url" placeholder="Website" class="form-control input-lg">
-
-                            <textarea rows="10" name="message" id="comment-body" placeholder="Your Message" class="form-control input-lg"></textarea>
+                            <textarea {% if not uid %}disabled="disabled"{% endif %} rows="10" name="content" id="comment-body" placeholder="Your Message" class="form-control input-lg"></textarea>
 
                             <div class="buttons clearfix">
-                                <button type="submit" class="btn btn-xlarge btn-clean-one">Submit</button>
+                                <button {% if not uid %}disabled="disabled"{% endif %} type="submit" class="btn btn-xlarge btn-clean-one">Submit</button>
                             </div>
                         </form>
                     </aside>
@@ -189,23 +141,20 @@
                         </div>
                     </div>
 
+                    {% if taglist %}
                     <div class="aside-widget">
                         <header>
                             <h3>Tags</h3>
                         </header>
                         <div class="body clearfix">
                             <ul class="tags">
-                                <li><a href="#">HTML5</a></li>
-                                <li><a href="#">CSS3</a></li>
-                                <li><a href="#">COMPONENTS</a></li>
-                                <li><a href="#">TEMPLATE</a></li>
-                                <li><a href="#">PLUGIN</a></li>
-                                <li><a href="#">BOOTSTRAP</a></li>
-                                <li><a href="#">TUTORIAL</a></li>
-                                <li><a href="#">UI/UX</a></li>
+                                {% for tag in taglist %}
+                                    <li><a href="{{ tag.url }}">{{ tag.name }}</a></li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
+                    {% endif %}
                 </aside>
             </div>
         </div>

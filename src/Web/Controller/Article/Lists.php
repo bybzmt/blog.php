@@ -15,7 +15,7 @@ class Lists extends Web
     private $tag;
     private $page;
     private $offset;
-    private $length = 4;
+    private $length = 5;
 
     public function init()
     {
@@ -55,27 +55,49 @@ class Lists extends Web
             $article_rows = $this->tag->getArticleList($this->offset, $this->length);
             $count = $this->tag->getArticleCount();
         } else {
-            $this->articles = $this->_context->getService('Article')->getIndexList($this->offset, $this->length);
+            $article_rows = $this->_context->getService('Article')->getIndexList($this->offset, $this->length);
             $count = $this->_context->getService('Article')->getIndexCount();
         }
 
-        $this->pagination = Pagination::style1($count, $this->length, $this->page, function($page){
-            $params = $this->tag_id ? ['tag' => $this->tag_id] : [];
-            if ($page > 1) {
-                $params['page'] = $page;
-            }
-            return Reverse::mkUrl('Article.Lists', $params);
-        });
+        $articles = [];
+        foreach ($article_rows as $row) {
+            $articles[] = array(
+                'title' => $row->title,
+                'intro' => $row->intro,
+                'addtime' => $row->addtime,
+                'commentsNum' => $row->getCommentsNum(),
+                'author' => $this->_context->getRow("User", $row->user_id),
+                'link' => Reverse::mkUrl('Article.Show', ['id'=>$row->id]),
+            );
+        }
 
         $tag_rows = $this->_context->getService('Article')->getIndexTags();
+        $taglist = array();
         foreach ($tag_rows as $row) {
-            $this->taglist[] = array(
+            $taglist[] = array(
                 'name' => $row->name,
                 'url' => Reverse::mkUrl('Article.Lists', ['tag'=>$row->id])
             );
         }
 
-        $this->render();
+        $pagination = Pagination::style1($count, $this->length, $this->page, function($page){
+            $params = array();
+            if ($page > 1) {
+                $params['page'] = $page;
+            }
+            if ($this->tag_id) {
+                $params['tag'] = $this->tag_id;
+            }
+
+            return Reverse::mkUrl('Article.Lists', $params);
+        });
+
+        $this->render(array(
+            'tag' => $this->tag,
+            'articles' => $articles,
+            'taglist' => $taglist,
+            'pagination' => $pagination,
+        ));
     }
 
 

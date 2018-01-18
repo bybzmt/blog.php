@@ -11,6 +11,11 @@ abstract class Row
         $this->init($row);
     }
 
-    abstract protected function init(array $row);
+    protected function init(array $row)
+    {
+        foreach ($row as $key => $val) {
+            $this->$key = $val;
+        }
+    }
 
 }

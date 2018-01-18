@@ -5,21 +5,6 @@ use Bybzmt\Blog\Common;
 
 class Tag extends Common\Row
 {
-    public $id;
-    public $name;
-    public $sort;
-    public $status;
-    public $top;
-
-    protected function init(array $row)
-    {
-        $this->id = (int)$row['id'];
-        $this->name = $row['name'];
-        $this->sort = (int)$row['sort'];
-        $this->status = (int)$row['status'];
-        $this->top = (int)$row['top'];
-    }
-
     //标签文章列表
     public function getArticleList(int $offset, int $length)
     {

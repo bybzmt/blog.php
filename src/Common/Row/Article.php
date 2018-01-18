@@ -7,41 +7,9 @@ class Article extends Common\Row
 {
     const max_tag_num=60;
 
-    public $id;
-    public $author;
-    public $title;
-    public $intro;
-    public $content;
-    public $addtime;
-    public $edittime;
-    public $status;
-    public $locked;
-    public $deleted;
-    public $top;
-
-    private $_cache_comments_num;
-    private $_cache_tags;
-
-    protected function init(array $row)
-    {
-        $this->id = $row['id'];
-        $this->title = $row['title'];
-        $this->intro = $row['intro'];
-        $this->content = $row['content'];
-        $this->addtime = strtotime($row['addtime']);
-        $this->edittime = strtotime($row['edittime']);
-        $this->top = (bool)$row['top'];
-        $this->status = (int)$row['status'];
-        $this->locked = (bool)$row['locked'];
-        $this->deleted = (bool)$row['deleted'];
-        $this->author = $this->_context->getLazyRow('User', $row['user_id']);
-        $this->_cache_comments_num = (int)$row['cache_comments_num'];
-        $this->_cache_tags = $row['cache_tags'];
-    }
-
     public function getCommentsNum()
     {
-        return $this->_cache_comments_num;
+        return $this->_comments_num;
     }
 
     public function getComments(int $offset, int $length)
@@ -52,22 +20,31 @@ class Article extends Common\Row
     public function addComment(User $user, string $content)
     {
         $data = array(
+            'id' => "{$this->id}:",
             'article_id' => $this->id,
             'user_id' => $user->id,
+            'comment_id' => 0,
             'content' => $content,
-            'addtime' => date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']),
             'status' => 1,
-            'cache_replys_id' => '',
+            '_replys_id' => '',
         );
 
         //保存回复
         $id = $this->_context->getTable('Comment')->insert($data);
 
         if ($id) {
+            //给用户增加发评论的关联记录
+            $this->_context->getTable("Record")->insert(array(
+                'id' => "{$user->id}:",
+                'user_id' => $user->id,
+                'type' => 1,
+                'to_id' => $id,
+            ));
+
             //修改文章回复数缓存
             $this->_context->getTable('Article')->incrCommentsNum($this->id, 1);
 
-            $this->_cache_comments_num++;
+            $this->_comments_num++;
 
             //添加到列表缓存
             $this->_context->getCache('ArticleComments', $this->id)->addItem($id);
@@ -83,7 +60,7 @@ class Article extends Common\Row
         $ok = $this->_context->getTable('Article')->decrCommentsNum($this->id, 1);
         if ($ok) {
             //内存中的变量
-            $this->_cache_comments_num--;
+            $this->_comments_num--;
             //文章评论列表缓存重置
             $this->_context->getCache('ArticleComments', $this->id)->delItem($comment_id);
         }
@@ -96,19 +73,19 @@ class Article extends Common\Row
         //重新统计表中的评论数量
         $num = $this->_context->getTable("Comment")->getArticleCommentNum($this->id);
         //修改数据
-        $ok = $this->_context->getTable("Article")->update($this->id, ['cache_comments_num'=>$num]);
+        $ok = $this->_context->getTable("Article")->update($this->id, ['_comments_num'=>$num]);
         if ($ok) {
             //文章评论列表缓存重置
             $this->_context->getCache('ArticleComments', $this->id)->del();
             //当前变量
-            $this->_cache_comments_num = $num;
+            $this->_comments_num = $num;
         }
         return $ok;
     }
 
     public function getTags()
     {
-        $tag_ids = unpack('N*', $this->_cache_tags);
+        $tag_ids = unpack('N*', $this->_tags);
 
         $tags = [];
         foreach ($tag_ids as $tag_id) {
@@ -117,7 +94,7 @@ class Article extends Common\Row
         return $tags;
     }
 
-    public function setTags(array $tags)
+    public function setTags(Tag ...$tags)
     {
         if (count($tags) > self::max_tag_num) {
             return false;
@@ -134,13 +111,10 @@ class Article extends Common\Row
         $ok = $this->_context->getTable('ArticleTag')->setTags($this->id, $tag_ids);
         if ($ok) {
             //修改关连缓存
-            $this->_context->getTable('Article')->update($this->id, ['cache_tags' => $tag_sids]);
-
-            //修改行缓存
-            $this->_context->getCache('RowCache', 'Article')->update($this->id, ['cache_tags' => $tag_sids]);
+            $this->_context->getTable('Article')->update($this->id, ['_tags' => $tag_sids]);
 
             //修改当前对像
-            $this->_cache_tags = $tag_sids;
+            $this->_tags = $tag_sids;
 
             return true;
         }

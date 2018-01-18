@@ -8,7 +8,6 @@ class Logout extends Web
 {
     public function exec()
     {
-        session_start();
         session_destroy();
 
         header("Location: /");

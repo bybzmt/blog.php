@@ -9,6 +9,17 @@ use Bybzmt\Blog\Web\Helper\TwigExtension;
 
 abstract class Web extends Common\Controller
 {
+    protected $_uid;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        session_start();
+
+        $this->_uid = isset($_SESSION['uid']) ? (int)$_SESSION['uid'] : 0;
+    }
+
     public function init()
     {
     }
@@ -37,13 +48,12 @@ abstract class Web extends Common\Controller
     {
     }
 
-    public function render(string $name=null)
+    public function render(array $data=array(), string $name=null)
     {
         $dir = __DIR__;
 
         if (!$name) {
-            $controller = substr(static::class, strlen(__NAMESPACE__)+1);
-            $name = str_replace('_', '/', $controller);
+            $name = substr(static::class, strlen(__NAMESPACE__)+1);
         }
         $file = $name . '.tpl';
 
@@ -56,11 +66,7 @@ abstract class Web extends Common\Controller
         ));
         $twig->addExtension(new TwigExtension($twig));
 
-        echo $twig->render($file, array_filter(
-            get_object_vars($this),
-            function($key){return $key[0] != '_';},
-            ARRAY_FILTER_USE_KEY
-        ));
+        echo $twig->render($file, $data);
     }
 
 }

@@ -743,6 +743,70 @@ The blog main page boxes
   margin-bottom: 18px;
 }
 
+/*
+ * ===== list =====
+ */
+.blog-list {
+  background-color: #fff;
+  /*
+  border: 1px solid #ddd;
+  margin-bottom: 40px;
+  */
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+  .blog-list {
+    display: block;
+    float: none;
+    width: 95%;
+  }
+}
+
+.blog-list header {
+  text-align: left;
+}
+
+.blog-list header img {
+  margin-bottom: 20px;
+  width: 100%;
+  opacity: 0.8;
+}
+
+.blog-list header h3 {
+  color: #454a4e;
+  margin-top: 0;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.blog-list header h3 a,
+.blog-list header h3 a:focus,
+.blog-list header h3 a:hover {
+  color: #454a4e;
+}
+
+.blog-list header .meta {
+  color: #5a6065;
+}
+
+.blog-list header hr {
+  border-top-color: #ced5db;
+  border-bottom: none;
+}
+
+.blog-list .body {
+  padding-right: 25px;
+  padding-left: 25px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.blog-list .btn {
+  float: right;
+  margin-right: 25px;
+  margin-bottom: 18px;
+}
+
 /* ==============
 Blog main page paging 
 ================= */
@@ -1029,7 +1093,6 @@ aside.comments .comment header img {
 }
 
 aside.comments .comment header .meta {
-  margin-left: 100px;
   font-size: 14px;
 }
 
@@ -1047,10 +1110,8 @@ aside.comments .comment header .meta a {
 }
 
 aside.comments .comment .body {
-  margin-top: 10px;
-  margin-left: 100px;
   border: 1px solid #ddd;
-  padding: 20px;
+  padding: 10px;
 }
 
 /* ===========
@@ -1349,4 +1410,13 @@ fieldset[disabled] .btn-clean-two.active {
   font-size: 20px;
   line-height: normal;
   border-radius: 0px;
+}
+
+/**
+ * ======== user ===========
+ */
+
+.user {
+  padding-top: 36px;
+  padding-bottom: 80px;
 }

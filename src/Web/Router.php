@@ -8,7 +8,6 @@ class Router extends Common\Router
 {
     public function _init()
     {
-        $this->get('/index', ':Article.Index');
         $this->get('/', ':Article.Lists');
         $this->get('/list/(\d+)', ':Article.Lists:page');
         $this->get('/tag/(\d+)', ':Article.Lists:tag');
@@ -16,6 +15,7 @@ class Router extends Common\Router
         $this->get('/article/(\d+)', ':Article.Show:id');
         $this->get('/about', ':About.Hello');
         $this->get('/contact', ':About.Contact');
+        $this->post('/comment', ':Article.Comment');
 
         $this->get('/user', ':User.Show');
         $this->get('/login', ':User.Login');

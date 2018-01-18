@@ -75,16 +75,6 @@ class LazyRow
         return $this->row ? $this->row->$name(...$params) : null;
     }
 
-    public function _isHit()
-    {
-        if (!$this->initd) {
-            $this->init();
-            $this->initd = true;
-        }
-
-        return (bool)$this->row;
-    }
-
     public function __debugInfo()
     {
         if (!$this->initd) {

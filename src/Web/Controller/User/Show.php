@@ -6,11 +6,23 @@ use Bybzmt\Blog\Web\Reverse;
 
 class Show extends AuthWeb
 {
-    private $user;
-    private $msg;
+    private $_lenght = 10;
+    private $_offset;
+
+    protected $user;
+    protected $msg;
+    protected $page;
+    protected $records;
+    private $_records_count;
 
     public function init()
     {
+        $this->page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($this->page < 1) {
+            $this->page = 1;
+        }
+
+        $this->_offset = ($this->page - 1) * $this->_lenght;
     }
 
     public function valid()
@@ -32,10 +44,11 @@ class Show extends AuthWeb
 
     public function show()
     {
-        var_dump($this->user);
-        die;
+        list($records, $records_count) = $this->user->getRecords($this->_offset, $this->_lenght);
 
-        $this->render();
+        $this->render(array(
+            'records' => $records,
+        ));
     }
 
 

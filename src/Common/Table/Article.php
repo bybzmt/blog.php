@@ -4,9 +4,10 @@ namespace Bybzmt\Blog\Common\Table;
 use Bybzmt\Blog\Common;
 use PDO;
 
-class Article extends Common\TableRowCache
+class Article extends Common\Table
 {
-    protected $_keyPrefix = __CLASS__;
+    use Common\TableRowCache;
+
     protected $_dbName = 'blog';
     protected $_tableName = 'articles';
     protected $_primary = 'id';
@@ -22,8 +23,8 @@ class Article extends Common\TableRowCache
         'locked',
         'deleted',
         'top',
-        'cache_tags',
-        'cache_comments_num',
+        '_tags',
+        '_comments_num',
     ];
 
     public function getIndexIds(int $offset, int $length)
@@ -35,12 +36,12 @@ class Article extends Common\TableRowCache
 
     public function incrCommentsNum(int $id, int $num)
     {
-        $sql = "update articles set cache_comments_num = cache_comments_num + ? where id = ?";
+        $sql = "update articles set _comments_num = _comments_num + ? where id = ?";
 
         $ok = $this->exec($sql, [$num, $id]);
         if ($ok) {
             $this->updateCache($id, function($row) use ($num) {
-                $row['cache_comments_num'] += $num;
+                $row['_comments_num'] += $num;
                 return $row;
             });
         }
@@ -50,12 +51,12 @@ class Article extends Common\TableRowCache
 
     public function decrCommentsNum(int $id, int $num)
     {
-        $sql = "update articles set cache_comments_num = cache_comments_num - ? where id = ?";
+        $sql = "update articles set _comments_num = _comments_num - ? where id = ?";
 
         $ok = $this->exec($sql, [$num, $id]);
         if ($ok) {
             $this->updateCache($id, function($row) use ($num) {
-                $row['cache_comments_num'] -= $num;
+                $row['_comments_num'] -= $num;
                 return $row;
             });
         }

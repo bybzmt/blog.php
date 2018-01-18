@@ -4,6 +4,14 @@
     <title>暴雨不在明天的博客</title>
 {% endblock %}
 
+{% block breadcrumb %}
+    <a href="/">Blog</a>
+    {% if tag %}
+    <span class="separator">&#x2F;</span>
+    <a href="{{ mkUrl("Article.Lists", {tag:tag.id}) }}">{{ tag.name }}</a>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div class="widewrapper main">
         <div class="container">
@@ -11,27 +19,31 @@
                 <div class="col-md-8 blog-main">
 
                 {% for article in articles %}
-                    <div class="col-md-6 col-sm-6">
-                        <article class="blog-teaser">
+                    <div class="col-md-12 col-sm-12">
+                        <article class="blog-list">
                             <header>
-                                <img src="/img/1.jpg" alt="{{ article.title }}">
-                                <h3><a href="{{ mkUrl('Article.Show', {id:article.id}) }}">{{ article.title }}</a></h3>
-                                <span class="meta">{{ article.author.nickname }} {{ article.addtime | date('Y-m-d') }}</span>
-                                <hr>
+                                <h3><a href="{{ article.link }}">{{ article.title }}</a></h3>
+
+                                <div class="meta">
+                                    <i class="fa fa-user"></i> {{ article.author.nickname }}
+                                    <i class="fa fa-calendar"></i> {{ article.addtime | date('Y-m-d') }}
+                                    <i class="fa fa-comments"></i>
+                                    <span class="data"><a href="#comments"> {{ article.commentsNum }} Comments</a></span>
+                                </div>
                             </header>
+
                             <div class="body">
                                 {{ article.intro }}
                             </div>
                             <div class="clearfix">
-                                <a href="{{ mkUrl('Article.Show', {id:article.id}) }}" class="btn btn-clean-one">Read more</a>
+                                <a href="{{ article.link }}" class="btn btn-clean-one">Read more</a>
                             </div>
+                                <hr>
                         </article>
                     </div>
                 {% endfor %}
 
-                    <div class="paging">
-                        <a href="#" class="older">Older Post</i></a>
-                    </div>
+                    {% include "pagination.tpl" %}
                 </div>
                 <aside class="col-md-4 blog-aside">
 
@@ -53,34 +65,13 @@
 
                     <div class="aside-widget">
                         <header>
-                            <h3>Related Post</h3>
-                        </header>
-                        <div class="body">
-                            <ul class="clean-list">
-                                <li><a href="">Blackor Responsive Theme</a></li>
-                                <li><a href="">Portfolio Bootstrap Template</a></li>
-                                <li><a href="">Clean Slider Template</a></li>
-                                <li><a href="">Clean - Responsive HTML5 Template</a></li>
-                                <li><a href="">Responsive Pricing Table</a></li>
-                                <li><a href="">Yellow HTML5 Template</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="aside-widget">
-                        <header>
                             <h3>Tags</h3>
                         </header>
                         <div class="body clearfix">
                             <ul class="tags">
-                                <li><a href="#">HTML5</a></li>
-                                <li><a href="#">CSS3</a></li>
-                                <li><a href="#">COMPONENTS</a></li>
-                                <li><a href="#">TEMPLATE</a></li>
-                                <li><a href="#">PLUGIN</a></li>
-                                <li><a href="#">BOOTSTRAP</a></li>
-                                <li><a href="#">TUTORIAL</a></li>
-                                <li><a href="#">UI/UX</a></li>
+                            {% for tag in taglist %}
+                                <li><a href="{{ tag.url }}">{{ tag.name }}</a></li>
+                            {% endfor %}
                             </ul>
                         </div>
                     </div>

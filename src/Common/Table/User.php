@@ -1,11 +1,13 @@
 <?php
 namespace Bybzmt\Blog\Common\Table;
 
-use Bybzmt\Blog\Common\TableRowCache;
+use Bybzmt\Blog\Common;
 use Bybzmt\Blog\Common\Helper\SQLBuilder;
 
-class User extends TableRowCache
+class User extends Common\Table
 {
+    use Common\TableRowCache;
+
     protected $_dbName = 'blog';
     protected $_tableName = 'users';
     protected $_primary = 'id';

@@ -40,7 +40,7 @@ abstract class Table
     /**
      * 按主键查找一批数据
      */
-    public function gets(array $ids, $missEmpty=true)
+    public function gets(array $ids)
     {
         if (!$ids) {
             return [];
@@ -50,16 +50,7 @@ abstract class Table
 
         $rows = $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
 
-        $rows = array_column($rows, null, $this->_primary);
-
-        //不能跳过空时
-        if (!$missEmpty) {
-            foreach (array_diff($ids, array_keys($rows)) as $id) {
-                $rows[$id] = false;
-            }
-        }
-
-        return $rows;
+        return array_column($rows, null, $this->_primary);
     }
 
     public function insert(array $row)
@@ -74,27 +65,12 @@ abstract class Table
         if ($affected) {
             if (!isset($row[$this->_primary])) {
                 return $this->getDB(true)->lastInsertId();
+            } else {
+                return $row[$this->_primary];
             }
         }
         return $affected;
     }
-
-	public function inserts(array $rows)
-	{
-        if (!$rows) {
-            return false;
-        }
-
-        list($sql, $vals) = SQLBuilder::inserts($this->_tableName, $rows);
-
-        $affected = $this->exec($sql, $vals);
-        if ($affected) {
-            if (!isset($row[$this->_primary])) {
-                return $this->getDB(true)->lastInsertId();
-            }
-        }
-        return $affected;
-	}
 
     public function update(string $id, array $row)
     {
@@ -134,14 +110,14 @@ abstract class Table
 
             return $stmt;
         } else {
-            return $this->getDB()->query($sql);
+            return $this->getDB($isMaster)->query($sql);
         }
     }
 
     protected function exec(string $sql, array $params=[])
     {
         if ($params) {
-            $stmt = $this->getDB()->prepare($sql);
+            $stmt = $this->getDB(true)->prepare($sql);
             if (!$stmt) {
                 return false;
             }
@@ -153,7 +129,7 @@ abstract class Table
 
             return $stmt->rowCount();
         } else {
-            return $this->getDB()->exec($sql);
+            return $this->getDB(true)->exec($sql);
         }
     }
 

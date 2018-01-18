@@ -17,8 +17,6 @@ class LoginExec extends Web
 
     public function init()
     {
-        session_start();
-
         $this->username = isset($_POST['username']) ? $_POST['username'] : null;
         $this->password = isset($_POST['password']) ? $_POST['password'] : null;
         $this->go = isset($_POST['go']) ? $_POST['go'] : null;

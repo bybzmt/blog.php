@@ -7,31 +7,10 @@ class Comment extends Common\Row
 {
     const max_cache_replys_num=60;
 
-    public $id;
-    public $article;
-    public $user;
-    public $content;
-    public $addtime;
-    public $status;
-
-    private $_cache_replys_id;
-
-    protected function init(array $row)
-    {
-        $this->id = $row['id'];
-        $this->article = $this->_context->getLazyRow('Article', $row['article_id']);
-        $this->user = $this->_context->getLazyRow('User', $row['user_id']);
-        $this->content = $row['content'];
-        $this->addtime = strtotime($row['addtime']);
-        $this->status = (int)$row['status'];
-
-        $this->_cache_replys_id = unpack('N*', $row['cache_replys_id']);
-    }
-
     public function getReply(int $offset, int $length)
     {
-        if ($offset+$length <= count($this->_cache_replys_id)) {
-            $ids = array_slice($this->_cache_replys_id, $offset, $length);
+        if ($offset+$length <= intval(strlen($this->_replys_id)/4)) {
+            $ids = array_slice($this->_getCacheReplyIds(), $offset, $length);
         } else {
             $ids = $this->_context->getTable('CommentsReply')->getReplyIds($this->id, $offset, $length);
         }
@@ -43,51 +22,55 @@ class Comment extends Common\Row
         return $rows;
     }
 
-    public function addReply(User $user, CommentReply $reply, string $content)
+    public function addReply(User $user, Comment $reply=null, string $content)
     {
         $data = array(
+            'id' => "{$this->article_id}:",
+            'article_id' => $this->article_id,
             'comment_id' => $this->id,
-            'reply_id' => $reply ? $reply->id : 0,
+            'reply_id' => $reply ? $reply->id : $this->id,
             'user_id' => $user->id,
             'content' => $content,
-            'addtime' => date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']),
             'status' => 1,
+            '_replys_id' => '',
         );
 
         //保存数据
-        $id = $this->_context->getTable('CommentsReply')->insert($data);
+        $id = $this->_context->getTable('Comment')->insert($data);
         if (!$id) {
             return false;
         }
 
         //给被回复的评论修改缓存记录
-        if (count($this->_cache_replys_id) < self::max_cache_replys_num) {
-            $this->_cache_replys_id[] = $id;
-            $this->_setCacheReplysId($this->_cache_replys_id);
-        }
-    }
+        if (intval(strlen($this->_replys_id)/4) < self::max_cache_replys_num) {
+            $this->_replys_id .= pack("N", $id);
 
-    private function _setCacheReplysId(array $ids)
-    {
-        $str = "";
-        foreach ($ids as $id) {
-            $str .= pack("N", $id);
+            $this->_context->getTable('Comment')->update($this->id, ['_replys_id'=>$this->_replys_id]);
         }
 
-        //更新评论记录
-        $this->_context->getTable('Comment')->update($this->id, ['cache_replys_id'=>$str]);
+        //给用户增加发评论的关联记录
+        $this->_context->getTable("Record")->insert(array(
+            'id' => "{$user->id}:",
+            'user_id' => $user->id,
+            'type' => 1,
+            'to_id' => $id,
+        ));
+
+        return true;
     }
 
     public function _removeCacheReplysId(int $id)
     {
-        if (array_search($id, $this->_cache_replys_id) !== false) {
-            if (count($this->_cache_replys_id) < self::max_cache_replys_num) {
-                $ids = array_diff($this->_cache_replys_id, [$id]);
+        $replyIds = $this->_getCacheReplyIds();
+
+        if (array_search($id, $replyIds) !== false) {
+            if (count($replyIds) < self::max_cache_replys_num) {
+                $ids = array_diff($replyIds, [$id]);
             } else {
                 $ids = $this->_context->getTable('CommentReply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
             }
 
-            $this->_setCacheReplysId($ids);
+            $this->_setCacheReplyIds($ids);
         }
     }
 
@@ -117,5 +100,21 @@ class Comment extends Common\Row
         }
 
         return $ok;
+    }
+
+    protected function _getCacheReplyIds()
+    {
+        return unpack('N*', $this->_replys_id);
+    }
+
+    protected function _setCacheReplyIds(array $ids)
+    {
+        $str = "";
+        foreach ($ids as $id) {
+            $str .= pack("N", $id);
+        }
+
+        //更新评论记录
+        $this->_context->getTable('Comment')->update($this->id, ['_replys_id'=>$str]);
     }
 }

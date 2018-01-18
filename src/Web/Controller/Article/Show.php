@@ -7,14 +7,20 @@ use Bybzmt\Blog\Web\Reverse;
 class Show extends Web
 {
     public $article;
-    public $taglist;
-
-    private $id;
-    private $msg;
+    public $offset;
+    public $lenght = 10;
+    public $id;
+    public $msg;
 
     public function init()
     {
         $this->id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $this->page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($this->page < 1) {
+            $this->page = 1;
+        }
+
+        $this->offset = ($this->page -1) * $this->lenght;
     }
 
     public function valid()
@@ -36,25 +42,45 @@ class Show extends Web
 
     public function show()
     {
-        $this->article = array(
-            'title' => $this->article->title,
-            'content' => $this->article->content,
-            'addtime' => $this->article->addtime,
-            'edittime' => $this->article->edittime,
-            'comments_num' => $this->article->getCommentsNum(),
-            'author_nickname' => $this->article->author->nickname,
-        );
+        $comments = $this->article->getComments($this->offset, $this->lenght);
+        $commentsNum = $this->article->getCommentsNum();
 
-        $tag_rows = $this->_context->getService('Article')->getIndexTags();
-        $taglist = [];
+        $comments_ss = array();
+        foreach ($comments as $comment) {
+            if (!$comment || !$comment->id) {
+                continue;
+            }
+
+            $replys = array();
+
+            $comments_ss[] = array(
+                'id' => $comment->id,
+                'content' => $comment->content,
+                'addtime' => $comment->addtime,
+                'replys' => $replys,
+                'user' => $this->_context->getLazyRow("User", $comment->user_id),
+            );
+        }
+
+        $author = $this->_context->getRow("User", $this->article->user_id);
+
+        $tag_rows = $this->article->getTags();
+        $taglist = array();
         foreach ($tag_rows as $row) {
-            $this->taglist[] = array(
+            $taglist[] = array(
                 'name' => $row->name,
                 'url' => Reverse::mkUrl('Article.Lists', ['tag'=>$row->id])
             );
         }
 
-        $this->render();
+        $this->render(array(
+            'uid' => $this->_uid,
+            'taglist' => $taglist,
+            'article' => $this->article,
+            'author' => $author,
+            'comments' => $comments_ss,
+            'commentsNum' => $commentsNum,
+        ));
     }
 
 

@@ -8,15 +8,9 @@ use Bybzmt\Blog\Web\Reverse;
 
 abstract class AuthWeb extends Web
 {
-    protected $_uid;
-
     public function __construct()
     {
         parent::__construct();
-
-        session_start();
-
-        $this->_uid = isset($_SESSION['uid']) ? $_SESSION['uid'] : 0;
 
         if (!$this->_uid) {
             $go = $_SERVER['REQUEST_SCHEME'] . '://'. $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];

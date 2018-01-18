@@ -5,23 +5,6 @@ use Bybzmt\Blog\Common;
 
 class User extends Common\Row
 {
-    public $id;
-    public $user;
-    public $pass;
-    public $nickname;
-    public $addtime;
-    public $status;
-
-    protected function init(array $row)
-    {
-        $this->id = (int)$row['id'];
-        $this->user = $row['user'];
-        $this->pass = $row['pass'];
-        $this->nickname = $row['nickname'];
-        $this->addtime = strtotime($row['addtime']);
-        $this->status = (int)$row['status'];
-    }
-
     public function encryptPass($pass)
     {
         //密码摘要，密钥确定后不可更改
@@ -80,19 +63,32 @@ class User extends Common\Row
     {
     }
 
-    public function getComments(int $offset, int $length)
+    public function getRecords(int $offset, int $length)
     {
+        $table = $this->_context->getTable("Record");
+
+        $rows = $table->getList($this->id, $offset, $length);
+        $count = $table->getListCount($this->id);
+
+        $records = array();
+        foreach ($rows as $row) {
+            $obj=null;
+
+            switch($row['type']) {
+            case 1:
+                $obj = $this->_context->getLazyRow("Comment", $row['to_id']);
+                break;
+            }
+
+            if ($obj) {
+                $records[] = array('type'=>$row['type'], 'obj'=>$obj);
+            }
+        }
+
+        return array($records, $count);
     }
 
     public function loginlog(int $offset, int $length)
-    {
-    }
-
-    public function getOrders(int $offset, int $length)
-    {
-    }
-
-    public function getAccounts()
     {
     }
 

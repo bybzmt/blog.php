@@ -3,9 +3,7 @@
 {% block breadcrumb %}
     <a href="/">Blog</a>
     <span class="separator">&#x2F;</span>
-    <a href="#">Bootstrap</a>
-    <span class="separator">&#x2F;</span>
-    <a href="#">HTML Template</a>
+    <span>Article</span>
 {% endblock %}
 
 {% block title %}
@@ -59,7 +57,7 @@
                                         -
                                     </span>
 
-                                    <a href="#create-comment" class="reply-link">Reply</a>
+                                    <a onclick="reply({{ comment.id|json_encode }}, {{ comment.user.nickname|json_encode}} )" href="#create-comment" class="reply-link">Reply</a>
                                 </div>
                             </header>
                              <div class="body">
@@ -79,7 +77,7 @@
                                             -
                                         </span>
 
-                                        <a href="#create-comment" class="reply-link">Reply</a>
+                                        <a onclick="reply({{ reply.id|json_encode }}, {{ reply.user.nickname|json_encode }})" href="#create-comment" class="reply-link">Reply</a>
                                     </div>
                                 </header>
                                 <div class="body">
@@ -91,15 +89,18 @@
                         {% endfor %}
                     </aside>
 
+                    {% include "pagination.tpl" %}
+
                     <aside class="create-comment" id="create-comment">
                         <hr>
 
                         <h2><i class="fa fa-pencil"></i> Add Comment</h2>
 
-                        <form action="{{ mkUrl("Article.Comment") }}" method="post">
+                        <form id="hid_form" onsubmit="dosubmit();return false;" action="{{ mkUrl("Article.Comment") }}" method="post">
                             <input type="hidden" name="id" value="{{ article.id }}" />
+                            <input id="hid_reply" type="hidden" name="reply" value="0" />
 
-                            <textarea {% if not uid %}disabled="disabled"{% endif %} rows="10" name="content" id="comment-body" placeholder="Your Message" class="form-control input-lg"></textarea>
+                            <textarea id="hid_content" onchange="comment()" {% if not uid %}disabled="disabled"{% endif %} rows="10" name="content" id="comment-body" placeholder="Your Message" class="form-control input-lg"></textarea>
 
                             <div class="buttons clearfix">
                                 <button {% if not uid %}disabled="disabled"{% endif %} type="submit" class="btn btn-xlarge btn-clean-one">Submit</button>
@@ -159,4 +160,81 @@
             </div>
         </div>
     </div>
+
+<div id="ResultModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">操作结果</h4>
+      </div>
+      <div class="modal-body"> 处理中... </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endblock %}
+
+
+{% block script %}
+<script>
+$('#ResultModal').on('hidden.bs.modal', function (e) {
+    location.reload(true);
+});
+function reply(id, nickname)
+{
+    document.getElementById("hid_reply").value=id;
+
+    document.getElementById("hid_content").value="@" + nickname + " ";
+}
+
+function comment()
+{
+    var content = document.getElementById("hid_content").value;
+    if (content.lenght < 1 || content[0] != "@") {
+        document.getElementById("hid_reply").value=0;
+    }
+}
+
+function dosubmit()
+{
+    $('#ResultModal').modal('show');
+
+    var data = $("#hid_form").serialize();
+    var url = $("#hid_form").attr("action");
+
+    $.post(url, data, function(json){
+        if (json.ret > 0) {
+            $("#ResultModal .modal-body").html("<p class='alert alert-warning'>" + json.data + "</p>");
+        } else {
+            $("#ResultModal .modal-body").html("<p class='alert alert-success'>" + json.data + "</p>");
+        }
+    }, 'json');
+
+    return false;
+}
+
+$(function(){
+    var hash = location.hash;
+    if (hash) {
+        if (hash.indexOf("#comment=")==0) {
+            var url = "{{ mkUrl("Article.CommentPage") }}";
+
+            var data = {
+                id:{{article.id}},
+                comment:hash.substr(("#comments=").length-1)
+            };
+
+            $.post(url, data, function(json){
+                if (json.ret == 0) {
+                    location.href = json.data;
+                }
+            }, 'json');
+        } else if (hash.indexOf("#reply=")==0) {
+        }
+    }
+});
+</script>
 {% endblock %}

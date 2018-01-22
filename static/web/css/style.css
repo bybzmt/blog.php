@@ -1080,6 +1080,7 @@ aside.create-comment h2 i {
 
 aside.comments .comment {
   margin: 30px 0 0 0;
+  border-top: 1px solid #ddd;
 }
 
 aside.comments .comment.reply {
@@ -1110,7 +1111,9 @@ aside.comments .comment header .meta a {
 }
 
 aside.comments .comment .body {
+    /*
   border: 1px solid #ddd;
+  */
   padding: 10px;
 }
 

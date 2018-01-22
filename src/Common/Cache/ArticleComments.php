@@ -19,7 +19,12 @@ class ArticleComments extends Common\ListCache
 
     protected function loadData(int $length):array
     {
-        return $this->_context->getTable('Comment')->getList($this->list_id, 0, $length);
+        $ids = $this->_context->getTable('Comment')->getListIds($this->list_id, 0, $length);
+        $out = array();
+        foreach ($ids as $id) {
+            $out[] = $this->list_id.":".$id;
+        }
+        return $out;
     }
 
 

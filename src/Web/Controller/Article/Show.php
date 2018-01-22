@@ -3,12 +3,14 @@ namespace Bybzmt\Blog\Web\Controller\Article;
 
 use Bybzmt\Blog\Web\Controller\Web;
 use Bybzmt\Blog\Web\Reverse;
+use Bybzmt\Blog\Common\Helper\Pagination;
 
 class Show extends Web
 {
     public $article;
     public $offset;
-    public $lenght = 10;
+    public $length = 10;
+    public $reply_length = 5;
     public $id;
     public $msg;
 
@@ -20,7 +22,7 @@ class Show extends Web
             $this->page = 1;
         }
 
-        $this->offset = ($this->page -1) * $this->lenght;
+        $this->offset = ($this->page -1) * $this->length;
     }
 
     public function valid()
@@ -42,28 +44,10 @@ class Show extends Web
 
     public function show()
     {
-        $comments = $this->article->getComments($this->offset, $this->lenght);
-        $commentsNum = $this->article->getCommentsNum();
+        //文章作者
+        $author = $this->_context->getLazyRow("User", $this->article->user_id);
 
-        $comments_ss = array();
-        foreach ($comments as $comment) {
-            if (!$comment || !$comment->id) {
-                continue;
-            }
-
-            $replys = array();
-
-            $comments_ss[] = array(
-                'id' => $comment->id,
-                'content' => $comment->content,
-                'addtime' => $comment->addtime,
-                'replys' => $replys,
-                'user' => $this->_context->getLazyRow("User", $comment->user_id),
-            );
-        }
-
-        $author = $this->_context->getRow("User", $this->article->user_id);
-
+        //文章标签列表
         $tag_rows = $this->article->getTags();
         $taglist = array();
         foreach ($tag_rows as $row) {
@@ -73,6 +57,63 @@ class Show extends Web
             );
         }
 
+        //文章评论
+        $comments = $this->article->getComments($this->offset, $this->length);
+        $commentsNum = $this->article->getCommentsNum();
+
+        //过滤掉无效数据交,并标记预加载
+        //将实际载加数据向后推迟，实现最终一次查询加载所有数据的效果
+        $filter = function($comment){
+            if (!$comment || !$comment->id || $comment->status != 1) {
+                return false;
+            }
+
+            //预加载回复
+            if ($comment->reply_id == 0) {
+                $comment->replys = $comment->getReply(0, $this->reply_length);
+            }
+
+            //预加载用户
+            $comment->user = $this->_context->getLazyRow("User", $comment->user_id);
+
+            return true;
+        };
+
+        $comments_ss = array();
+        foreach (array_filter($comments, $filter) as $comment) {
+            $replys= array();
+            foreach (array_filter($comment->replys, $filter) as $reply) {
+                $replys[] = array(
+                    'id' => $reply->id,
+                    'content' => $reply->content,
+                    'user' => $reply->user,
+                    'addtime' => $reply->addtime,
+                );
+            }
+
+            $comments_ss[] = array(
+                'id' => $comment->id,
+                'content' => $comment->content,
+                'addtime' => $comment->addtime,
+                'user' => $comment->user,
+                'replys' => $replys,
+            );
+        }
+
+        //评论分页
+        $pagination = Pagination::style1($commentsNum, $this->length, $this->page, function($page){
+            $params = array(
+                'id' => $this->id,
+            );
+
+            if ($page > 1) {
+                $params['page'] = $page;
+            }
+
+            return Reverse::mkUrl('Article.Show', $params);
+        });
+
+        //显示
         $this->render(array(
             'uid' => $this->_uid,
             'taglist' => $taglist,
@@ -80,6 +121,7 @@ class Show extends Web
             'author' => $author,
             'comments' => $comments_ss,
             'commentsNum' => $commentsNum,
+            'pagination' => $pagination,
         ));
     }
 

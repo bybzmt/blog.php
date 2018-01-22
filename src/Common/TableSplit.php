@@ -49,7 +49,7 @@ class TableSplit extends Table
 
             $this->_setTable($split_id);
 
-            $split_ids[$id] = $split_id;
+            $split_ids[$id] = $key;
 
             $table_ids[$this->_tableName][] = $id;
         }
@@ -70,11 +70,9 @@ class TableSplit extends Table
 
         $out = array();
         foreach ($rows as $row) {
-            $id = $row[$this->_primary];
-            $key = $split_ids[$id] . ":" . $id;
+            $key = $split_ids[$row[$this->_primary]];
             $out[$key] = $row;
         }
-
         return $out;
     }
 
@@ -94,11 +92,7 @@ class TableSplit extends Table
             $row[$this->_primary] = $this->_autoIncrement();
         }
 
-        $id = parent::insert($row);
-        if ($id) {
-            return $split_id . ":" . $id;
-        }
-        return false;
+        return parent::insert($row);
     }
 
     public function update(string $key, array $row)

@@ -6,7 +6,7 @@ use Bybzmt\Blog\Web\Reverse;
 
 class Comment extends Web
 {
-    public $id;
+    public $article_id;
     public $reply_id;
     public $content;
     public $msg;
@@ -17,7 +17,7 @@ class Comment extends Web
 
     public function init()
     {
-        $this->id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+        $this->article_id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
         $this->reply_id = isset($_POST['reply']) ? (int)$_POST['reply'] : 0;
         $this->content = isset($_POST['content']) ? trim($_POST['content']) : '';
     }
@@ -35,7 +35,7 @@ class Comment extends Web
             return false;
         }
 
-        $this->article = $this->_context->getRow('Article', $this->id);
+        $this->article = $this->_context->getRow('Article', $this->article_id);
         if (!$this->article) {
             $this->msg = "文章不存在";
             return false;
@@ -47,9 +47,14 @@ class Comment extends Web
         }
 
         if ($this->reply_id) {
-            $this->reply = $this->_context->getRow('Comment', $this->reply_id);
+            $this->reply = $this->_context->getRow('Comment', $this->article_id.":".$this->reply_id);
             if (!$this->reply) {
                 $this->msg = "被回复的评论不存在";
+                return false;
+            }
+
+            if ($this->reply->article_id != $this->article_id) {
+                $this->msg = "文章id有误";
                 return false;
             }
         }
@@ -75,12 +80,12 @@ class Comment extends Web
 
     public function fail()
     {
-        echo json_encode(['error'=>1, 'data' => $this->msg], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['ret'=>1, 'data' => $this->msg], JSON_UNESCAPED_UNICODE);
     }
 
     public function show()
     {
-        echo json_encode(['error'=>0, 'data' => '成功'], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['ret'=>0, 'data' => '成功'], JSON_UNESCAPED_UNICODE);
     }
 
 

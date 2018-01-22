@@ -38,7 +38,7 @@ class Article extends Common\Row
                 'id' => "{$user->id}:",
                 'user_id' => $user->id,
                 'type' => 1,
-                'to_id' => $id,
+                'to_id' => $this->id.":".$id,
             ));
 
             //修改文章回复数缓存
@@ -47,7 +47,7 @@ class Article extends Common\Row
             $this->_comments_num++;
 
             //添加到列表缓存
-            $this->_context->getCache('ArticleComments', $this->id)->addItem($id);
+            $this->_context->getCache('ArticleComments', $this->id)->itemLPush($this->id.":".$id);
         }
 
         return $id;

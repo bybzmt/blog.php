@@ -3,17 +3,16 @@ namespace Bybzmt\Blog\Web\Controller\User;
 
 use Bybzmt\Blog\Web\Controller\AuthWeb;
 use Bybzmt\Blog\Web\Reverse;
+use ReflectionObject;
+use Bybzmt\Blog\Common\Helper\Pagination;
 
 class Show extends AuthWeb
 {
-    private $_lenght = 10;
-    private $_offset;
-
+    protected $length = 10;
+    protected $offset;
     protected $user;
     protected $msg;
     protected $page;
-    protected $records;
-    private $_records_count;
 
     public function init()
     {
@@ -22,7 +21,7 @@ class Show extends AuthWeb
             $this->page = 1;
         }
 
-        $this->_offset = ($this->page - 1) * $this->_lenght;
+        $this->offset = ($this->page - 1) * $this->length;
     }
 
     public function valid()
@@ -44,10 +43,65 @@ class Show extends AuthWeb
 
     public function show()
     {
-        list($records, $records_count) = $this->user->getRecords($this->_offset, $this->_lenght);
+        list($records, $records_count) = $this->user->getRecords($this->offset, $this->length);
+
+        $record_rows = array();
+        foreach ($records as $record) {
+            switch ($record->type) {
+            case $record::TYPE_COMMENT:
+                $comment = $record->getData();
+                if (!$comment || !$comment->article_id) {
+                    break;
+                }
+                $article = $this->_context->getLazyRow("Article", $comment->article_id);
+
+                $record_rows[] = array(
+                    'type' => $record->type,
+                    'id' => $comment->id,
+                    'content' => $comment->content,
+                    'link' => Reverse::mkUrl("Article.Show", ['id'=>$comment->article_id])."#comment=".$comment->id,
+                    'article_id' => $article->intro,
+                    'article_intro' => $article->intro,
+                );
+                break;
+            case $record::TYPE_REPLY:
+                $reply = $record->getData();
+                if (!$reply || !$reply->article_id) {
+                    break;
+                }
+
+                $comment = $this->_context->getLazyRow("Comment", $comment->reply_id);
+                if (!$comment || !$comment->article_id) {
+                    break;
+                }
+
+                $record_rows[] = array(
+                    'type' => $record->type,
+                    'id' => $reply->id,
+                    'content' => $reply->content,
+                    'link' => Reverse::mkUrl("Article.Show", ['id'=>$reply->article_id])."#comment=".$reply->id,
+                    'article_id' => $reply->article_id,
+                    'comment_id' => $comment->id,
+                    'comment_content' => $comment->comment,
+                );
+                break;
+            }
+        }
+
+        //评论分页
+        $pagination = Pagination::style1($records_count, $this->length, $this->page, function($page){
+            $params = array();
+
+            if ($page > 1) {
+                $params['page'] = $page;
+            }
+
+            return Reverse::mkUrl('User.Show', $params);
+        });
 
         $this->render(array(
-            'records' => $records,
+            'records' => $record_rows,
+            'pagination' => $pagination,
         ));
     }
 

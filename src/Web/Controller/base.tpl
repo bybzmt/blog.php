@@ -122,5 +122,7 @@
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/modernizr.js"></script>
 
+    {% block script %}
+    {% endblock %}
 </body>
 </html>

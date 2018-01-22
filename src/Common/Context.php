@@ -122,7 +122,13 @@ class Context
      */
     public function getRow(string $name, string $id)
     {
-        $row = $this->getTable($name)->get($id);
+        if (isset($this->cachedRow[$name][$id])) {
+            $row = $this->cachedRow[$name][$id];
+        } else {
+            $row = $this->getTable($name)->get($id);
+            $this->cachedRow[$name][$id] = $row;;
+        }
+
         return $row ? $this->initRow($name, $row) : false;
     }
 

@@ -18,9 +18,4 @@ class Article extends Common\Service
         return $this->_context->getCache('IndexArticles')->count();
     }
 
-    public function getIndexTags()
-    {
-        return $this->_context->getCache('IndexTags')->gets(0, 50);
-    }
-
 }

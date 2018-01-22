@@ -59,10 +59,6 @@ class User extends Common\Row
         return $id;
     }
 
-    public function getArticleList(int $offset, int $length)
-    {
-    }
-
     public function getRecords(int $offset, int $length)
     {
         $table = $this->_context->getTable("Record");
@@ -72,17 +68,7 @@ class User extends Common\Row
 
         $records = array();
         foreach ($rows as $row) {
-            $obj=null;
-
-            switch($row['type']) {
-            case 1:
-                $obj = $this->_context->getLazyRow("Comment", $row['to_id']);
-                break;
-            }
-
-            if ($obj) {
-                $records[] = array('type'=>$row['type'], 'obj'=>$obj);
-            }
+            $records[] = $this->_context->initRow("Record", $row);
         }
 
         return array($records, $count);

@@ -18,7 +18,7 @@ class Record extends Common\TableSplit
         'to_id',
     ];
 
-    public function getList($user_id, int $offset, int $lenght)
+    public function getList(int $user_id, int $offset, int $lenght)
     {
         $this->_setTable($user_id);
 
@@ -28,7 +28,7 @@ class Record extends Common\TableSplit
         return $this->query($sql, [$user_id])->fetchAll();
     }
 
-    public function getListCount($user_id)
+    public function getListCount(int $user_id)
     {
         $this->_setTable($user_id);
 

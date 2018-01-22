@@ -59,8 +59,11 @@ class Lists extends Web
             $count = $this->_context->getService('Article')->getIndexCount();
         }
 
-        $articles = [];
+        $tags = [];
+
         foreach ($article_rows as $row) {
+            $tags = array_merge($tags,$row->getTags());
+
             $articles[] = array(
                 'title' => $row->title,
                 'intro' => $row->intro,
@@ -71,13 +74,14 @@ class Lists extends Web
             );
         }
 
-        $tag_rows = $this->_context->getService('Article')->getIndexTags();
         $taglist = array();
-        foreach ($tag_rows as $row) {
-            $taglist[] = array(
-                'name' => $row->name,
-                'url' => Reverse::mkUrl('Article.Lists', ['tag'=>$row->id])
-            );
+        foreach ($tags as $tag) {
+            if ($tag->id && !isset($taglist[$tag->id])) {
+                $taglist[$tag->id] = array(
+                    'name' => $tag->name,
+                    'url' => Reverse::mkUrl('Article.Lists', ['tag'=>$tag->id])
+                );
+            }
         }
 
         $pagination = Pagination::style1($count, $this->length, $this->page, function($page){

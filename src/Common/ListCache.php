@@ -35,7 +35,8 @@ abstract class ListCache extends Cache
         return count($this->getAllIds());
     }
 
-    public function addItem(string $id) : bool
+    //用于一个值插入到列表的头部(最左边)
+    public function itemLPush(string $id) : bool
     {
         $ids = $this->getAllIds();
         $ids = array_diff($ids, [$id]);
@@ -44,6 +45,21 @@ abstract class ListCache extends Cache
 
         while (count($ids) > $this->size) {
             array_pop($ids);
+        }
+
+        return $this->setAllIds($ids);
+    }
+
+    //用于一个值插入到列表的尾部(最右边)
+    public function itemRPush(string $id) : bool
+    {
+        $ids = $this->getAllIds();
+        $ids = array_diff($ids, [$id]);
+
+        array_push($ids, $id);
+
+        while (count($ids) > $this->size) {
+            array_shift($ids);
         }
 
         return $this->setAllIds($ids);

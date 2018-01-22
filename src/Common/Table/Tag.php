@@ -19,10 +19,4 @@ class Tag extends Common\Table
         'top',
     ];
 
-    public function getIndexTagIds()
-    {
-        $sql = "SELECT id FROM tags WHERE top > 0 ORDER BY top ASC";
-
-        return $this->query($sql)->fetchAll(PDO::FETCH_COLUMN, 0);
-    }
 }

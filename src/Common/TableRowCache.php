@@ -65,14 +65,20 @@ trait TableRowCache
     {
         $id = parent::insert($row);
         if ($id) {
-            if (!isset($row[$this->_primary])) {
-                $row[$this->_primary] = $id;
+            //对分表做特殊处理
+            if ($this instanceof TableSplit) {
+                $key = rtrim($row[$this->_primary], ":") .":". $id;
+            } else {
+                $key = $id;
             }
+
+            $row[$this->_primary] = $id;
+
             //字段数量一至时直接缓存，否则仅册除缓存
             if (count($row) == count($this->_columns)) {
-                $this->setCache($row[$this->_primary], $row);
+                $this->setCache($key, $row);
             } else {
-                $this->delCache($row[$this->_primary]);
+                $this->delCache($key);
             }
         }
 

@@ -10,26 +10,24 @@
 <div class="widewrapper main">
     <div class="container user">
 
+        {% for record in records %}
         <article>
-            <a href="{{ mkUrl("Article.Show", {id:1}) }}">
-                <p>这里是我回复的内容。这里是我回复的内容。这里是我回复的内容。这里是我回复的内容。这里是我回复的内容。</p>
-                <blockquote>这里是被回复的博客或评论。这里是被回复的博客或评论。这里是被回复的博客或评论。这里是被回复的博客或评论。</blockquote>
+        {% if record.type == 1 %}
+            <a href="{{ record.link }}">
+                <p>{{ record.content }}</p>
+                <blockquote>{{ record.article_intro }}</blockquote>
             </a>
+        {% elseif record.type == 2 %}
+            <a href="{{ record.link }}">
+                <p>{{ record.content }}</p>
+                <blockquote>{{ record.comment_content }}</blockquote>
+            </a>
+        {% endif %}
         </article>
         <hr/>
+        {% endfor %}
 
-        <article>
-            <p>这里是我回复的内容。这里是我回复的内容。这里是我回复的内容。这里是我回复的内容。这里是我回复的内容。</p>
-            <blockquote>这里是被回复的博客或评论。这里是被回复的博客或评论。这里是被回复的博客或评论。这里是被回复的博客或评论。</blockquote>
-        </article>
-        <hr/>
-
-        <article>
-            <p>这里是我回复的内容。这里是我回复的内容。这里是我回复的内容。这里是我回复的内容。这里是我回复的内容。</p>
-            <blockquote>这里是被回复的博客或评论。这里是被回复的博客或评论。这里是被回复的博客或评论。这里是被回复的博客或评论。</blockquote>
-        </article>
-        <hr/>
-
+        {% include "pagination.tpl" %}
     </div>
 </div>
 {% endblock %}

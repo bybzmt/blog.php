@@ -16,6 +16,7 @@ class Router extends Common\Router
         $this->get('/about', ':About.Hello');
         $this->get('/contact', ':About.Contact');
         $this->post('/comment', ':Article.Comment');
+        $this->post('/comment_current_page', ':Article.CommentPage');
 
         $this->get('/user', ':User.Show');
         $this->get('/login', ':User.Login');

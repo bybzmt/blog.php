@@ -37,14 +37,19 @@ class Article extends Common\Row
             $this->_context->getTable("Record")->insert(array(
                 'id' => "{$user->id}:",
                 'user_id' => $user->id,
-                'type' => 1,
+                'type' => Common\Record::TYPE_COMMENT,
                 'to_id' => $this->id.":".$id,
             ));
 
-            //修改文章回复数缓存
-            $this->_context->getTable('Article')->incrCommentsNum($this->id, 1);
+            //定时重置数量，自动纠正错误
+            if (mt_rand(1,10) == 1) {
+                $this->restCommentCacheNum();
+            } else {
+                //修改文章回复数缓存
+                $this->_context->getTable('Article')->incrCommentsNum($this->id, 1);
 
-            $this->_comments_num++;
+                $this->_comments_num++;
+            }
 
             //添加到列表缓存
             $this->_context->getCache('ArticleComments', $this->id)->itemLPush($this->id.":".$id);
@@ -71,7 +76,7 @@ class Article extends Common\Row
     public function restCommentCacheNum()
     {
         //重新统计表中的评论数量
-        $num = $this->_context->getTable("Comment")->getArticleCommentNum($this->id);
+        $num = $this->_context->getTable("Comment")->getListNum($this->id);
         //修改数据
         $ok = $this->_context->getTable("Article")->update($this->id, ['_comments_num'=>$num]);
         if ($ok) {

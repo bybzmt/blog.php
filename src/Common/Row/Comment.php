@@ -12,36 +12,30 @@ class Comment extends Common\Row
         if ($offset+$length <= intval(strlen($this->_replys_id)/4)) {
             $ids = array_slice($this->_getCacheReplyIds(), $offset, $length);
         } else {
-            $ids = $this->_context->getTable('Comment')->getReplyIds($this->article_id, $this->id, $offset, $length);
+            $ids = $this->_context->getTable('Reply')->getListIds($this->id, $offset, $length);
         }
 
         $rows = [];
         foreach ($ids as $id) {
-            $rows[] = $this->_context->getLazyRow('Comment', $this->article_id.":".$id);
+            $rows[] = $this->_context->getLazyRow('Reply', $this->id.":".$id);
         }
         return $rows;
     }
 
-    public function addReply(User $user, string $content)
+    public function addReply(User $user, string $content, Reply $reply=null)
     {
-        $comment = $this->_getComment();
-        if (!$comment) {
-            return false;
-        }
-
         $data = array(
-            'id' => "{$this->article_id}:",
+            'id' => "{$this->id}:",
             'article_id' => $this->article_id,
-            'comment_id' => $comment->id,
-            'reply_id' => $this->id,
+            'comment_id' => $this->id,
+            'reply_id' => $reply ? $reply->id : 0,
             'user_id' => $user->id,
             'content' => $content,
             'status' => 1,
-            '_replys_id' => '',
         );
 
         //保存数据
-        $id = $this->_context->getTable('Comment')->insert($data);
+        $id = $this->_context->getTable('Reply')->insert($data);
         if (!$id) {
             return false;
         }
@@ -50,16 +44,15 @@ class Comment extends Common\Row
         $this->_context->getTable("Record")->insert(array(
             'id' => "{$user->id}:",
             'user_id' => $user->id,
-            'type' => 1,
-            'to_id' => $this->article_id.":".$id,
+            'type' => Common\Record::TYPE_REPLY,
+            'to_id' => $this->id.":".$id,
         ));
 
         //给被回复的评论修改缓存记录
-        $comment->_addCacheReplyId($id);
+        $this->_addCacheReplyId($id);
 
         return true;
     }
-
 
     public function del()
     {
@@ -68,17 +61,8 @@ class Comment extends Common\Row
         if ($ok) {
             $this->status = 0;
 
-            //判断是回复文章还是回复评论的
-            if ($this->comment_id == 0) {
-                //删除文章中的评论缓存
-                $this->article->delCommentCache($this->id);
-            } else {
-                $comment = $this->_getComment();
-                if (!$comment) {
-                    return false;
-                }
-                $comment->_removeCacheReplysId($this->id);
-            }
+            //删除文章中的评论缓存
+            $this->article->delCommentCache($this->id);
         }
 
         return $ok;
@@ -100,18 +84,14 @@ class Comment extends Common\Row
 
     public function getCurrentPage($length)
     {
-        if ($this->comment_id == 0) {
-            return $this->_context->getTable("Comment")
-                ->getIdPage($this->article_id, $this->id, $length);
-        } else {
-            return $this->_context->getTable("Comment")
-                ->getReplyIdPage($this->article_id, $this->comment_id, $this->id, $length);
-        }
+        return $this->_context->getTable("Comment")
+            ->getIdPage($this->article_id, $this->id, $length);
     }
 
-    protected function _getCacheReplyIds()
+    public function _restCacheReplysId()
     {
-        return unpack('N*', $this->_replys_id);
+        $ids = $this->_context->getTable('Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
+        $this->_setCacheReplyIds($ids);
     }
 
     public function _removeCacheReplysId(int $id)
@@ -122,11 +102,16 @@ class Comment extends Common\Row
             if (count($replyIds) < self::max_cache_replys_num) {
                 $ids = array_diff($replyIds, [$id]);
             } else {
-                $ids = $this->_context->getTable('Comment')->getReplyIds($this->article_id, $this->id, 0, self::max_cache_replys_num);
+                $ids = $this->_context->getTable('Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
             }
 
             $this->_setCacheReplyIds($ids);
         }
+    }
+
+    protected function _getCacheReplyIds()
+    {
+        return unpack('N*', $this->_replys_id);
     }
 
     protected function _addCacheReplyId(string $id)
@@ -148,18 +133,5 @@ class Comment extends Common\Row
 
         //更新评论记录
         $this->_context->getTable('Comment')->update($this->article_id.":".$this->id, ['_replys_id'=>$str]);
-    }
-
-    //找到最外层的评被回复评论
-    protected function _getComment()
-    {
-        $comment = $this;
-        while ($comment->reply_id != 0) {
-            $comment = $this->_context->getRow("Comment", $this->article_id.":".$comment->reply_id);
-            if (!$comment) {
-                return false;
-            }
-        }
-        return $comment;
     }
 }

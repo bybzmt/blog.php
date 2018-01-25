@@ -1116,6 +1116,9 @@ aside.comments .comment .body {
   */
   padding: 10px;
 }
+aside.comments .replysMore {
+    text-align:right;
+}
 
 /* ===========
 Add commment form 

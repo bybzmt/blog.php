@@ -46,7 +46,7 @@ class Comment extends Common\TableSplit
     {
         $this->_setTable($article_id);
 
-        $sql = "SELECT count(*) FROM {$this->_tableName} WHERE article_id = ? AND comment_id = ? AND status = 1";
+        $sql = "SELECT count(*) FROM {$this->_tableName} WHERE article_id = ? AND status = 1";
 
         return $this->query($sql, array($article_id))->fetch(PDO::FETCH_COLUMN, 0);
     }
@@ -71,11 +71,11 @@ class Comment extends Common\TableSplit
     {
         $this->_setTable($article_id);
 
-        $sql = "SELECT COUNT(*) FROM {$this->_tableName} WHERE article_id = ? and status=1 and id >= ? ORDER BY id DESC";
+        $sql = "SELECT COUNT(*) FROM {$this->_tableName} WHERE article_id = ? and comment_id = 0 and status=1 and id >= ? ORDER BY id DESC";
 
         $count = $this->query($sql, [$article_id, $comment_id])->fetchColumn();
 
-        return (int)($count / $length) + 1;
+        return ceil($count / $length);
     }
 
     //得到指定id所在分页
@@ -83,11 +83,11 @@ class Comment extends Common\TableSplit
     {
         $this->_setTable($article_id);
 
-        $sql = "SELECT COUNT(*) FROM {$this->_tableName} WHERE comment_id = ? and status=1 and id <= ? ORDER BY id ASC";
+        $sql = "SELECT COUNT(*) FROM {$this->_tableName} WHERE article_id = ? and comment_id = ? and status=1 and id <= ? ORDER BY id ASC";
 
-        $count = $this->query($sql, [$comment_id, $reply_id])->fetchColumn();
+        $count = $this->query($sql, [$article_id, $comment_id, $reply_id])->fetchColumn();
 
-        return (int)($count / $length) + 1;
+        return (int)ceil($count / $length);
     }
 
 

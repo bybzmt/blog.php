@@ -50,28 +50,35 @@ class Show extends AuthWeb
             switch ($record->type) {
             case $record::TYPE_COMMENT:
                 $comment = $record->getData();
-                if (!$comment || !$comment->article_id) {
+                if (!$comment) {
                     break;
                 }
-                $article = $this->_context->getLazyRow("Article", $comment->article_id);
+                $article = $this->_context->getRow("Article", $comment->article_id);
+                if (!$article) {
+                    break;
+                }
 
                 $record_rows[] = array(
                     'type' => $record->type,
                     'id' => $comment->id,
                     'content' => $comment->content,
-                    'link' => Reverse::mkUrl("Article.Show", ['id'=>$comment->article_id])."#comment=".$comment->id,
-                    'article_id' => $article->intro,
+                    'link' => Reverse::mkUrl("Article.Redirect", ['type'=>$record->type, 'toid'=>$record->to_id]),
                     'article_intro' => $article->intro,
                 );
                 break;
             case $record::TYPE_REPLY:
                 $reply = $record->getData();
-                if (!$reply || !$reply->article_id) {
+                if (!$reply) {
                     break;
                 }
 
-                $comment = $this->_context->getLazyRow("Comment", $comment->reply_id);
-                if (!$comment || !$comment->article_id) {
+                if ($reply->reply_id) {
+                    $target = $this->_context->getRow("Reply", $reply->comment_id.":".$reply->reply_id);
+                } else {
+                    $target = $this->_context->getRow("Comment", $reply->article_id.":".$reply->comment_id);
+                }
+
+                if (!$target) {
                     break;
                 }
 
@@ -79,10 +86,8 @@ class Show extends AuthWeb
                     'type' => $record->type,
                     'id' => $reply->id,
                     'content' => $reply->content,
-                    'link' => Reverse::mkUrl("Article.Show", ['id'=>$reply->article_id])."#comment=".$reply->id,
-                    'article_id' => $reply->article_id,
-                    'comment_id' => $comment->id,
-                    'comment_content' => $comment->comment,
+                    'link' => Reverse::mkUrl("Article.Redirect", ['type'=>$record->type, 'toid'=>$record->to_id]),
+                    'comment_content' => $target->content,
                 );
                 break;
             }

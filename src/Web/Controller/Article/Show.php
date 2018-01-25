@@ -4,13 +4,14 @@ namespace Bybzmt\Blog\Web\Controller\Article;
 use Bybzmt\Blog\Web\Controller\Web;
 use Bybzmt\Blog\Web\Reverse;
 use Bybzmt\Blog\Common\Helper\Pagination;
+use Bybzmt\Blog\Web\Helper\Cfg;
 
 class Show extends Web
 {
     public $article;
     public $offset;
-    public $length = 10;
-    public $reply_length = 5;
+    public $length = Cfg::COMMENT_LENGTH;
+    public $reply_length = Cfg::REPLY_LENGTH;
     public $id;
     public $msg;
 
@@ -68,9 +69,24 @@ class Show extends Web
                 return false;
             }
 
-            //预加载回复
-            if ($comment->reply_id == 0) {
-                $comment->replys = $comment->getReply(0, $this->reply_length);
+            $comment->replys = $comment->getReply(0, $this->reply_length+1);
+            if (count($comment->replys) > $this->reply_length) {
+                array_pop($comment->replys);
+
+                $comment->replysMore = true;
+            } else {
+                $comment->replysMore = false;
+            }
+
+            //预加载用户
+            $comment->user = $this->_context->getLazyRow("User", $comment->user_id);
+
+            return true;
+        };
+
+        $filter2 = function($comment){
+            if (!$comment || !$comment->id || $comment->status != 1) {
+                return false;
             }
 
             //预加载用户
@@ -82,7 +98,7 @@ class Show extends Web
         $comments_ss = array();
         foreach (array_filter($comments, $filter) as $comment) {
             $replys= array();
-            foreach (array_filter($comment->replys, $filter) as $reply) {
+            foreach (array_filter($comment->replys, $filter2) as $reply) {
                 $replys[] = array(
                     'id' => $reply->id,
                     'content' => $reply->content,
@@ -97,6 +113,7 @@ class Show extends Web
                 'addtime' => $comment->addtime,
                 'user' => $comment->user,
                 'replys' => $replys,
+                'replysMore' => $comment->replysMore,
             );
         }
 

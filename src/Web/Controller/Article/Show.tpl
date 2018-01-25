@@ -46,7 +46,7 @@
                         <h2><i class="fa fa-comments"></i> {{ commentsNum }} Comments</h2>
 
                         {% for comment in comments %}
-                        <article class="comment">
+                        <article class="comment" id="comment-{{ comment.id }}">
                             <header class="clearfix">
                                 <div class="meta">
                                     <h3><a href="#">{{ comment.user.nickname }}</a></h3>
@@ -65,8 +65,10 @@
                             </div>
                         </article>
 
+                        {% if comment.replys %}
+                        <aside class="comments" id="replys-{{ comment.id }}">
                             {% for reply in comment.replys %}
-                            <article class="comment reply">
+                            <article class="comment reply" id="reply-{{ reply.id }}">
                                 <header class="clearfix">
                                     <div class="meta">
                                         <h3><a href="#">{{ reply.user.nickname }}</a></h3>
@@ -85,6 +87,14 @@
                                 </div>
                             </article>
                             {% endfor %}
+
+                            {% if comment.replysMore %}
+                            <div class="replysMore">
+                                <a href="#" onclick="replyPage({{comment.id}}, 2)">下一页</a>
+                            </div>
+                            {% endif %}
+                        </aside>
+                        {% endif %}
 
                         {% endfor %}
                     </aside>
@@ -180,9 +190,24 @@
 
 {% block script %}
 <script>
+function replyPage(comment_id, page, fn)
+{
+    var url = "{{ mkUrl("Article.Replys", {article:article.id}) }}";
+    $("#replys-"+comment_id).load(url + "&comment=" + comment_id + "&page=" + page);
+
+    window.setTimeout(function(){
+        if (fn) {
+            fn()
+        } else {
+            $("#replys-" + comment_id).get(0).scrollIntoView();
+        }
+    }, 20);
+}
+
 $('#ResultModal').on('hidden.bs.modal', function (e) {
     location.reload(true);
 });
+
 function reply(id, nickname)
 {
     document.getElementById("hid_reply").value=id;
@@ -219,20 +244,21 @@ function dosubmit()
 $(function(){
     var hash = location.hash;
     if (hash) {
-        if (hash.indexOf("#comment=")==0) {
-            var url = "{{ mkUrl("Article.CommentPage") }}";
+        var prefix = "#torid=";
+        if (hash.indexOf(prefix)==0) {
+            var tmp = hash.substr(prefix.length).split(":");
+            var comment_id = tmp[0];
+            var comment_page = tmp[1];
+            var reply_id = tmp[2];
 
-            var data = {
-                id:{{article.id}},
-                comment:hash.substr(("#comments=").length-1)
-            };
-
-            $.post(url, data, function(json){
-                if (json.ret == 0) {
-                    location.href = json.data;
-                }
-            }, 'json');
-        } else if (hash.indexOf("#reply=")==0) {
+            if (comment_page == "1") {
+                $("#replys-" + reply_id).get(0).scrollIntoView();
+            } else {
+                //先要加载
+                replyPage(comment_id, comment_page, function(){
+                    $("#reply-" + reply_id).get(0).scrollIntoView();
+                });
+            }
         }
     }
 });

@@ -72,7 +72,13 @@ class LazyRow
             $this->initd = true;
         }
 
-        return $this->row ? $this->row->$name(...$params) : null;
+        if ($this->row) {
+            if (method_exists($this->row, $name)) {
+                return $this->row->$name(...$params);
+            }
+        }
+
+        throw new Exception("Row {$this->name} not exists method {$name}");
     }
 
     public function __debugInfo()
@@ -83,6 +89,7 @@ class LazyRow
         }
 
         return array(
+            'name' => $this->name,
             'row' => $this->row,
         );
     }

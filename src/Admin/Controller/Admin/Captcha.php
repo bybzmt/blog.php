@@ -13,8 +13,7 @@ class Captcha extends Web
 
     public function show()
     {
-        //$obj = new Helper\ValidateCode(118, 36);
-        $obj = new Helper\CaptchaCode2(118, 36);
+        $obj = new Helper\CaptchaCode(118, 36);
 
         $_SESSION['admin_captcha'] = $obj->getCode();
 

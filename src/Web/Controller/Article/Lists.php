@@ -4,6 +4,7 @@ namespace Bybzmt\Blog\Web\Controller\Article;
 use Bybzmt\Blog\Web\Controller\Web;
 use Bybzmt\Blog\Web\Reverse;
 use Bybzmt\Blog\Common\Helper\Pagination;
+use Bybzmt\Blog\Web\Helper\Cfg;
 
 class Lists extends Web
 {
@@ -15,7 +16,7 @@ class Lists extends Web
     private $tag;
     private $page;
     private $offset;
-    private $length = 5;
+    private $length = Cfg::ARTICLE_LENGTH;
 
     public function init()
     {

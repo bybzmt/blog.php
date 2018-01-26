@@ -9,7 +9,7 @@ class Captcha extends Web
 {
     public function show()
     {
-        $obj = new Helper\CaptchaCode2(118, 36);
+        $obj = new Helper\CaptchaCode(118, 36);
 
         $_SESSION['captcha'] = $obj->getCode();
 

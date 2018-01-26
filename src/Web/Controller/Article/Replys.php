@@ -56,7 +56,7 @@ class Replys extends Web
 
     public function show()
     {
-        $rows = $this->comment->getReply($this->offset, $this->length+1);
+        $rows = $this->comment->getReplys($this->offset, $this->length+1);
 
         if (count($rows) > $this->length) {
             array_pop($rows);

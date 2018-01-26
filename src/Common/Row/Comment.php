@@ -7,7 +7,25 @@ class Comment extends Common\Row
 {
     const max_cache_replys_num=60;
 
-    public function getReply(int $offset, int $length)
+    public function getArticle()
+    {
+        $article = $this->_context->getRow("Article", $this->article_id);
+        if (!$article) {
+            throw new Exception("Row Comment:{$this->id} 关联 Article:{$this->article_id} 不存在");
+        }
+        return $article;
+    }
+
+    public function getUser()
+    {
+        $user = $this->_context->getRow("User", $this->user_id);
+        if (!$user) {
+            throw new Exception("Row Comment:{$this->id} 关联 User:{$this->user_id} 不存在");
+        }
+        return $user;
+    }
+
+    public function getReplys(int $offset, int $length)
     {
         if ($offset+$length <= intval(strlen($this->_replys_id)/4)) {
             $ids = array_slice($this->_getCacheReplyIds(), $offset, $length);
@@ -44,7 +62,7 @@ class Comment extends Common\Row
         $this->_context->getTable("Record")->insert(array(
             'id' => "{$user->id}:",
             'user_id' => $user->id,
-            'type' => Common\Record::TYPE_REPLY,
+            'type' => Record::TYPE_REPLY,
             'to_id' => $this->id.":".$id,
         ));
 
@@ -62,7 +80,7 @@ class Comment extends Common\Row
             $this->status = 0;
 
             //删除文章中的评论缓存
-            $this->article->delCommentCache($this->id);
+            $this->getArticle()->delCommentCache($this->id);
         }
 
         return $ok;
@@ -76,7 +94,7 @@ class Comment extends Common\Row
             $this->status = 1;
 
             //重置文章的评论缓存
-            $this->article->restCommentCacheNum();
+            $this->getArticle()->restCommentCacheNum();
         }
 
         return $ok;
@@ -87,6 +105,7 @@ class Comment extends Common\Row
         return $this->_context->getTable("Comment")
             ->getIdPage($this->article_id, $this->id, $length);
     }
+
 
     public function _restCacheReplysId()
     {

@@ -7,6 +7,15 @@ class Article extends Common\Row
 {
     const max_tag_num=60;
 
+    public function getUser()
+    {
+        $user = $this->_context->getRow("User", $this->user_id);
+        if (!$user) {
+            throw new Exception("Row Article:{$this->id} 关联 User:{$this->user_id} 不存在");
+        }
+        return $user;
+    }
+
     public function getCommentsNum()
     {
         return $this->_comments_num;
@@ -37,7 +46,7 @@ class Article extends Common\Row
             $this->_context->getTable("Record")->insert(array(
                 'id' => "{$user->id}:",
                 'user_id' => $user->id,
-                'type' => Common\Record::TYPE_COMMENT,
+                'type' => Record::TYPE_COMMENT,
                 'to_id' => $this->id.":".$id,
             ));
 

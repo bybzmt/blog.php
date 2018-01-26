@@ -31,8 +31,8 @@ class Redirect extends Web
 
             $page = $comment->getCurrentPage(Cfg::COMMENT_LENGTH);
 
-            $this->url = Reverse::mkUrl("Article.Show", ['id'=>$this->article_id, 'page'=>$page]);
-            $this->url .= "#comment-". $this->comment->id;
+            $this->url = Reverse::mkUrl("Article.Show", ['id'=>$comment->article_id, 'page'=>$page]);
+            $this->url .= "#comment-". $comment->id;
 
             return true;
         case Record::TYPE_REPLY:

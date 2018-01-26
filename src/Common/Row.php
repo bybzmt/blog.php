@@ -12,12 +12,13 @@ abstract class Row implements IteratorAggregate, ArrayAccess
     public function __construct(Context $context, array $row)
     {
         $this->_context = $context;
-        $this->init($row);
+        $this->_row = $row;
+
+        $this->init();
     }
 
-    protected function init(array $row)
+    protected function init()
     {
-        $this->_row = $row;
     }
 
     public function __isset($key)
@@ -66,6 +67,6 @@ abstract class Row implements IteratorAggregate, ArrayAccess
 
     public function offsetGet($offset)
     {
-        return isset($this->_row[$offset]) ? $this->_row[$offset] : null;
+        return $this->_row[$offset];
     }
 }

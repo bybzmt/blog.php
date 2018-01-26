@@ -17,7 +17,6 @@ class Comment extends Common\TableSplit
         'id',
         'article_id',
         'comment_id',
-        'reply_id',
         'user_id',
         'content',
         'addtime',

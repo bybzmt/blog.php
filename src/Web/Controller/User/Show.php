@@ -53,10 +53,8 @@ class Show extends AuthWeb
                 if (!$comment) {
                     break;
                 }
-                $article = $this->_context->getRow("Article", $comment->article_id);
-                if (!$article) {
-                    break;
-                }
+
+                $article = $comment->getArticle();
 
                 $record_rows[] = array(
                     'type' => $record->type,
@@ -73,13 +71,9 @@ class Show extends AuthWeb
                 }
 
                 if ($reply->reply_id) {
-                    $target = $this->_context->getRow("Reply", $reply->comment_id.":".$reply->reply_id);
+                    $target = $reply->getReply();
                 } else {
-                    $target = $this->_context->getRow("Comment", $reply->article_id.":".$reply->comment_id);
-                }
-
-                if (!$target) {
-                    break;
+                    $target = $reply->getComment();
                 }
 
                 $record_rows[] = array(
@@ -94,7 +88,7 @@ class Show extends AuthWeb
         }
 
         //评论分页
-        $pagination = Pagination::style1($records_count, $this->length, $this->page, function($page){
+        $pagination = Pagination::style2($records_count, $this->length, $this->page, function($page){
             $params = array();
 
             if ($page > 1) {

@@ -3,9 +3,9 @@
 {% block title %}Contact Me{% endblock %}
 
 {% block breadcrumb %}
-    <span>Login</span>
+    <span>Register</span>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="{{ mkUrl("User.Register") }}">Register</a>
+    <a href="{{ mkUrl("User.Login") }}">Login</a>
 {% endblock %}
 
 {% block content %}
@@ -13,11 +13,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-md-offset-3 clean-superblock" id="contact">
-                    <h2>Login</h2>
+                    <h2>Register</h2>
 
-                    <form action="{{mkUrl("User.LoginExec")}}" method="post" class="contact-form" />
-                        <input type="hidden" name="go" value="{{go}}" />
-
+                    <form action="{{mkUrl("User.RegisterExec")}}" method="post" class="contact-form" />
                         {% if msg %}
                         <div class="col-md-12">
                             <p class="alert alert-warning">{{msg}}</p>
@@ -29,6 +27,9 @@
                         </div>
                         <div class="col-md-12">
                             <input type="password" name="password" placeholder="Password" class="form-control input-lg" />
+                        </div>
+                        <div class="col-md-12">
+                            <input type="text" name="nickname" placeholder="NickName" class="form-control input-lg" />
                         </div>
                         <div class="col-md-8">
                             <input type="text" name="captcha" placeholder="Captcha" class="form-control input-lg" />

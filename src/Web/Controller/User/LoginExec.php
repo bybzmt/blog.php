@@ -17,11 +17,13 @@ class LoginExec extends Web
 
     public function init()
     {
-        $this->username = isset($_POST['username']) ? $_POST['username'] : null;
-        $this->password = isset($_POST['password']) ? $_POST['password'] : null;
+        $this->username = isset($_POST['username']) ? trim($_POST['username']) : null;
+        $this->password = isset($_POST['password']) ? trim($_POST['password']) : null;
         $this->go = isset($_POST['go']) ? $_POST['go'] : null;
-        $this->captcha = isset($_POST['captcha']) ? $_POST['captcha'] : null;
+        $this->captcha = isset($_POST['captcha']) ? trim($_POST['captcha']) : null;
         $this->se_captcha = isset($_SESSION['captcha']) ? $_SESSION['captcha'] : null;
+
+        $_SESSION['captcha'] = null;
     }
 
     public function valid()

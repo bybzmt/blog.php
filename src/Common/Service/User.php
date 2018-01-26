@@ -17,8 +17,22 @@ class User extends Common\Service
     }
 
     //添加新用户
-    public function add(string $user, string $name)
+    public function addUser(string $user, string $nickName)
     {
+        $data = array(
+            'user' => $user,
+            'pass' => '',
+            'nickname' => $nickName,
+            'status' => 1,
+        );
+
+        $id = $this->_context->getTable("User")->insert($data);
+
+        if ($id) {
+            return $this->_context->getRow("User", $id);
+        }
+
+        return $id;
     }
 
 

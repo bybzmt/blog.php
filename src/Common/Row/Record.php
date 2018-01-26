@@ -12,9 +12,9 @@ class Record extends Common\Row
     {
         switch($this->type) {
         case self::TYPE_COMMENT:
-            return $this->_context->getLazyRow("Comment", $this->to_id);
+            return $this->_context->getRow("Comment", $this->to_id);
         case self::TYPE_REPLY:
-            return $this->_context->getLazyRow("Reply", $this->to_id);
+            return $this->_context->getRow("Reply", $this->to_id);
         }
 
         return false;

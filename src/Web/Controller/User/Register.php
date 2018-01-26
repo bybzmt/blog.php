@@ -1,18 +1,22 @@
 <?php
-namespace Bybzmt\Blog\Web\Controller;
+namespace Bybzmt\Blog\Web\Controller\User;
 
-use Bybzmt\Blog\Web\Controller\AuthWeb;
+use Bybzmt\Blog\Web\Controller\Web;
 use Bybzmt\Blog\Web\Reverse;
 
-class User_Logout extends AuthWeb
+class Register extends Web
 {
-    public function exec()
-    {
-        session_destroy();
+    public $msg;
 
-        $go = $_SERVER['REQUEST_SCHEME'] . '://'. $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        header("Location: $url");
-        echo "Location: $url";
-        die;
+    public function init()
+    {
+        $this->msg = isset($_GET['msg']) ? $_GET['msg'] : '';
+    }
+
+    public function show()
+    {
+        $this->render([
+            'msg' => $this->msg,
+        ]);
     }
 }

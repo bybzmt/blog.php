@@ -1,9 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Common\Helper;
 
-use Imagick;
-use ImagickPixel;
-use ImagickDraw;
+use Gmagick;
+use GmagickPixel;
+use GmagickDraw;
 
 class CaptchaCode
 {
@@ -53,43 +53,41 @@ class CaptchaCode
     }
 
 	/**
-	 * Imagick 生成验证码
+	 * Gmagick 生成验证码
 	 */
 	public function show()
 	{
         $randcode = $this->getCode();
 
-		$image = new Imagick();
-		$pixel = new ImagickPixel();
+		$image = new Gmagick();
+		$pixel = new GmagickPixel();
 
 		$pixel->setColor($this->backcolor);
-		$image->newImage($this->width, $this->height, $pixel);
+		$image->newImage($this->width, $this->height, '#ffffff');
 
 		//实例化画图类
-		$draw = new ImagickDraw();
+		$draw = new GmagickDraw();
 
 		$pixel->setColor($this->fontcolor);
 
 		$num = mb_strlen($randcode);
 
+        $this->fontsize = (int)($this->width / $num * 1.0);
+
 		//设置字体
 		$draw->setFontSize($this->fontsize);
-		$draw->setFont(ASSETS_PATH.'/fonts/elephant.ttf');
-		//设置画文字时的对齐方面(center:下边中点)
-		$draw->setTextAlignment(imagick::ALIGN_CENTER);
+		$draw->setFont(ASSETS_PATH.'/fonts/monaco.ttf');
 
-		for ($i=1; $i<=$num; $i++) {
-			$str = mb_substr($randcode, $i-1, 1);
+		for ($i=0; $i<$num; $i++) {
+			$str = mb_substr($randcode, $i, 1);
 
 			//计算基准点
-			$b_x = 10 + (($this->width-20) / $num * $i - ($this->width-20)/$num / 2);
+			$b_x =  ($this->fontsize/3) + ($this->width / $num * $i);
 			$b_y = $this->height / 2 + $this->fontsize / 3;  //文字是以底边对齐的，根据文字大小计算出底边位置
 
 			//随机偏移值
-			$p_x = $b_x + mt_rand(1, 10) - 5;
+			$p_x = $b_x - 0;
 			$p_y = $b_y + mt_rand(1, 10) - 5;
-			//$p_x = $b_x;
-			//$p_y = $b_y;
 			$ro = mt_rand(1, 100) - 50;
 
 			//计算旋转后$ro度后的圆上点的坐标
@@ -100,7 +98,7 @@ class CaptchaCode
 			$p2_y = cos($S) * $D;
 
 			$draw->rotate($ro);
-			$draw->annotation($p2_x, $p2_y, $str);
+			$draw->annotate($p2_x, $p2_y, $str);
 			$draw->rotate(-$ro);
 		}
 
@@ -109,7 +107,7 @@ class CaptchaCode
 			$draw->point(mt_rand(0, $this->width), mt_rand(0, $this->height));
 		}
 
-		for($i=0; $i<10; $i++) {
+		for($i=0; $i<20; $i++) {
 			//绘制干扰线, 这边限制了生成图像最大宽为255,高为127
 			$x  = mt_rand(0,$this->width);
 			$y  = mt_rand(0,$this->height);
@@ -129,6 +127,9 @@ class CaptchaCode
 
 		header('Content-type: image/jpg');
 		echo $image;
+
+		//释放资源
+		$image->destroy();
 	}
 
 }

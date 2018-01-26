@@ -5,6 +5,46 @@ use Bybzmt\Blog\Common;
 
 class Reply extends Common\Row
 {
+    public function getArticle()
+    {
+        $article = $this->_context->getRow("Article", $this->article_id);
+        if (!$article) {
+            throw new Exception("Row Reply:{$this->id} 关联 Article:{$this->article_id} 不存在");
+        }
+        return $article;
+    }
+
+    public function getComment()
+    {
+        $comment = $this->_context->getRow("Comment", $this->article_id.":".$this->comment_id);
+        if (!$comment) {
+            throw new Exception("Row Reply:{$this->id} 关联 Comment:{$this->article_id}:{$this->comment_id} 不存在");
+        }
+        return $comment;
+    }
+
+    public function getReply()
+    {
+        if (!$this->reply_id) {
+            return false;
+        }
+
+        $reply = $this->_context->getRow("Reply", $this->comment_id.":".$this->reply_id);
+        if (!$reply) {
+            throw new Exception("Row Reply:{$this->id} 关联 Reply:{$this->comment_id}:{$this->reply_id} 不存在");
+        }
+        return $reply;
+    }
+
+    public function getUser()
+    {
+        $user = $this->_context->getRow("User", $this->user_id);
+        if (!$user) {
+            throw new Exception("Row Reply:{$this->id} 关联 User:{$this->user_id} 不存在");
+        }
+        return $user;
+    }
+
     public function del()
     {
         //标记删除

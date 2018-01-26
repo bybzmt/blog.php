@@ -4,6 +4,9 @@
 
 {% block breadcrumb %}
     <a href="{{ mkUrl("User.Show") }}">User</a>
+
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{{ mkUrl("User.Logout") }}">Logout</a>
 {% endblock %}
 
 {% block content %}

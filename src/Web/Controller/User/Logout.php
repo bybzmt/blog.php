@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog\Web\Controller;
+namespace Bybzmt\Blog\Web\Controller\User;
 
 use Bybzmt\Blog\Web\Controller\Web;
 use Bybzmt\Blog\Web\Reverse;
@@ -10,7 +10,8 @@ class Logout extends Web
     {
         session_destroy();
 
-        header("Location: /");
-        die;
+        $url = Reverse::mkUrl("Article.Lists");
+
+        header("Location: {$url}");
     }
 }

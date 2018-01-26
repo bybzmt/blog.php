@@ -69,7 +69,7 @@ class Show extends Web
                 return false;
             }
 
-            $comment->replys = $comment->getReply(0, $this->reply_length+1);
+            $comment->replys = $comment->getReplys(0, $this->reply_length+1);
             if (count($comment->replys) > $this->reply_length) {
                 array_pop($comment->replys);
 
@@ -84,13 +84,13 @@ class Show extends Web
             return true;
         };
 
-        $filter2 = function($comment){
-            if (!$comment || !$comment->id || $comment->status != 1) {
+        $filter2 = function($reply){
+            if (!$reply || !$reply->id || $reply->status != 1) {
                 return false;
             }
 
             //预加载用户
-            $comment->user = $this->_context->getLazyRow("User", $comment->user_id);
+            $reply->user = $this->_context->getLazyRow("User", $reply->user_id);
 
             return true;
         };
@@ -118,7 +118,7 @@ class Show extends Web
         }
 
         //评论分页
-        $pagination = Pagination::style1($commentsNum, $this->length, $this->page, function($page){
+        $pagination = Pagination::style2($commentsNum, $this->length, $this->page, function($page){
             $params = array(
                 'id' => $this->id,
             );

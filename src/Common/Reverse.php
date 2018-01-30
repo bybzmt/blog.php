@@ -24,7 +24,7 @@ abstract class Reverse extends PReverse
         } else {
             $class = substr(static::class, 0, strrpos(static::class, '\\')) . '\\Router';
 
-            $router = new $class();
+            $router = new $class(null);
             $tool = new \Bybzmt\Router\Tool($router->getRoutes());
             return $tool->convertReverse();
         }

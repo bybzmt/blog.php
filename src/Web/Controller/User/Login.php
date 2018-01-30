@@ -17,6 +17,8 @@ class Login extends Web
 
     public function show()
     {
+        $this->_context->getService("Security")->incr_doRegister();
+
         $this->render([
             'go' => $this->go,
             'msg' => $this->msg,

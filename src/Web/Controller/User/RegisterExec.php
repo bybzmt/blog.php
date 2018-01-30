@@ -23,10 +23,19 @@ class RegisterExec extends Web
         $this->se_captcha = isset($_SESSION['captcha']) ? $_SESSION['captcha'] : null;
 
         $_SESSION['captcha'] = null;
+
+        //记录注册调用次数
+        $this->_context->getService("Security")->incr_doRegister();
     }
 
     public function valid()
     {
+        //验证安全情况
+        if ($this->_context->getService("Security")->isLocked()) {
+            $this->error = "操作过于频繁请明天再试!";
+            return false;
+        }
+
         if (!$this->captcha) {
             $this->error = "验证码不能为空";
             return false;
@@ -34,6 +43,10 @@ class RegisterExec extends Web
 
         if (strtoupper($this->captcha) != strtoupper($this->se_captcha)) {
             $this->error = "验证码错误";
+
+            //记录验证码错误次数
+            $this->_context->getService("Security")->incr_captchaError();
+
             return false;
         }
 
@@ -60,6 +73,9 @@ class RegisterExec extends Web
     {
         $user = $this->_context->getService("User")->addUser($this->username, $this->nickname);
         if ($user) {
+            //记录注册成功
+            $this->_context->getService("Security")->incr_registerSuccess();
+
             return $user->setPass($this->password);
         }
         $this->error = "注删失败";

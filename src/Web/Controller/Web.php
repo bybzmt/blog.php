@@ -11,9 +11,9 @@ abstract class Web extends Common\Controller
 {
     protected $_uid;
 
-    public function __construct()
+    public function __construct($context)
     {
-        parent::__construct();
+        parent::__construct($context);
 
         session_start();
 

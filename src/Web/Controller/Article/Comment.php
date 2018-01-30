@@ -24,6 +24,12 @@ class Comment extends Web
 
     public function valid()
     {
+        //验证安全情况
+        if ($this->_context->getService("Security")->isLocked()) {
+            $this->error = "操作过于频繁请明天再试!";
+            return false;
+        }
+
         if (!$this->_uid) {
             $this->msg = "请先登陆";
             return false;
@@ -64,6 +70,9 @@ class Comment extends Web
 
     public function exec()
     {
+        //发表评论次数
+        $this->_context->getService("Security")->incr_addComment();
+
         if ($this->reply) {
             $ok = $this->reply->addReply($this->user, $this->content);
         } else {

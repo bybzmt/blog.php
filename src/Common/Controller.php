@@ -7,9 +7,9 @@ abstract class Controller
 {
     protected $_context;
 
-    public function __construct()
+    public function __construct($context)
     {
-        $this->_context = new Context();
+        $this->_context = $context;
     }
 
     public function execute()

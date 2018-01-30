@@ -6,26 +6,29 @@ namespace Bybzmt\Blog\Common;
  */
 class Context
 {
+    //请求对像
+    protected $request;
+
     //db连接
-    public $dbConns;
+    protected $dbConns;
 
     //memcached连接
-    public $memcachedConns;
+    protected $memcachedConns;
 
     //redis连接
-    public $redisConns;
+    protected $redisConns;
 
     //日志
-    public $loggers;
+    protected $loggers;
 
     //缓存对像
-    public $caches;
+    protected $caches;
 
     //数据表对像
-    public $tables;
+    protected $tables;
 
     //服务对像
-    public $services;
+    protected $services;
 
     //己缓存的数据行对像(php内存临时缓存)
     public $cachedRow;
@@ -35,6 +38,19 @@ class Context
 
     //标记的批量加载id(通过缓存加载)
     public $lazyRowCache;
+
+    public function getRequest()
+    {
+        if (!$this->request) {
+            $this->request = new Request();
+        }
+        return $this->request;
+    }
+
+    public function setRequest($request)
+    {
+        $this->request = $request;
+    }
 
     ####################
     ## 初始化基础对像 ##

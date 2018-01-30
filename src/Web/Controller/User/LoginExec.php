@@ -24,10 +24,19 @@ class LoginExec extends Web
         $this->se_captcha = isset($_SESSION['captcha']) ? $_SESSION['captcha'] : null;
 
         $_SESSION['captcha'] = null;
+
+        //记录登陆接口调用次数
+        $this->_context->getService("Security")->incr_doLogin();
     }
 
     public function valid()
     {
+        //验证安全情况
+        if ($this->_context->getService("Security")->isLocked()) {
+            $this->error = "操作过于频繁请明天再试!";
+            return false;
+        }
+
         if (!$this->captcha) {
             $this->error = "验证码不能为空";
             return false;
@@ -35,6 +44,10 @@ class LoginExec extends Web
 
         if (strtoupper($this->captcha) != strtoupper($this->se_captcha)) {
             $this->error = "验证码错误";
+
+            //记录验证码错
+            $this->_context->getService("Security")->incr_captchaError();
+
             return false;
         }
 
@@ -46,11 +59,19 @@ class LoginExec extends Web
         $this->user = $this->_context->getService("User")->getUser($this->username);
         if (!$this->user) {
             $this->error = "用户名或密码错误";
+
+            //记录用户名密码出错
+            $this->_context->getService("Security")->incr_UserOrPassError();
+
             return false;
         }
 
         if (!$this->user->validPass($this->password)) {
             $this->error = "用户名或密码错误";
+
+            //记录用户名密码出错
+            $this->_context->getService("Security")->incr_UserOrPassError();
+
             return false;
         }
 

@@ -148,6 +148,17 @@ class Context
         return $row ? $this->initRow($name, $row) : false;
     }
 
+    public function getRows(string $name, array $ids)
+    {
+        $rows = $this->getTable($name)->gets($id);
+
+        $obj = array();
+        foreach ($rows as $row) {
+            $obj[] = $this->initRow($name, $row);
+        }
+        return $obj;
+    }
+
     /**
      * 惰性加载一个数据行对像
      */

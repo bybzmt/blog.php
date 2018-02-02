@@ -8,7 +8,6 @@ class UserEdit extends AuthWeb
 {
     public $user_id;
     public $user;
-    public $sidebarMenu = '会员管理';
 
     public function init()
     {
@@ -28,7 +27,10 @@ class UserEdit extends AuthWeb
 
     public function show()
     {
-        $this->render();
+        $this->render(array(
+            'user' => $this->user,
+            'sidebarMenu' => '会员管理',
+        ));
     }
 
 }

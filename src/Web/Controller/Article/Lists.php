@@ -85,7 +85,17 @@ class Lists extends Web
             }
         }
 
-        $pagination = Pagination::style1($count, $this->length, $this->page, function($page){
+        $this->render(array(
+            'tag' => $this->tag,
+            'articles' => $articles,
+            'taglist' => $taglist,
+            'pagination' => $this->pagination($count),
+        ));
+    }
+
+    protected function pagination($count)
+    {
+        return Pagination::style2($count, $this->length, $this->page, function($page){
             $params = array();
             if ($page > 1) {
                 $params['page'] = $page;
@@ -96,13 +106,6 @@ class Lists extends Web
 
             return Reverse::mkUrl('Article.Lists', $params);
         });
-
-        $this->render(array(
-            'tag' => $this->tag,
-            'articles' => $articles,
-            'taglist' => $taglist,
-            'pagination' => $pagination,
-        ));
     }
 
 

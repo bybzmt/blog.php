@@ -8,7 +8,6 @@ class Logout extends Web
 
     public function show()
     {
-        session_start();
         session_destroy();
 
         $url = Admin\Reverse::mkUrl('Admin.Login');

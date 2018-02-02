@@ -6,9 +6,6 @@ use Bybzmt\Blog\Admin\Helper\Permissions;
 
 class RoleEdit extends AuthWeb
 {
-    public $permissions;
-    public $sidebarMenu = '角色管理';
-
     public $role_id;
     public $role;
 
@@ -35,9 +32,13 @@ class RoleEdit extends AuthWeb
         $permissions = $this->role->getPermissions();
 
         //重新整理下格式
-        $this->permissions = Permissions::reorganize($this->_context->getTable("AdminPermission"), $permissions);
+        $_permissions = Permissions::reorganize($this->_context->getTable("AdminPermission"), $permissions);
 
-        $this->render();
+        $this->render(array(
+            'permissions' => $_permissions,
+            'sidebarMenu' => '角色管理',
+            'role' => $this->role,
+        ));
     }
 
 

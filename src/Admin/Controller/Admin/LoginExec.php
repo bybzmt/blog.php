@@ -19,8 +19,6 @@ class LoginExec extends Json
 
     public function init()
     {
-        session_start();
-
         $this->user = isset($_POST['user']) ? trim($_POST['user']) : '';
         $this->pass = isset($_POST['pass']) ? trim($_POST['pass']) : '';
         $this->captcha = isset($_POST['captcha']) ? strtoupper(trim($_POST['captcha'])) : '';

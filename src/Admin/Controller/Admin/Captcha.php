@@ -6,11 +6,6 @@ use Bybzmt\Blog\Common\Helper;
 
 class Captcha extends Web
 {
-    public function init()
-    {
-        session_start();
-    }
-
     public function show()
     {
         $obj = new Helper\CaptchaCode(118, 36);

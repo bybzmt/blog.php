@@ -38,7 +38,7 @@ abstract class Web extends Base
         die;
     }
 
-    public function render(string $name=null)
+    public function render(array $data=array(), string $name=null)
     {
         $dir = __DIR__;
 
@@ -57,11 +57,7 @@ abstract class Web extends Base
         ));
         $twig->addExtension(new TwigExtension($twig));
 
-        echo $twig->render($file, array_filter(
-            get_object_vars($this),
-            function($key){return $key[0] != '_';},
-            ARRAY_FILTER_USE_KEY
-        ));
+        echo $twig->render($file, $data);
     }
 
 }

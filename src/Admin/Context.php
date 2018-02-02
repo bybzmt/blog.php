@@ -14,7 +14,7 @@ class Context extends Common\Context
         if (class_exists($class)) {
             return new $class($this);
         } else {
-            return parent::initTable($name);
+            return parent::initService($name);
         }
     }
 

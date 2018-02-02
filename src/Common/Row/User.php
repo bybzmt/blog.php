@@ -59,6 +59,16 @@ class User extends Common\Row
         return $id;
     }
 
+    public function getArticles(int $offset, int $length)
+    {
+        $ids = $this->_context->getTable("Article")->getUserListIds($this->id, $offset, $length);
+        $rows = array();
+        foreach ($ids as $id) {
+            $rows[] = $this->_context->getLazyRow("Article", $id);
+        }
+        return $rows;
+    }
+
     public function getRecords(int $offset, int $length)
     {
         $table = $this->_context->getTable("Record");

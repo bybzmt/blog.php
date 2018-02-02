@@ -6,9 +6,6 @@ use Bybzmt\Blog\Admin\Helper\Permissions;
 
 class UserEdit extends AuthWeb
 {
-    public $sidebarMenu = '管理员管理';
-    public $permissions;
-    public $roles = [];
     public $user_id;
     public $user;
 
@@ -37,9 +34,11 @@ class UserEdit extends AuthWeb
         $roles = $this->user->getRoles();
         $roles = array_column($roles, null, 'id');
 
+        $role_rows;
+
         $all_roles = $this->_context->getService("Admin")->getRoles();
         foreach ($all_roles as $role) {
-            $this->roles[] = array(
+            $role_rows[] = array(
                 'id' => $role->id,
                 'name' => $role->name,
                 'status' => isset($roles[$role->id]),
@@ -47,9 +46,14 @@ class UserEdit extends AuthWeb
         }
 
         //重新整理下格式
-        $this->permissions = Permissions::reorganize($this->_context->getTable("AdminPermission"), $permissions);
+        $_permissions = Permissions::reorganize($this->_context->getTable("AdminPermission"), $permissions);
 
-        $this->render();
+        $this->render(array(
+            'sidebarMenu' => '管理员管理',
+            'permissions' => $_permissions,
+            'roles' => $role_rows,
+            'user' => $this->user,
+        ));
     }
 
 

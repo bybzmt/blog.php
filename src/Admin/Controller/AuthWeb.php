@@ -6,11 +6,9 @@ use Bybzmt\Blog\Admin;
 
 abstract class AuthWeb extends Web
 {
-    public function __construct()
+    public function __construct($context)
     {
-        parent::__construct();
-
-        session_start();
+        parent::__construct($context);
 
         //判断是否登陆
         $admin_id = isset($_SESSION['admin_id']) ? (int)$_SESSION['admin_id'] : 0;

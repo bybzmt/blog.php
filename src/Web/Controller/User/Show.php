@@ -87,8 +87,16 @@ class Show extends AuthWeb
             }
         }
 
+        $this->render(array(
+            'records' => $record_rows,
+            'pagination' => $this->pagination($records_count),
+        ));
+    }
+
+    protected function pagination($count)
+    {
         //评论分页
-        $pagination = Pagination::style2($records_count, $this->length, $this->page, function($page){
+        return Pagination::style2($count, $this->length, $this->page, function($page){
             $params = array();
 
             if ($page > 1) {
@@ -97,11 +105,6 @@ class Show extends AuthWeb
 
             return Reverse::mkUrl('User.Show', $params);
         });
-
-        $this->render(array(
-            'records' => $record_rows,
-            'pagination' => $pagination,
-        ));
     }
 
 

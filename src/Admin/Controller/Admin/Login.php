@@ -14,7 +14,9 @@ class Login extends Web
 
     public function show()
     {
-        $this->render();
+        $this->render(array(
+            'go' => $this->go,
+        ));
     }
 
 }

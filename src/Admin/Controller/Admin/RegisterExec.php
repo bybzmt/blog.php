@@ -18,8 +18,6 @@ class RegisterExec extends Json
 
     public function init()
     {
-        session_start();
-
         $this->user = isset($_POST['user']) ? trim($_POST['user']) : '';
         $this->pass = isset($_POST['pass']) ? trim($_POST['pass']) : '';
         $this->nickname = isset($_POST['nickname']) ? trim($_POST['nickname']) : '';

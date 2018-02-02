@@ -5,11 +5,11 @@ use Bybzmt\Blog\Admin\Controller\AuthWeb;
 
 class RoleAdd extends AuthWeb
 {
-    public $sidebarMenu = '角色管理';
-
     public function show()
     {
-        $this->render();
+        $this->render(array(
+            'sidebarMenu' => '角色管理',
+        ));
     }
 
 

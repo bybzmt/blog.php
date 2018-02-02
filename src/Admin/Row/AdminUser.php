@@ -5,27 +5,6 @@ use Bybzmt\Blog\Admin;
 
 class AdminUser extends Admin\Row
 {
-    public $id;
-    public $user;
-    public $pass;
-    public $nickname;
-    public $addtime;
-    public $user_id;
-    public $isroot;
-    public $status;
-
-    protected function init(array $row)
-    {
-        $this->id = (int)$row['id'];
-        $this->user = $row['user'];
-        $this->pass = $row['pass'];
-        $this->nickname = $row['nickname'];
-        $this->addtime = strtotime($row['addtime']);
-        $this->user_id = (int)$row['user_id'];
-        $this->isroot = (bool)$row['isroot'];
-        $this->status = (int)$row['status'];
-    }
-
     public function encryptPass($pass)
     {
         //密码摘要，密钥确定后不可更改

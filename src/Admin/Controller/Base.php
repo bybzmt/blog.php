@@ -6,8 +6,10 @@ use Bybzmt\Blog\Admin;
 
 abstract class Base extends Common\Controller
 {
-    public function __construct()
+    public function __construct($context)
     {
-        $this->_context = new Admin\Context();
+        parent::__construct($context);
+
+        session_start();
     }
 }

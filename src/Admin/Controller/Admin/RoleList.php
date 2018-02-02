@@ -6,15 +6,15 @@ use Bybzmt\Blog\Admin\Controller\AuthWeb;
 
 class RoleList extends AuthWeb
 {
-    public $sidebarMenu = '角色管理';
-    public $roles;
-
     public function show()
     {
         //查出所有管理组
-        $this->roles = $this->_context->getService("Admin")->getRoles();
+        $roles = $this->_context->getService("Admin")->getRoles();
 
-        $this->render();
+        $this->render(array(
+            'sidebarMenu' => '角色管理',
+            'roles' => $roles,
+        ));
     }
 
 

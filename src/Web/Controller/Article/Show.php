@@ -117,8 +117,22 @@ class Show extends Web
             );
         }
 
+        //显示
+        $this->render(array(
+            'uid' => $this->_uid,
+            'taglist' => $taglist,
+            'article' => $this->article,
+            'author' => $author,
+            'comments' => $comments_ss,
+            'commentsNum' => $commentsNum,
+            'pagination' => $this->pagination($commentsNum),
+        ));
+    }
+
+    protected function pagination($count)
+    {
         //评论分页
-        $pagination = Pagination::style2($commentsNum, $this->length, $this->page, function($page){
+        return Pagination::style2($count, $this->length, $this->page, function($page){
             $params = array(
                 'id' => $this->id,
             );
@@ -129,17 +143,6 @@ class Show extends Web
 
             return Reverse::mkUrl('Article.Show', $params);
         });
-
-        //显示
-        $this->render(array(
-            'uid' => $this->_uid,
-            'taglist' => $taglist,
-            'article' => $this->article,
-            'author' => $author,
-            'comments' => $comments_ss,
-            'commentsNum' => $commentsNum,
-            'pagination' => $pagination,
-        ));
     }
 
 

@@ -7,7 +7,6 @@ use Bybzmt\Blog\Admin\Controller\AuthWeb;
 
 class ArticleEdit extends AuthWeb
 {
-    public $sidebarMenu = '文章管理';
     public $article;
 
     public $_id;
@@ -30,7 +29,12 @@ class ArticleEdit extends AuthWeb
 
     public function show()
     {
-        $this->render();
+        $this->article->author = $this->_context->getRow("User", $this->article->user_id);
+
+        $this->render(array(
+            'sidebarMenu' => '文章管理',
+            'article' => $this->article,
+        ));
     }
 
 

@@ -10,7 +10,7 @@ use Memcached;
 class Security extends Common\Service
 {
     protected $_cachekey = __CLASS__;
-    protected $_expiration = 86400;
+    protected $_expiration = 60*60*12;
     protected $_ip;
 
     protected $_hold;
@@ -21,7 +21,7 @@ class Security extends Common\Service
     protected function _init()
     {
         $this->_ip = $this->_context->getRequest()->getIP();
-        $this->_cachekey .= ":" . $this->_ip;
+        $this->_cachekey .= "-" . $this->_ip;
     }
 
     protected function get()

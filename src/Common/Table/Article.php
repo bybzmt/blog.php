@@ -27,20 +27,18 @@ class Article extends Common\Table
         '_comments_num',
     ];
 
-    public function getUser()
-    {
-        $user = $this->_context->getRow("User", $this->user_id);
-        if (!$user) {
-            throw new Exception("Row Article:{$this->id} 关联 User:{$this->user_id} 不存在");
-        }
-        return $user;
-    }
-
     public function getIndexIds(int $offset, int $length)
     {
         $sql = "select id from articles where status = 1 order by id desc limit $offset, $length";
 
         return $this->query($sql)->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+
+    public function getUserListIds(int $user_id, int $offset, int $length)
+    {
+        $sql = "select id from articles where user_id = ? AND status = 1 order by id desc limit $offset, $length";
+
+        return $this->query($sql, [$user_id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function incrCommentsNum(int $id, int $num)

@@ -11,7 +11,7 @@ use Memcached;
 class Session extends Common\Service implements SessionHandlerInterface
 {
     protected $_prefix = "session_";
-    protected $_expiration = 3600;
+    protected $_expiration = 60*60*2;
 
     public function close()
     {
@@ -54,11 +54,6 @@ class Session extends Common\Service implements SessionHandlerInterface
 
     public function create_sid()
     {
-        return $this->base64url_encode(sha1(microtime(true).mt_rand(), true));
-    }
-
-    protected function base64url_encode($data)
-    {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+        return sha1(microtime(true).mt_rand());
     }
 }

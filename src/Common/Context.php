@@ -139,13 +139,19 @@ class Context
     public function getRow(string $name, string $id)
     {
         if (isset($this->cachedRow[$name][$id])) {
-            $row = $this->cachedRow[$name][$id];
-        } else {
-            $row = $this->getTable($name)->get($id);
-            $this->cachedRow[$name][$id] = $row;;
+            return $this->cachedRow[$name][$id];
         }
 
-        return $row ? $this->initRow($name, $row) : false;
+        $row = $this->getTable($name)->get($id);
+        if (!$row) {
+            return false;
+        }
+
+        $obj = $this->initRow($name, $row);
+
+        $this->cachedRow[$name][$id] = $obj;;
+
+        return $obj;
     }
 
     public function getRows(string $name, array $ids)

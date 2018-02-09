@@ -70,7 +70,7 @@ class Lists extends Web
                 'intro' => $row->intro,
                 'addtime' => $row->addtime,
                 'commentsNum' => $row->getCommentsNum(),
-                'author' => $this->_context->getRow("User", $row->user_id),
+                'author' => $this->_context->getLazyRow("User", $row->user_id),
                 'link' => Reverse::mkUrl('Article.Show', ['id'=>$row->id]),
             );
         }

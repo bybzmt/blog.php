@@ -26,21 +26,24 @@
                 </div>
             </aside>
             <div class="col-md-10 blog-main">
-                {% for record in records %}
-                <article>
-                {% if record.type == 1 %}
-                    <a href="{{ record.link }}">
-                        <p>{{ record.content }}</p>
-                        <blockquote>{{ record.article_intro }}</blockquote>
-                    </a>
-                {% elseif record.type == 2 %}
-                    <a href="{{ record.link }}">
-                        <p>{{ record.content }}</p>
-                        <blockquote>{{ record.comment_content }}</blockquote>
-                    </a>
-                {% endif %}
-                </article>
-                <hr/>
+                {% for article in articles %}
+                    <article class="blog-list">
+                        <header>
+                            <h3><a href="{{ article.link }}">{{ article.title }}</a></h3>
+
+                            <div class="meta">
+                                <i class="fa fa-user"></i> {{ article.author.nickname }}
+                                <i class="fa fa-calendar"></i> {{ article.addtime | date('Y-m-d') }}
+                                <i class="fa fa-comments"></i>
+                                <span class="data"><a href="#comments"> {{ article.commentsNum }} Comments</a></span>
+                            </div>
+                        </header>
+
+                        <div class="body">
+                            {{ article.intro }}
+                        </div>
+                        <hr>
+                    </article>
                 {% endfor %}
 
                 {% include "pagination.tpl" %}

@@ -69,6 +69,11 @@ class User extends Common\Row
         return $rows;
     }
 
+    public function getArticleCount()
+    {
+        return $this->_context->getTable("Article")->getUserListCount($this->id);
+    }
+
     public function getRecords(int $offset, int $length)
     {
         $table = $this->_context->getTable("Record");

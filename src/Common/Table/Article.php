@@ -41,6 +41,13 @@ class Article extends Common\Table
         return $this->query($sql, [$user_id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
+    public function getUserListCount(int $user_id)
+    {
+        $sql = "select Count(*) from articles where user_id = ? AND status = 1";
+
+        return $this->query($sql, [$user_id])->fetch(PDO::FETCH_COLUMN, 0);
+    }
+
     public function incrCommentsNum(int $id, int $num)
     {
         $sql = "update articles set _comments_num = _comments_num + ? where id = ?";

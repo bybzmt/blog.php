@@ -43,9 +43,22 @@ class ArticleList extends AuthWeb
 
     public function show()
     {
-        list($articles, $count) = $this->user->getArticles($this->offset, $this->length);
+        $articles = $this->user->getArticles($this->offset, $this->length);
+        $count = $this->user->getArticleCount();
 
+        //预加载用户
+        array_walk($articles, function(&$row){
+            $row->author = $this->_context->getLazyRow("User", $row->user_id);
+            $row->commentsNum = $row->getCommentsNum();
 
+            $row->link = Reverse::mkUrl('Article.Show', ['id'=>$row->id]);
+
+        });
+
+        $this->render(array(
+            'articles' => $articles,
+            'pagination' => $this->pagination($count),
+        ));
     }
 
     protected function pagination($count)

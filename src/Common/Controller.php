@@ -3,15 +3,8 @@ namespace Bybzmt\Blog\Common;
 
 use Throwable;
 
-abstract class Controller
+abstract class Controller extends Component
 {
-    protected $_context;
-
-    public function __construct($context)
-    {
-        $this->_context = $context;
-    }
-
     public function execute()
     {
         try {

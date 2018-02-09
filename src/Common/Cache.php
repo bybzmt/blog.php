@@ -1,7 +1,7 @@
 <?php
 namespace Bybzmt\Blog\Common;
 
-abstract class Cache
+abstract class Cache extends Component
 {
     protected $_context;
 

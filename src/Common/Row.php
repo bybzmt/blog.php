@@ -4,14 +4,14 @@ namespace Bybzmt\Blog\Common;
 use IteratorAggregate;
 use ArrayAccess;
 
-abstract class Row implements IteratorAggregate, ArrayAccess
+abstract class Row extends Component implements IteratorAggregate, ArrayAccess
 {
-    protected $_context;
     protected $_row;
 
     public function __construct(Context $context, array $row)
     {
-        $this->_context = $context;
+        parent::__construct($context);
+
         $this->_row = $row;
 
         $this->init();

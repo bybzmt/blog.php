@@ -1,7 +1,10 @@
 <?php
-namespace Bybzmt\Blog\Common;
+namespace Bybzmt\Blog\Common\Cache;
 
-abstract class ListCache extends Cache
+use Bybzmt\Blog\Common\Cache as PCache;
+use Bybzmt\Blog\Common\Context;
+
+abstract class ListCache extends PCache
 {
     //缓存过期时间
     protected $expiration = 1800;

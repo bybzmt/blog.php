@@ -1,18 +1,15 @@
 <?php
 namespace Bybzmt\Blog\Common;
 
-abstract class Service
+abstract class Service extends Component
 {
-
     public function __construct(Context $context)
     {
-        $this->_context = $context;
+        parent::__construct($context);
         $this->_init();
     }
 
     protected function _init()
     {
     }
-
-
 }

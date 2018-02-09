@@ -1,20 +1,14 @@
 <?php
 namespace Bybzmt\Blog\Common\Cache;
 
-use Bybzmt\Blog\Common;
-
 /**
  * 文章评论列表
  */
-class ArticleComments extends Common\ListCache
+class ArticleComments extends ListCache
 {
     protected function getRows(array $ids):array
     {
-        $articles = [];
-        foreach ($ids as $id) {
-            $articles[] = $this->_context->getLazyRow('Comment', $id);
-        }
-        return $articles;
+        return $this->_context->getLazyRows('Comment', $ids);
     }
 
     protected function loadData(int $length):array

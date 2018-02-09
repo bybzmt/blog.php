@@ -30,14 +30,8 @@ class Context
     //服务对像
     protected $services;
 
-    //己缓存的数据行对像(php内存临时缓存)
-    public $cachedRow;
-
-    //标记的批量加载id(通过数据库加载)
+    //标记的批量加载
     public $lazyRow;
-
-    //标记的批量加载id(通过缓存加载)
-    public $lazyRowCache;
 
     public function getRequest()
     {
@@ -138,25 +132,14 @@ class Context
      */
     public function getRow(string $name, string $id)
     {
-        if (isset($this->cachedRow[$name][$id])) {
-            return $this->cachedRow[$name][$id];
-        }
-
         $row = $this->getTable($name)->get($id);
-        if (!$row) {
-            return false;
-        }
 
-        $obj = $this->initRow($name, $row);
-
-        $this->cachedRow[$name][$id] = $obj;;
-
-        return $obj;
+        return $row ? $this->initRow($name, $row) : false;
     }
 
     public function getRows(string $name, array $ids)
     {
-        $rows = $this->getTable($name)->gets($id);
+        $rows = $this->getTable($name)->gets($ids);
 
         $obj = array();
         foreach ($rows as $row) {
@@ -171,6 +154,15 @@ class Context
     public function getLazyRow(string $name, string $id)
     {
         return new LazyRow($this, $name, $id);
+    }
+
+    public function getLazyRows(string $name, array $ids)
+    {
+        $obj = array();
+        foreach ($ids as $id) {
+            $obj[] = new LazyRow($this, $name, $id);
+        }
+        return $obj;
     }
 
     ######################
@@ -212,11 +204,4 @@ class Context
 		return $this->loggers[$name];
     }
 
-    //防止var_dump打印太多无用信息
-    public function __debugInfo()
-    {
-        return array(
-            'cachedRowNum' => count($this->cachedRow),
-        );
-    }
 }

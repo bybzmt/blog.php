@@ -4,37 +4,28 @@ namespace Bybzmt\Blog\Common;
 /**
  * 行数据惰性加载器
  */
-class LazyRow
+class LazyRow extends Component
 {
-    protected $_context;
     protected $name;
     protected $id;
     protected $initd;
     protected $row;
-    protected $cached;
 
     public function __construct(Context $context, string $name, string $id)
     {
-        $this->_context = $context;
+        parent::__construct($context);
 
         $this->name = $name;
         $this->id = $id;
 
-        //尝试一下直接从内存加载数据
-        $this->row = $this->getCached($name, $id);
-        $this->initd = $this->row === null ? false : true;
-
-        if (!$this->initd) {
-            $this->cached = $this->_context->getTable($name) instanceof TableRowCache;
-
-            if ($this->cached) {
-                $this->rowCacheAdd($id);
-            } else {
-                $this->rowAdd($id);
-            }
-        }
+        $context->lazyRow[$name][$id][] = $this;
     }
 
+    protected function _do_set_row($row)
+    {
+        $this->initd = true;
+        $this->row = $row;
+    }
 
     /**
      * 属性访问回调钩子
@@ -81,92 +72,13 @@ class LazyRow
         throw new Exception("Row {$this->name} not exists method {$name}");
     }
 
-    public function __debugInfo()
-    {
-        if (!$this->initd) {
-            $this->init();
-            $this->initd = true;
-        }
-
-        return array(
-            'name' => $this->name,
-            'row' => $this->row,
-        );
-    }
-
     protected function init()
     {
-        if ($this->cached) {
-            $this->initCacheRow();
-        } else {
-            $this->initRow();
-        }
-    }
-
-    protected function initRow()
-    {
-        if (!$this->isCached($this->id)) {
-            //从数据库中加载数据
-            $this->rowLoad();
-        }
-
-        $this->row = $this->getCached($this->id);
-    }
-
-    protected function initCacheRow()
-    {
-        if (!$this->isCached($this->id)) {
-            //从缓存中批量载入
-            $this->rowCacheLoad();
-        }
-
-        $this->row = $this->getCached($this->id);
-
-        if ($this->row === null) {
-            //从数据库中批量载入
-            $rows = $this->rowLoad();
-
-            //更新缓存
-            $this->_context->getTable($this->name)->setCaches($rows);
-
-            $this->row = $this->getCached($this->id);
-        }
+        $this->rowLoad();
     }
 
     /**
-     * 是否己存在
-     */
-    protected function isCached($id)
-    {
-        return isset($this->_context->cachedRow[$this->name][$id]);
-    }
-
-    /**
-     * 得到己缓存的对像
-     */
-    protected function getCached($id)
-    {
-        return isset($this->_context->cachedRow[$this->name][$id]) ? $this->_context->cachedRow[$this->name][$id] : null;
-    }
-
-    /**
-     * 标记为需要惰性缓存加载
-     */
-    protected function rowCacheAdd($id)
-    {
-        $this->_context->lazyRowCache[$this->name][$id] = false;
-    }
-
-    /**
-     * 标记为需要惰性数据库加载
-     */
-    protected function rowAdd($id)
-    {
-        $this->_context->lazyRow[$this->name][$id] = false;
-    }
-
-    /**
-     * 从数据库中批量加载
+     * 批量加载
      */
     protected function rowLoad()
     {
@@ -174,37 +86,21 @@ class LazyRow
 
         $rows = $this->_context->getTable($this->name)->gets($ids);
 
-        $rows += $this->_context->lazyRow[$this->name];
+        foreach ($this->_context->lazyRow[$this->name] as $id => $lazyRows) {
+            if (isset($rows[$id])) {
+                $obj = $this->_context->initRow($this->name, $rows[$id]);
 
-        foreach ($rows as $id=>$row) {
-            $this->_context->cachedRow[$this->name][$id] = $row ? $this->_context->initRow($this->name, $row) : false;
-        }
-
-        $this->_context->lazyRow[$this->name] = [];
-
-        return $rows;
-    }
-
-    /**
-     * 从缓存中批量加载
-     */
-    protected function rowCacheLoad()
-    {
-        $ids = array_keys($this->_context->lazyRowCache[$this->name]);
-
-        $rows = $this->_context->getTable($this->name)->getCaches($ids);
-        foreach ($rows as $id => $row) {
-            if ($row) {
-                $this->_context->cachedRow[$this->name][$id] = $this->_context->initRow($this->name, $row);
-            } else if ($row === null) {
-                //缓存未命中时标记为需要从数据库加载
-                $this->rowAdd($id);
+                foreach ($lazyRows as $lazyRow) {
+                    $lazyRow->_do_set_row($obj);
+                }
             } else {
-                $this->_context->cachedRow[$this->name][$id] = false;
+                foreach ($lazyRows as $lazyRow) {
+                    $lazyRow->_do_set_row(false);
+                }
             }
         }
 
-        $this->_context->lazyRowCache[$this->name] = [];
+        unset($this->_context->lazyRow[$this->name]);
     }
 
 }

@@ -8,10 +8,8 @@ use Bybzmt\Blog\Common\Helper\SQLBuilder;
 /**
  * 数据库表
  */
-abstract class Table
+abstract class Table extends Component
 {
-    protected $_context;
-
     //数据库名
     protected $_dbName;
     //表名
@@ -20,11 +18,6 @@ abstract class Table
     protected $_primary;
     //表字段
     protected $_columns;
-
-    public function __construct(Context $context)
-    {
-        $this->_context = $context;
-    }
 
     /**
      * 按主键查找一行数据

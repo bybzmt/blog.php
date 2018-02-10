@@ -8,7 +8,7 @@ class AdminRole extends Admin\Row
 {
     public function setName($name)
     {
-        $ok = $this->_context->getTable("AdminRole")->update($this->id, array("name"=>$name));
+        $ok = $this->_ctx->getTable("AdminRole")->update($this->id, array("name"=>$name));
         if ($ok) {
             $this->name = $name;
         }
@@ -17,7 +17,7 @@ class AdminRole extends Admin\Row
 
     public function del()
     {
-        $ok = $this->_context->getTable("AdminRole")->update($this->id, array("status"=>0));
+        $ok = $this->_ctx->getTable("AdminRole")->update($this->id, array("status"=>0));
         if ($ok) {
             $this->status = 0;
         }
@@ -26,11 +26,11 @@ class AdminRole extends Admin\Row
 
     public function setPermissions($permissions)
     {
-        return $this->_context->getTable("AdminRole")->setPermissions($this->id, $permissions);
+        return $this->_ctx->getTable("AdminRole")->setPermissions($this->id, $permissions);
     }
 
     public function getPermissions()
     {
-        return $this->_context->getTable("AdminRole")->getPermissions($this->id);
+        return $this->_ctx->getTable("AdminRole")->getPermissions($this->id);
     }
 }

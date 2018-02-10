@@ -8,12 +8,12 @@ class IndexArticles extends ListCache
 {
     protected function getRows(array $ids): array
     {
-        return $this->_context->getLazyRows('Article', $ids);
+        return $this->_ctx->getLazyRows('Article', $ids);
     }
 
     protected function loadData(int $length): array
     {
-        return $this->_context->getTable('Article')->getIndexIds(0, $length);
+        return $this->_ctx->getTable('Article')->getIndexIds(0, $length);
     }
 
 

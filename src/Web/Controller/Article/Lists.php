@@ -34,7 +34,7 @@ class Lists extends Web
     public function valid()
     {
         if ($this->tag_id) {
-            $this->tag = $this->_context->getRow('Tag', $this->tag_id);
+            $this->tag = $this->_ctx->getRow('Tag', $this->tag_id);
             if (!$this->tag) {
                 $this->msg = "tag未定义";
                 return false;
@@ -53,42 +53,36 @@ class Lists extends Web
     {
         //文章列表
         if ($this->tag) {
-            $article_rows = $this->tag->getArticleList($this->offset, $this->length);
+            $articles = $this->tag->getArticleList($this->offset, $this->length);
             $count = $this->tag->getArticleCount();
         } else {
-            $article_rows = $this->_context->getService('Article')->getIndexList($this->offset, $this->length);
-            $count = $this->_context->getService('Article')->getIndexCount();
+            $articles = $this->_ctx->getService('Article')->getIndexList($this->offset, $this->length);
+            $count = $this->_ctx->getService('Article')->getIndexCount();
         }
 
         $tags = [];
 
-        foreach ($article_rows as $row) {
-            $tags = array_merge($tags,$row->getTags());
-
-            $articles[] = array(
-                'title' => $row->title,
-                'intro' => $row->intro,
-                'addtime' => $row->addtime,
-                'commentsNum' => $row->getCommentsNum(),
-                'author' => $this->_context->getLazyRow("User", $row->user_id),
-                'link' => Reverse::mkUrl('Article.Show', ['id'=>$row->id]),
-            );
-        }
-
-        $taglist = array();
-        foreach ($tags as $tag) {
-            if ($tag->id && !isset($taglist[$tag->id])) {
-                $taglist[$tag->id] = array(
-                    'name' => $tag->name,
-                    'url' => Reverse::mkUrl('Article.Lists', ['tag'=>$tag->id])
-                );
+        $articles = array_filter($articles, function($row) use(&$tags) {
+            if (!$row || !$row->id || $row->status != 1) {
+                return false;
             }
-        }
+
+            $tags = array_merge($tags,$row->getTagsId());
+
+            $row->commentsNum = $row->getCommentsNum();
+
+            $row->author = $this->_ctx->getLazyRow("User", $row->user_id);
+            $row->link = Reverse::mkUrl('Article.Show', ['id'=>$row->id]);
+
+            return true;
+        });
+
+        $tags = $this->_ctx->getRows("Tag", array_unique($tags));
 
         $this->render(array(
             'tag' => $this->tag,
             'articles' => $articles,
-            'taglist' => $taglist,
+            'taglist' => $tags,
             'pagination' => $this->pagination($count),
         ));
     }

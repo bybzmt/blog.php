@@ -33,7 +33,7 @@ class CommentList extends AuthWeb
     public function show()
     {
         //查出所有管理组
-        list($comments, $count) = $this->_context->getService("Blog")->
+        list($comments, $count) = $this->_ctx->getService("Blog")->
             getCommentList($this->type, $this->keyword, $this->_offset, $this->_length);
 
         $this->render(array(

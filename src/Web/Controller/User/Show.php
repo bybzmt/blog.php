@@ -26,7 +26,7 @@ class Show extends AuthWeb
 
     public function valid()
     {
-        $this->user = $this->_context->getRow('User', $this->_uid);
+        $this->user = $this->_ctx->getRow('User', $this->_uid);
         if ($this->user) {
             return true;
         }
@@ -43,7 +43,8 @@ class Show extends AuthWeb
 
     public function show()
     {
-        list($records, $records_count) = $this->user->getRecords($this->offset, $this->length);
+        $records = $this->user->getRecords($this->offset, $this->length);
+        $count = $this->user->getRecordCount();
 
         $record_rows = array();
         foreach ($records as $record) {
@@ -89,7 +90,7 @@ class Show extends AuthWeb
 
         $this->render(array(
             'records' => $record_rows,
-            'pagination' => $this->pagination($records_count),
+            'pagination' => $this->pagination($count),
         ));
     }
 

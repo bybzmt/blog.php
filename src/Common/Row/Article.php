@@ -9,7 +9,7 @@ class Article extends Common\Row
 
     public function getUser()
     {
-        $user = $this->_context->getRow("User", $this->user_id);
+        $user = $this->_ctx->getRow("User", $this->user_id);
         if (!$user) {
             throw new Exception("Row Article:{$this->id} 关联 User:{$this->user_id} 不存在");
         }
@@ -23,7 +23,7 @@ class Article extends Common\Row
 
     public function getComments(int $offset, int $length)
     {
-        return $this->_context->getCache('ArticleComments', $this->id)->gets($offset, $length);
+        return $this->_ctx->getCache('ArticleComments', $this->id)->gets($offset, $length);
     }
 
     public function addComment(User $user, string $content)
@@ -39,11 +39,11 @@ class Article extends Common\Row
         );
 
         //保存回复
-        $id = $this->_context->getTable('Comment')->insert($data);
+        $id = $this->_ctx->getTable('Comment')->insert($data);
 
         if ($id) {
             //给用户增加发评论的关联记录
-            $this->_context->getTable("Record")->insert(array(
+            $this->_ctx->getTable("Record")->insert(array(
                 'id' => "{$user->id}:",
                 'user_id' => $user->id,
                 'type' => Record::TYPE_COMMENT,
@@ -55,13 +55,13 @@ class Article extends Common\Row
                 $this->restCommentCacheNum();
             } else {
                 //修改文章回复数缓存
-                $this->_context->getTable('Article')->incrCommentsNum($this->id, 1);
+                $this->_ctx->getTable('Article')->incrCommentsNum($this->id, 1);
 
                 $this->_comments_num++;
             }
 
             //添加到列表缓存
-            $this->_context->getCache('ArticleComments', $this->id)->itemLPush($this->id.":".$id);
+            $this->_ctx->getCache('ArticleComments', $this->id)->itemLPush($this->id.":".$id);
         }
 
         return $id;
@@ -71,12 +71,12 @@ class Article extends Common\Row
     public function delCommentCache(int $comment_id)
     {
         //修改数据
-        $ok = $this->_context->getTable('Article')->decrCommentsNum($this->id, 1);
+        $ok = $this->_ctx->getTable('Article')->decrCommentsNum($this->id, 1);
         if ($ok) {
             //内存中的变量
             $this->_comments_num--;
             //文章评论列表缓存重置
-            $this->_context->getCache('ArticleComments', $this->id)->delItem($comment_id);
+            $this->_ctx->getCache('ArticleComments', $this->id)->delItem($comment_id);
         }
         return $ok;
     }
@@ -85,27 +85,28 @@ class Article extends Common\Row
     public function restCommentCacheNum()
     {
         //重新统计表中的评论数量
-        $num = $this->_context->getTable("Comment")->getListNum($this->id);
+        $num = $this->_ctx->getTable("Comment")->getListNum($this->id);
         //修改数据
-        $ok = $this->_context->getTable("Article")->update($this->id, ['_comments_num'=>$num]);
+        $ok = $this->_ctx->getTable("Article")->update($this->id, ['_comments_num'=>$num]);
         if ($ok) {
             //文章评论列表缓存重置
-            $this->_context->getCache('ArticleComments', $this->id)->del();
+            $this->_ctx->getCache('ArticleComments', $this->id)->del();
             //当前变量
             $this->_comments_num = $num;
         }
         return $ok;
     }
 
+    public function getTagsId()
+    {
+        return array_values(unpack('N*', $this->_tags));
+    }
+
     public function getTags()
     {
         $tag_ids = unpack('N*', $this->_tags);
 
-        $tags = [];
-        foreach ($tag_ids as $tag_id) {
-            $tags[] = $this->_context->getLazyRow('Tag', $tag_id);
-        }
-        return $tags;
+        return $this->_ctx->getLazyRows('Tag', $tag_ids);
     }
 
     public function setTags(Tag ...$tags)
@@ -122,10 +123,10 @@ class Article extends Common\Row
         }
 
         //修改关连关系
-        $ok = $this->_context->getTable('ArticleTag')->setTags($this->id, $tag_ids);
+        $ok = $this->_ctx->getTable('ArticleTag')->setTags($this->id, $tag_ids);
         if ($ok) {
             //修改关连缓存
-            $this->_context->getTable('Article')->update($this->id, ['_tags' => $tag_sids]);
+            $this->_ctx->getTable('Article')->update($this->id, ['_tags' => $tag_sids]);
 
             //修改当前对像
             $this->_tags = $tag_sids;
@@ -144,7 +145,7 @@ class Article extends Common\Row
         }
 
         //标记删除自身数据
-        $ok = $this->_context->getTable('Article')->update($this->id, ['status'=>2]);
+        $ok = $this->_ctx->getTable('Article')->update($this->id, ['status'=>2]);
         if ($ok) {
             //审核标记
             $this->status = 2;
@@ -157,17 +158,17 @@ class Article extends Common\Row
     public function publish()
     {
         //修改自身数据
-        $ok = $this->_context->getTable('Article')->update($this->id, ['status'=>3]);
+        $ok = $this->_ctx->getTable('Article')->update($this->id, ['status'=>3]);
         if ($ok) {
             //状态改为正式
             $this->status = 3;
 
             //添加到首页缓存
-            $this->_context->getCache('IndexArticles')->addItem($this->id);
+            $this->_ctx->getCache('IndexArticles')->addItem($this->id);
 
             //添加到标签列表缓存
             foreach ($this->getTags() as $tag) {
-                $this->_context->getCache('TagArticles', $tag->id)->addItem($this->id);
+                $this->_ctx->getCache('TagArticles', $tag->id)->addItem($this->id);
             }
         }
 
@@ -178,18 +179,18 @@ class Article extends Common\Row
     public function hidden()
     {
         //标记删除自身数据
-        $ok = $this->_context->getTable('Article')->update($this->id, ['status'=>4]);
+        $ok = $this->_ctx->getTable('Article')->update($this->id, ['status'=>4]);
         if ($ok) {
             //记标为下线
             $this->status = 4;
 
             //删除标签列表缓存
             foreach ($this->getTags() as $tag) {
-                $this->_context->getCache('TagArticles', $tag->id)->delItem($this->id);
+                $this->_ctx->getCache('TagArticles', $tag->id)->delItem($this->id);
             }
 
             //删除首页缓存
-            $this->_context->getCache('IndexArticles')->delItem($this->id);
+            $this->_ctx->getCache('IndexArticles')->delItem($this->id);
         }
 
         return $ok;
@@ -199,7 +200,7 @@ class Article extends Common\Row
     public function locked()
     {
         //记标为锁定状态
-        $ok = $this->_context->getTable('Article')->update($this->id, ['locked'=>1]);
+        $ok = $this->_ctx->getTable('Article')->update($this->id, ['locked'=>1]);
         if ($ok) {
             $this->locked = 1;
         }
@@ -211,7 +212,7 @@ class Article extends Common\Row
     public function unlock()
     {
         //记标为解除锁定
-        $ok = $this->_context->getTable('Article')->update($this->id, ['locked'=>0]);
+        $ok = $this->_ctx->getTable('Article')->update($this->id, ['locked'=>0]);
         if ($ok) {
             $this->locked = 0;
         }
@@ -223,18 +224,18 @@ class Article extends Common\Row
     public function del()
     {
         //标记删除自身数据
-        $ok = $this->_context->getTable('Article')->update($this->id, ['deleted'=>1]);
+        $ok = $this->_ctx->getTable('Article')->update($this->id, ['deleted'=>1]);
         if ($ok) {
             //记标为删除
             $this->deleted = 1;
 
             //删除标签列表缓存
             foreach ($this->getTags() as $tag) {
-                $this->_context->getCache('TagArticles', $tag->id)->delItem($this->id);
+                $this->_ctx->getCache('TagArticles', $tag->id)->delItem($this->id);
             }
 
             //删除首页缓存
-            $this->_context->getCache('IndexArticles')->delItem($this->id);
+            $this->_ctx->getCache('IndexArticles')->delItem($this->id);
         }
 
         return $ok;

@@ -18,7 +18,7 @@ class ArticleEdit extends AuthWeb
 
     public function valid()
     {
-        $this->article = $this->_context->getRow("Article", $this->_id);
+        $this->article = $this->_ctx->getRow("Article", $this->_id);
 
         if (!$this->article) {
             return false;
@@ -29,7 +29,7 @@ class ArticleEdit extends AuthWeb
 
     public function show()
     {
-        $this->article->author = $this->_context->getRow("User", $this->article->user_id);
+        $this->article->author = $this->_ctx->getRow("User", $this->article->user_id);
 
         $this->render(array(
             'sidebarMenu' => '文章管理',

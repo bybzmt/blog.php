@@ -21,7 +21,7 @@ class UserDelExec extends AuthJson
             return false;
         }
 
-        $this->user = $this->_context->getRow("AdminUser", $this->id);
+        $this->user = $this->_ctx->getRow("AdminUser", $this->id);
 
         if (!$this->user) {
             $this->ret = 1;

@@ -30,7 +30,7 @@ class Replys extends Web
 
     public function valid()
     {
-        $this->comment = $this->_context->getRow('Comment', $this->article_id.":".$this->comment_id);
+        $this->comment = $this->_ctx->getRow('Comment', $this->article_id.":".$this->comment_id);
         if (!$this->comment) {
             $this->msg = "被回复的评论不存在";
             return false;
@@ -56,25 +56,24 @@ class Replys extends Web
 
     public function show()
     {
-        $rows = $this->comment->getReplys($this->offset, $this->length+1);
+        $replys = $this->comment->getReplys($this->offset, $this->length+1);
 
-        if (count($rows) > $this->length) {
-            array_pop($rows);
+        if (count($replys) > $this->length) {
+            array_pop($replys);
 
             $pageNext = $this->page + 1;
         } else {
             $pageNext = false;
         }
 
-        $replys= array();
-        foreach ($rows as $reply) {
-            $replys[] = array(
-                'id' => $reply->id,
-                'content' => $reply->content,
-                'user' => $this->_context->getLazyRow("User", $reply->user_id),
-                'addtime' => $reply->addtime,
-            );
-        }
+        $replys= array_filter($replys, function($row){
+            if (!$row || !$row->id || $row->status != 1) {
+                return false;
+            }
+
+            $row->user = $this->_ctx->getLazyRow("User", $row->user_id);
+            return true;
+        });
 
         $pagePrev = $this->page - 1;
 

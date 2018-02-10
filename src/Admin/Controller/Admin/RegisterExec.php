@@ -30,7 +30,7 @@ class RegisterExec extends Json
     {
         //验证ip是否请求过多
         $ip = $_SERVER['REMOTE_ADDR'];
-        $security = $this->_context->getCache("IPSecurity", "admin.login");
+        $security = $this->_ctx->getCache("IPSecurity", "admin.login");
         if (!$security->check($ip)) {
             $this->ret = 1;
             $this->data = "检测到安全风险请稍后再试。";
@@ -49,7 +49,7 @@ class RegisterExec extends Json
             return false;
         }
 
-        $admin_user = $this->_context->getService('Admin')->findUser($this->user);
+        $admin_user = $this->_ctx->getService('Admin')->findUser($this->user);
         if ($admin_user) {
             $this->ret = 1;
             $this->data = "用户己存在。";
@@ -61,7 +61,7 @@ class RegisterExec extends Json
 
     public function exec()
     {
-        return $this->_context->getService('Admin')->register($this->user, $this->pass, $this->nickname);
+        return $this->_ctx->getService('Admin')->register($this->user, $this->pass, $this->nickname);
     }
 
     public function show()

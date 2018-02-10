@@ -25,7 +25,7 @@ class RoleAddExec extends AuthJson
 
     public function exec()
     {
-        return $this->_context->getService("Admin")->roleAdd($this->name);
+        return $this->_ctx->getService("Admin")->roleAdd($this->name);
     }
 
 

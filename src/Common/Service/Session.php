@@ -30,13 +30,13 @@ class Session extends Common\Service implements SessionHandlerInterface
 
     public function read($sid)
     {
-        $res = $this->_context->getMemcached()->get($this->_prefix.$sid, null, Memcached::GET_EXTENDED);
+        $res = $this->_ctx->getMemcached()->get($this->_prefix.$sid, null, Memcached::GET_EXTENDED);
         if ($res) {
             return $res['value'];
         } else {
             //判断确实未找到,而非memcache服务器出问题了
-            if ($this->_context->getMemcached()->getResultCode() == Memcached::RES_NOTFOUND) {
-                $this->_context->getService("Security")->inrc_newSession();
+            if ($this->_ctx->getMemcached()->getResultCode() == Memcached::RES_NOTFOUND) {
+                $this->_ctx->getService("Security")->inrc_newSession();
             }
             return '';
         }
@@ -44,12 +44,12 @@ class Session extends Common\Service implements SessionHandlerInterface
 
     public function write($sid, $session_data)
     {
-        return $this->_context->getMemcached()->set($this->_prefix.$sid, $session_data, $this->_expiration);
+        return $this->_ctx->getMemcached()->set($this->_prefix.$sid, $session_data, $this->_expiration);
     }
 
     public function destroy($sid)
     {
-        return $this->_context->getMemcached()->delete($this->_prefix.$sid);
+        return $this->_ctx->getMemcached()->delete($this->_prefix.$sid);
     }
 
     public function create_sid()

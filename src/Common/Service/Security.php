@@ -20,14 +20,14 @@ class Security extends Common\Service
 
     protected function _init()
     {
-        $this->_ip = $this->_context->getRequest()->getIP();
+        $this->_ip = $this->_ctx->getRequest()->getIP();
         $this->_cachekey .= "-" . $this->_ip;
     }
 
     protected function get()
     {
         if (!$this->_hold) {
-            $res = $this->_context->getMemcached()->get($this->_cachekey, null, Memcached::GET_EXTENDED);
+            $res = $this->_ctx->getMemcached()->get($this->_cachekey, null, Memcached::GET_EXTENDED);
             if ($res) {
                 $this->_cas = $res['cas'];
                 $this->_value = (array)$res['value'];
@@ -44,9 +44,9 @@ class Security extends Common\Service
     {
         //乐观锁设置
         if ($this->_cas) {
-            $ok = $this->_context->getMemcached()->cas($this->_cas, $this->_cachekey, $val, $this->_expiration);
+            $ok = $this->_ctx->getMemcached()->cas($this->_cas, $this->_cachekey, $val, $this->_expiration);
         } else {
-            $ok = $this->_context->getMemcached()->add($this->_cachekey, $val, $this->_expiration);
+            $ok = $this->_ctx->getMemcached()->add($this->_cachekey, $val, $this->_expiration);
         }
 
         if (!$ok) {
@@ -90,7 +90,7 @@ class Security extends Common\Service
         } while(!$this->set($val));
 
         //记录锁定日志
-        $this->_context->getTable("SecurityLog")->insert(array(
+        $this->_ctx->getTable("SecurityLog")->insert(array(
             'ip' => $this->_ip,
             'type' => $key,
         ));

@@ -85,7 +85,7 @@ abstract class Table extends Component
 
     protected function getDB(bool $isMaster=false)
     {
-        return $this->_context->getDb($this->_dbName . ($isMaster?'_master':'_slave'));
+        return $this->_ctx->getDb($this->_dbName . ($isMaster?'_master':'_slave'));
     }
 
     protected function query(string $sql, array $params=[], bool $isMaster=false):PDOStatement

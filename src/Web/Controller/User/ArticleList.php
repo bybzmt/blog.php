@@ -26,7 +26,7 @@ class ArticleList extends AuthWeb
 
     public function valid()
     {
-        $this->user = $this->_context->getRow('User', $this->_uid);
+        $this->user = $this->_ctx->getRow('User', $this->_uid);
         if ($this->user) {
             return true;
         }
@@ -48,7 +48,7 @@ class ArticleList extends AuthWeb
 
         //预加载用户
         array_walk($articles, function(&$row){
-            $row->author = $this->_context->getLazyRow("User", $row->user_id);
+            $row->author = $this->_ctx->getLazyRow("User", $row->user_id);
             $row->commentsNum = $row->getCommentsNum();
 
             $row->link = Reverse::mkUrl('Article.Show', ['id'=>$row->id]);

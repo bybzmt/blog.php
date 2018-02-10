@@ -23,7 +23,7 @@ class Redirect extends Web
     {
         switch($this->type) {
         case Record::TYPE_COMMENT:
-            $comment = $this->_context->getRow("Comment", $this->to_id);
+            $comment = $this->_ctx->getRow("Comment", $this->to_id);
             if (!$comment) {
                 $this->msg = "目标错误";
                 return false;
@@ -36,13 +36,13 @@ class Redirect extends Web
 
             return true;
         case Record::TYPE_REPLY:
-            $reply = $this->_context->getRow("Reply", $this->to_id);
+            $reply = $this->_ctx->getRow("Reply", $this->to_id);
             if (!$reply) {
                 $this->msg = "目标错误";
                 return false;
             }
 
-            $parent = $this->_context->getRow("Comment", $reply->article_id.":".$reply->comment_id);
+            $parent = $this->_ctx->getRow("Comment", $reply->article_id.":".$reply->comment_id);
             $page = $parent->getCurrentPage(Cfg::COMMENT_LENGTH);
 
             $page2 = $reply->getCurrentPage(Cfg::REPLY_LENGTH);

@@ -8,12 +8,12 @@ class Member extends Admin\Service
 
     public function getUserList($type, $search, $offset, $length)
     {
-        $rows = $this->_context->getTable("User")->getList($type, $search, $offset, $length);
-        $count = $this->_context->getTable("User")->getListCount($type, $search);
+        $rows = $this->_ctx->getTable("User")->getList($type, $search, $offset, $length);
+        $count = $this->_ctx->getTable("User")->getListCount($type, $search);
         $users = [];
 
         foreach ($rows as $row) {
-            $users[] = $this->_context->initRow("User", $row);
+            $users[] = $this->_ctx->initRow("User", $row);
         }
 
         return [$users, $count];

@@ -7,11 +7,11 @@ use Bybzmt\Router\Router as PRouter;
 
 abstract class Router extends PRouter
 {
-    protected $_context;
+    protected $_ctx;
 
     public function __construct($context)
     {
-        $this->_context = $context;
+        $this->_ctx = $context;
 
         if (Config::get('routes_cached')) {
             parent::__construct($this->_restore());
@@ -30,12 +30,12 @@ abstract class Router extends PRouter
 
     public function getMethod()
     {
-        return $this->_context->getRequest()->getMethod();
+        return $this->_ctx->getRequest()->getMethod();
     }
 
     public function getURI()
     {
-        return $this->_context->getRequest()->getURI();
+        return $this->_ctx->getRequest()->getURI();
     }
 
     protected function _parseClass($map)
@@ -65,7 +65,7 @@ abstract class Router extends PRouter
             throw new Exception("Dispatch '$map' Class:'$class' Not Exists");
         }
 
-        $obj = new $class($this->_context);
+        $obj = new $class($this->_ctx);
 
         if (!method_exists($obj, $method)) {
             throw new Exception("Dispatch '$map' Method:'$class::$method' Not Exists");

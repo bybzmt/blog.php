@@ -7,7 +7,7 @@ class Reply extends Common\Row
 {
     public function getArticle()
     {
-        $article = $this->_context->getRow("Article", $this->article_id);
+        $article = $this->_ctx->getRow("Article", $this->article_id);
         if (!$article) {
             throw new Exception("Row Reply:{$this->id} 关联 Article:{$this->article_id} 不存在");
         }
@@ -16,7 +16,7 @@ class Reply extends Common\Row
 
     public function getComment()
     {
-        $comment = $this->_context->getRow("Comment", $this->article_id.":".$this->comment_id);
+        $comment = $this->_ctx->getRow("Comment", $this->article_id.":".$this->comment_id);
         if (!$comment) {
             throw new Exception("Row Reply:{$this->id} 关联 Comment:{$this->article_id}:{$this->comment_id} 不存在");
         }
@@ -29,7 +29,7 @@ class Reply extends Common\Row
             return false;
         }
 
-        $reply = $this->_context->getRow("Reply", $this->comment_id.":".$this->reply_id);
+        $reply = $this->_ctx->getRow("Reply", $this->comment_id.":".$this->reply_id);
         if (!$reply) {
             throw new Exception("Row Reply:{$this->id} 关联 Reply:{$this->comment_id}:{$this->reply_id} 不存在");
         }
@@ -38,7 +38,7 @@ class Reply extends Common\Row
 
     public function getUser()
     {
-        $user = $this->_context->getRow("User", $this->user_id);
+        $user = $this->_ctx->getRow("User", $this->user_id);
         if (!$user) {
             throw new Exception("Row Reply:{$this->id} 关联 User:{$this->user_id} 不存在");
         }
@@ -48,7 +48,7 @@ class Reply extends Common\Row
     public function del()
     {
         //标记删除
-        $ok = $this->_context->getTable('Reply')->update($this->comment_id.":".$this->id, ['status'=>0]);
+        $ok = $this->_ctx->getTable('Reply')->update($this->comment_id.":".$this->id, ['status'=>0]);
         if ($ok) {
             $this->status = 0;
 
@@ -62,7 +62,7 @@ class Reply extends Common\Row
     //恢复评论
     public function restore()
     {
-        $ok = $this->_context->getTable("Reply")->update($this->comment_id.":".$this->id, array('status'=>1));
+        $ok = $this->_ctx->getTable("Reply")->update($this->comment_id.":".$this->id, array('status'=>1));
         if ($ok) {
             $this->status = 1;
 
@@ -75,7 +75,7 @@ class Reply extends Common\Row
 
     public function getCurrentPage($length)
     {
-        return $this->_context->getTable("Reply")
+        return $this->_ctx->getTable("Reply")
             ->getIdPage($this->comment_id, $this->id, $length);
     }
 

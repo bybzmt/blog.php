@@ -16,7 +16,7 @@ class UserEdit extends AuthWeb
 
     public function valid()
     {
-        $this->user = $this->_context->getRow('User', $this->user_id);
+        $this->user = $this->_ctx->getRow('User', $this->user_id);
 
         if (!$this->user) {
             return false;

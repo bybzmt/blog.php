@@ -90,7 +90,7 @@
 
                             {% if comment.replysMore %}
                             <div class="replysMore">
-                                <a href="#" onclick="replyPage({{comment.id}}, 2)">下一页</a>
+                                <a href="javascript:void()" onclick="replyPage({{comment.id}}, 2)">下一页</a>
                             </div>
                             {% endif %}
                         </aside>
@@ -160,7 +160,7 @@
                         <div class="body clearfix">
                             <ul class="tags">
                                 {% for tag in taglist %}
-                                    <li><a href="{{ tag.url }}">{{ tag.name }}</a></li>
+                                    <li><a href="{{ mkUrl('Article.Lists', {tag:tag.id}) }}">{{ tag.name }}</a></li>
                                 {% endfor %}
                             </ul>
                         </div>

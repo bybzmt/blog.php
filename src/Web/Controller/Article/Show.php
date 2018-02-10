@@ -28,7 +28,7 @@ class Show extends Web
 
     public function valid()
     {
-        $this->article = $this->_context->getRow('Article', $this->id);
+        $this->article = $this->_ctx->getRow('Article', $this->id);
         if ($this->article) {
             return true;
         }
@@ -46,17 +46,10 @@ class Show extends Web
     public function show()
     {
         //文章作者
-        $author = $this->_context->getLazyRow("User", $this->article->user_id);
+        $author = $this->_ctx->getLazyRow("User", $this->article->user_id);
 
         //文章标签列表
-        $tag_rows = $this->article->getTags();
-        $taglist = array();
-        foreach ($tag_rows as $row) {
-            $taglist[] = array(
-                'name' => $row->name,
-                'url' => Reverse::mkUrl('Article.Lists', ['tag'=>$row->id])
-            );
-        }
+        $tags = $this->article->getTags();
 
         //文章评论
         $comments = $this->article->getComments($this->offset, $this->length);
@@ -64,7 +57,7 @@ class Show extends Web
 
         //过滤掉无效数据交,并标记预加载
         //将实际载加数据向后推迟，实现最终一次查询加载所有数据的效果
-        $filter = function($comment){
+        $comments = array_filter($comments, function($comment){
             if (!$comment || !$comment->id || $comment->status != 1) {
                 return false;
             }
@@ -79,51 +72,32 @@ class Show extends Web
             }
 
             //预加载用户
-            $comment->user = $this->_context->getLazyRow("User", $comment->user_id);
+            $comment->user = $this->_ctx->getLazyRow("User", $comment->user_id);
 
             return true;
-        };
+        });
 
-        $filter2 = function($reply){
-            if (!$reply || !$reply->id || $reply->status != 1) {
-                return false;
-            }
+        //二次过滤,这样子子回复能一次加载所有
+        foreach ($comments as $comment) {
+            $comment->replys = array_filter($comment->replys, function($reply){
+                if (!$reply || !$reply->id || $reply->status != 1) {
+                    return false;
+                }
 
-            //预加载用户
-            $reply->user = $this->_context->getLazyRow("User", $reply->user_id);
+                //预加载用户
+                $reply->user = $this->_ctx->getLazyRow("User", $reply->user_id);
 
-            return true;
-        };
-
-        $comments_ss = array();
-        foreach (array_filter($comments, $filter) as $comment) {
-            $replys= array();
-            foreach (array_filter($comment->replys, $filter2) as $reply) {
-                $replys[] = array(
-                    'id' => $reply->id,
-                    'content' => $reply->content,
-                    'user' => $reply->user,
-                    'addtime' => $reply->addtime,
-                );
-            }
-
-            $comments_ss[] = array(
-                'id' => $comment->id,
-                'content' => $comment->content,
-                'addtime' => $comment->addtime,
-                'user' => $comment->user,
-                'replys' => $replys,
-                'replysMore' => $comment->replysMore,
-            );
+                return true;
+            });
         }
 
         //显示
         $this->render(array(
             'uid' => $this->_uid,
-            'taglist' => $taglist,
+            'taglist' => $tags,
             'article' => $this->article,
             'author' => $author,
-            'comments' => $comments_ss,
+            'comments' => $comments,
             'commentsNum' => $commentsNum,
             'pagination' => $this->pagination($commentsNum),
         ));

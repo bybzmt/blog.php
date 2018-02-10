@@ -8,18 +8,18 @@ namespace Bybzmt\Blog\Common;
  */
 abstract class Component
 {
-    protected $_context;
+    protected $_ctx;
 
     public function __construct(Context $context)
     {
-        $this->_context = $context;
+        $this->_ctx = $context;
     }
 
     public function __debugInfo()
     {
         //防止反复打印上下文对像
         $attr = get_object_vars($this);
-        unset($attr['_context']);
+        unset($attr['_ctx']);
         return $attr;
     }
 }

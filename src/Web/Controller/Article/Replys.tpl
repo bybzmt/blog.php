@@ -22,10 +22,10 @@
 
 <div class="replysMore">
 {% if pagePrev %}
-    <a href="#" onclick="replyPage({{comment_id}}, {{pagePrev}})">上一页</a>
+    <a href="javascript:void()" onclick="replyPage({{comment_id}}, {{pagePrev}})">上一页</a>
 {% endif %}
 {% if pageNext %}
-    <a href="#" onclick="replyPage({{comment_id}}, {{pageNext}})">下一页</a>
+    <a href="javascript:void()" onclick="replyPage({{comment_id}}, {{pageNext}})">下一页</a>
 {% endif %}
 </div>
 

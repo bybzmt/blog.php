@@ -26,7 +26,7 @@ class UserEditExec extends AuthJson
             return false;
         }
 
-        $this->user = $this->_context->getRow("User", $this->id);
+        $this->user = $this->_ctx->getRow("User", $this->id);
         if (!$this->user) {
             $this->ret = 1;
             $this->data = "用户不存在。";

@@ -24,7 +24,7 @@ class ArticleAuditExec extends AuthJson
             return false;
         }
 
-        $this->article = $this->_context->getRow("Article", $this->id);
+        $this->article = $this->_ctx->getRow("Article", $this->id);
 
         if (!$this->article) {
             $this->ret = 1;

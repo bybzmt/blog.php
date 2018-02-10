@@ -17,7 +17,7 @@ abstract class ListCache extends PCache
 
     public function __construct(Context $context, string $list_id='')
     {
-        $this->_context = $context;
+        $this->_ctx = $context;
         $this->list_id = $list_id;
         $this->key = str_replace('\\', '.', static::class) .'.'. $list_id;
         $this->_hashPrefix = $this->key;
@@ -76,7 +76,7 @@ abstract class ListCache extends PCache
 
     public function getAllIds()
     {
-        $ids = $this->unserialize($this->_context->getMemcached()->get($this->key));
+        $ids = $this->unserialize($this->_ctx->getMemcached()->get($this->key));
         if ($ids === null) {
             $ids = $this->loadData($this->size);
             $this->setAllIds($ids);
@@ -86,12 +86,12 @@ abstract class ListCache extends PCache
 
     public function setAllIds(array $ids)
     {
-        return $this->_context->getMemcached()->set($this->key, $this->serialize($ids), $this->expiration);
+        return $this->_ctx->getMemcached()->set($this->key, $this->serialize($ids), $this->expiration);
     }
 
     public function del()
     {
-        return $this->_context->getMemcached()->delete($this->key);
+        return $this->_ctx->getMemcached()->delete($this->key);
     }
 
 

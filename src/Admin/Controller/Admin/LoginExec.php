@@ -30,7 +30,7 @@ class LoginExec extends Json
     {
         //验证ip是否请求过多
         $ip = $_SERVER['REMOTE_ADDR'];
-        $security = $this->_context->getCache("IPSecurity", "admin.login");
+        $security = $this->_ctx->getCache("IPSecurity", "admin.login");
         if (!$security->check($ip)) {
             $this->ret = 1;
             $this->data = "检测到安全风险请稍后再试。";
@@ -43,7 +43,7 @@ class LoginExec extends Json
             return false;
         }
 
-        $this->admin_user = $this->_context->getService('Admin')->findUser($this->user);
+        $this->admin_user = $this->_ctx->getService('Admin')->findUser($this->user);
         if (!$this->admin_user) {
             $this->ret = 1;
             $this->data = "用户名或密码错误.";

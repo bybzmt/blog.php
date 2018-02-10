@@ -7,11 +7,11 @@ class Blog extends Admin\Service
 {
     public function getArticleList($type, $search, $offset, $length)
     {
-        list($rows, $count) = $this->_context->getTable("Article")->getAdminList($type, $search, $offset, $length);
+        list($rows, $count) = $this->_ctx->getTable("Article")->getAdminList($type, $search, $offset, $length);
 
         $objs = [];
         foreach ($rows as $row) {
-            $objs[] = $this->_context->initRow("Article", $row);
+            $objs[] = $this->_ctx->initRow("Article", $row);
         }
 
         return [$objs, $count];
@@ -19,11 +19,11 @@ class Blog extends Admin\Service
 
     public function getCommentList($type, $search, $offset, $length)
     {
-        list($rows, $count) = $this->_context->getTable("Comment")->getAdminList($type, $search, $offset, $length);
+        list($rows, $count) = $this->_ctx->getTable("Comment")->getAdminList($type, $search, $offset, $length);
 
         $objs = [];
         foreach ($rows as $row) {
-            $objs[] = $this->_context->initRow("Comment", $row);
+            $objs[] = $this->_ctx->initRow("Comment", $row);
         }
 
         return [$objs, $count];

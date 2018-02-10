@@ -21,7 +21,7 @@ class User extends Common\Row
     {
         $saved = $this->encryptPass($pass);
 
-        $ok = $this->_context->getTable("User")->update($this->id, array('pass'=>$saved));
+        $ok = $this->_ctx->getTable("User")->update($this->id, array('pass'=>$saved));
         if ($ok) {
             $this->pass = $saved;
         }
@@ -31,7 +31,7 @@ class User extends Common\Row
     //修改昵称
     public function setNickname($nickname)
     {
-        $ok = $this->_context->getTable("User")->update($this->id, array('nickname'=>$nickname));
+        $ok = $this->_ctx->getTable("User")->update($this->id, array('nickname'=>$nickname));
         if ($ok) {
             $this->nickname = $nickname;
         }
@@ -54,39 +54,37 @@ class User extends Common\Row
         );
 
         //保存数据
-        $id = $this->_context->getTable('Article')->insert($data);
+        $id = $this->_ctx->getTable('Article')->insert($data);
 
         return $id;
     }
 
     public function getArticles(int $offset, int $length)
     {
-        $ids = $this->_context->getTable("Article")->getUserListIds($this->id, $offset, $length);
-        $rows = array();
-        foreach ($ids as $id) {
-            $rows[] = $this->_context->getLazyRow("Article", $id);
-        }
-        return $rows;
+        $ids = $this->_ctx->getTable("Article")->getUserListIds($this->id, $offset, $length);
+
+        return $this->_ctx->getLazyRows("Article", $ids);
     }
 
     public function getArticleCount()
     {
-        return $this->_context->getTable("Article")->getUserListCount($this->id);
+        return $this->_ctx->getTable("Article")->getUserListCount($this->id);
     }
 
     public function getRecords(int $offset, int $length)
     {
-        $table = $this->_context->getTable("Record");
-
-        $rows = $table->getList($this->id, $offset, $length);
-        $count = $table->getListCount($this->id);
+        $rows = $this->_ctx->getTable("Record")->getList($this->id, $offset, $length);
 
         $records = array();
         foreach ($rows as $row) {
-            $records[] = $this->_context->initRow("Record", $row);
+            $records[] = $this->_ctx->initRow("Record", $row);
         }
+        return $records;
+    }
 
-        return array($records, $count);
+    public function getRecordCount()
+    {
+        return $this->_ctx->getTable("Record")->getListCount($this->id);
     }
 
     public function loginlog(int $offset, int $length)
@@ -95,7 +93,7 @@ class User extends Common\Row
 
     public function disable()
     {
-        $ok = $this->_context->getTable("User")->update($this->id, array('status'=>0));
+        $ok = $this->_ctx->getTable("User")->update($this->id, array('status'=>0));
         if ($ok) {
             $this->status = 0;
         }
@@ -104,7 +102,7 @@ class User extends Common\Row
 
     public function enable()
     {
-        $ok = $this->_context->getTable("User")->update($this->id, array('status'=>1));
+        $ok = $this->_ctx->getTable("User")->update($this->id, array('status'=>1));
         if ($ok) {
             $this->status = 1;
         }

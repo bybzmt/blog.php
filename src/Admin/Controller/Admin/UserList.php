@@ -33,7 +33,7 @@ class UserList extends AuthWeb
     public function show()
     {
         //查出所有管理组
-        list($users, $count) = $this->_context->getService("Admin")
+        list($users, $count) = $this->_ctx->getService("Admin")
             ->getUserList($this->type, $this->keyword, $this->_offset, $this->_length);
 
         $this->render(array(

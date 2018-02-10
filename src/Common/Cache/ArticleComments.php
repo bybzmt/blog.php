@@ -8,12 +8,12 @@ class ArticleComments extends ListCache
 {
     protected function getRows(array $ids):array
     {
-        return $this->_context->getLazyRows('Comment', $ids);
+        return $this->_ctx->getLazyRows('Comment', $ids);
     }
 
     protected function loadData(int $length):array
     {
-        $ids = $this->_context->getTable('Comment')->getListIds($this->list_id, 0, $length);
+        $ids = $this->_ctx->getTable('Comment')->getListIds($this->list_id, 0, $length);
         $out = array();
         foreach ($ids as $id) {
             $out[] = $this->list_id.":".$id;

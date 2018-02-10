@@ -35,11 +35,11 @@ class ArticleList extends AuthWeb
     public function show()
     {
         //查出所有管理组
-        list($articles, $count) = $this->_context->getService("Blog")
+        list($articles, $count) = $this->_ctx->getService("Blog")
             ->getArticleList($this->type, $this->keyword, $this->_offset, $this->_length);
 
         array_walk($articles, function($article){
-            $article->author = $this->_context->getLazyRow("User", $article->user_id);
+            $article->author = $this->_ctx->getLazyRow("User", $article->user_id);
         });
 
         $this->render(array(

@@ -24,7 +24,7 @@ class CommentAuditExec extends AuthJson
             return false;
         }
 
-        $this->comment = $this->_context->getRow("Comment", $this->id);
+        $this->comment = $this->_ctx->getRow("Comment", $this->id);
 
         if (!$this->comment) {
             $this->ret = 1;

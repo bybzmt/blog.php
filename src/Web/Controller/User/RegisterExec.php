@@ -25,13 +25,13 @@ class RegisterExec extends Web
         $_SESSION['captcha'] = null;
 
         //记录注册调用次数
-        $this->_context->getService("Security")->incr_doRegister();
+        $this->_ctx->getService("Security")->incr_doRegister();
     }
 
     public function valid()
     {
         //验证安全情况
-        if ($this->_context->getService("Security")->isLocked()) {
+        if ($this->_ctx->getService("Security")->isLocked()) {
             $this->error = "操作过于频繁请明天再试!";
             return false;
         }
@@ -45,7 +45,7 @@ class RegisterExec extends Web
             $this->error = "验证码错误";
 
             //记录验证码错误次数
-            $this->_context->getService("Security")->incr_captchaError();
+            $this->_ctx->getService("Security")->incr_captchaError();
 
             return false;
         }
@@ -55,7 +55,7 @@ class RegisterExec extends Web
             return false;
         }
 
-        $user = $this->_context->getService("User")->getUser($this->username);
+        $user = $this->_ctx->getService("User")->getUser($this->username);
         if ($user) {
             $this->error = "用户名己存在";
             return false;
@@ -71,10 +71,10 @@ class RegisterExec extends Web
 
     public function exec()
     {
-        $user = $this->_context->getService("User")->addUser($this->username, $this->nickname);
+        $user = $this->_ctx->getService("User")->addUser($this->username, $this->nickname);
         if ($user) {
             //记录注册成功
-            $this->_context->getService("Security")->incr_registerSuccess();
+            $this->_ctx->getService("Security")->incr_registerSuccess();
 
             return $user->setPass($this->password);
         }

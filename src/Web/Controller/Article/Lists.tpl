@@ -70,7 +70,7 @@
                         <div class="body clearfix">
                             <ul class="tags">
                             {% for tag in taglist %}
-                                <li><a href="{{ tag.url }}">{{ tag.name }}</a></li>
+                                <li><a href="{{ mkUrl('Article.Lists', {tag:tag.id}) }}">{{ tag.name }}</a></li>
                             {% endfor %}
                             </ul>
                         </div>

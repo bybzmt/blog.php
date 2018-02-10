@@ -25,7 +25,7 @@ class UserEditExec extends AuthJson
         $this->permissions = array_intersect($this->permissions, Permissions::getAll());
 
         //过滤掉不合法的id
-        $rows = $this->_context->getTable("AdminRole")->gets($this->role_ids);
+        $rows = $this->_ctx->getTable("AdminRole")->gets($this->role_ids);
         foreach ($rows as $row) {
             $this->roles[] = $this->initRow("AdminRole", $row);
         }
@@ -39,7 +39,7 @@ class UserEditExec extends AuthJson
             return false;
         }
 
-        $this->user = $this->_context->getRow("AdminUser", $this->id);
+        $this->user = $this->_ctx->getRow("AdminUser", $this->id);
         if (!$this->user) {
             $this->ret = 1;
             $this->data = "用户不存在。";

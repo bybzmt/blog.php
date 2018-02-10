@@ -3,7 +3,7 @@ namespace Bybzmt\Blog\Common;
 
 abstract class Cache extends Component
 {
-    protected $_context;
+    protected $_ctx;
 
     //缓存过期时间
     protected $expiration = 1800;
@@ -19,7 +19,7 @@ abstract class Cache extends Component
 
     public function __construct(Context $context, string $id='')
     {
-        $this->_context = $context;
+        $this->_ctx = $context;
         $this->id = $id;
         $this->keyPrefix = str_replace('\\', '.', static::class) .'.'. $id;
         $this->hashPrefix = $this->keyPrefix;
@@ -27,7 +27,7 @@ abstract class Cache extends Component
 
     protected function getMemcached()
     {
-        return $this->_context->getMemcached($this->memcachedName);
+        return $this->_ctx->getMemcached($this->memcachedName);
     }
 
     protected function hash(string $str): string

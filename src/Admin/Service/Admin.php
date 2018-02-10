@@ -8,21 +8,21 @@ class Admin extends PAdmin\Service
 
     public function findUser($user)
     {
-        $row = $this->_context->getTable('AdminUser')->findByUser($user);
+        $row = $this->_ctx->getTable('AdminUser')->findByUser($user);
         if (!$row) {
             return false;
         }
 
-        return $this->_context->initRow('AdminUser', $row);
+        return $this->_ctx->initRow('AdminUser', $row);
     }
 
     public function getRoles()
     {
-        $rows = $this->_context->getTable("AdminRole")->getAll();
+        $rows = $this->_ctx->getTable("AdminRole")->getAll();
         $roles = [];
 
         foreach ($rows as $row) {
-            $roles[] = $this->_context->initRow("AdminRole", $row);
+            $roles[] = $this->_ctx->initRow("AdminRole", $row);
         }
 
         return $roles;
@@ -30,12 +30,12 @@ class Admin extends PAdmin\Service
 
     public function getUserList($type, $search, $offset, $length)
     {
-        $rows = $this->_context->getTable("AdminUser")->getUserList($type, $search, $offset, $length);
-        $count = $this->_context->getTable("AdminUser")->getUserListCount($type, $search);
+        $rows = $this->_ctx->getTable("AdminUser")->getUserList($type, $search, $offset, $length);
+        $count = $this->_ctx->getTable("AdminUser")->getUserListCount($type, $search);
         $users = [];
 
         foreach ($rows as $row) {
-            $users[] = $this->_context->initRow("AdminUser", $row);
+            $users[] = $this->_ctx->initRow("AdminUser", $row);
         }
 
         return [$users, $count];
@@ -53,14 +53,14 @@ class Admin extends PAdmin\Service
             'status' => 1,
         );
 
-        $id = $this->_context->getTable("AdminUser")->add($data);
+        $id = $this->_ctx->getTable("AdminUser")->add($data);
         if (!$id) {
             return false;
         }
 
         $data['id'] = $id;
 
-        $user = $this->_context->initRow("AdminUser", $data);
+        $user = $this->_ctx->initRow("AdminUser", $data);
         $user->setPass($pass);
 
         //让首个注册用户成为系统管理员，并自动通过
@@ -80,7 +80,7 @@ class Admin extends PAdmin\Service
             'status' => 1,
         );
 
-        $id = $this->_context->getTable("AdminRole")->add($data);
+        $id = $this->_ctx->getTable("AdminRole")->add($data);
 
         return $id ? true : false;
     }

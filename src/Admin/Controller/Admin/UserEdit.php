@@ -16,7 +16,7 @@ class UserEdit extends AuthWeb
 
     public function valid()
     {
-        $this->user = $this->_context->getRow('AdminUser', $this->user_id);
+        $this->user = $this->_ctx->getRow('AdminUser', $this->user_id);
 
         if (!$this->user) {
             return false;
@@ -36,7 +36,7 @@ class UserEdit extends AuthWeb
 
         $role_rows;
 
-        $all_roles = $this->_context->getService("Admin")->getRoles();
+        $all_roles = $this->_ctx->getService("Admin")->getRoles();
         foreach ($all_roles as $role) {
             $role_rows[] = array(
                 'id' => $role->id,
@@ -46,7 +46,7 @@ class UserEdit extends AuthWeb
         }
 
         //重新整理下格式
-        $_permissions = Permissions::reorganize($this->_context->getTable("AdminPermission"), $permissions);
+        $_permissions = Permissions::reorganize($this->_ctx->getTable("AdminPermission"), $permissions);
 
         $this->render(array(
             'sidebarMenu' => '管理员管理',

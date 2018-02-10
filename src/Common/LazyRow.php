@@ -82,13 +82,13 @@ class LazyRow extends Component
      */
     protected function rowLoad()
     {
-        $ids = array_keys($this->_context->lazyRow[$this->name]);
+        $ids = array_keys($this->_ctx->lazyRow[$this->name]);
 
-        $rows = $this->_context->getTable($this->name)->gets($ids);
+        $rows = $this->_ctx->getTable($this->name)->gets($ids);
 
-        foreach ($this->_context->lazyRow[$this->name] as $id => $lazyRows) {
+        foreach ($this->_ctx->lazyRow[$this->name] as $id => $lazyRows) {
             if (isset($rows[$id])) {
-                $obj = $this->_context->initRow($this->name, $rows[$id]);
+                $obj = $this->_ctx->initRow($this->name, $rows[$id]);
 
                 foreach ($lazyRows as $lazyRow) {
                     $lazyRow->_do_set_row($obj);
@@ -100,7 +100,7 @@ class LazyRow extends Component
             }
         }
 
-        unset($this->_context->lazyRow[$this->name]);
+        unset($this->_ctx->lazyRow[$this->name]);
     }
 
 }

@@ -8,12 +8,12 @@ class TagArticles extends ListCache
 {
     protected function getRows(array $ids):array
     {
-        return $this->_context->getLazyRows('Article', $ids);
+        return $this->_ctx->getLazyRows('Article', $ids);
     }
 
     protected function loadData(int $length):array
     {
-        return $this->_context->getTable('ArticleTag')->getArticleIds($this->list_id, 0, $length);
+        return $this->_ctx->getTable('ArticleTag')->getArticleIds($this->list_id, 0, $length);
     }
 
 

@@ -8,12 +8,12 @@ class User extends Common\Service
     //得到用户
     public function getUser(string $username)
     {
-        $row = $this->_context->getTable('User')->findByUsername($username);
+        $row = $this->_ctx->getTable('User')->findByUsername($username);
         if (!$row) {
             return false;
         }
 
-        return $this->_context->initRow("User", $row);
+        return $this->_ctx->initRow("User", $row);
     }
 
     //添加新用户
@@ -26,10 +26,10 @@ class User extends Common\Service
             'status' => 1,
         );
 
-        $id = $this->_context->getTable("User")->insert($data);
+        $id = $this->_ctx->getTable("User")->insert($data);
 
         if ($id) {
-            return $this->_context->getRow("User", $id);
+            return $this->_ctx->getRow("User", $id);
         }
 
         return $id;

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2018-02-02 17:09:56
+-- Generation Time: 2018-03-24 09:02:24
 -- 服务器版本： 10.1.26-MariaDB-0+deb9u1
 -- PHP Version: 7.0.27-0+deb9u1
 
@@ -111,6 +111,7 @@ CREATE TABLE `articles` (
   `title` varchar(255) NOT NULL COMMENT '标题',
   `intro` varchar(1000) NOT NULL COMMENT '简介',
   `content` mediumblob NOT NULL COMMENT '内容',
+  `html` mediumblob NOT NULL COMMENT '正文html',
   `addtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
   `edittime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `status` tinyint(3) UNSIGNED NOT NULL COMMENT '状态[1草稿][2审核][3正式][4下线]',
@@ -527,7 +528,8 @@ ALTER TABLE `security_log`
 -- Indexes for table `tags`
 --
 ALTER TABLE `tags`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Indexes for table `users`
@@ -604,13 +606,13 @@ ALTER TABLE `admin_user_roles`
 -- 使用表AUTO_INCREMENT `articles`
 --
 ALTER TABLE `articles`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1001;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1007;
 
 --
 -- 使用表AUTO_INCREMENT `article_comments_id`
 --
 ALTER TABLE `article_comments_id`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- 使用表AUTO_INCREMENT `article_replys_id`
@@ -628,13 +630,13 @@ ALTER TABLE `article_tags`
 -- 使用表AUTO_INCREMENT `security_log`
 --
 ALTER TABLE `security_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- 使用表AUTO_INCREMENT `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- 使用表AUTO_INCREMENT `users`
@@ -646,7 +648,7 @@ ALTER TABLE `users`
 -- 使用表AUTO_INCREMENT `user_records_id`
 --
 ALTER TABLE `user_records_id`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

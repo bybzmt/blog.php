@@ -8,9 +8,23 @@ class StaticFile
 {
     public static function readfile($file)
     {
-        header('Content-Type: ' . self::_mime_type($file));
-        header('Content-Length: ' . filesize($file));
-        readfile($file);
+        $size = filesize($file);
+        $time = filemtime($file);
+        $etag = "\"$time-$size\"";
+
+        $_etag = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? $_SERVER['HTTP_IF_NONE_MATCH'] : null;
+
+        if ($_etag && $_etag == $etag) {
+            header("HTTP/1.0 304 Not Modified");
+            header("Etag: $etag");
+            header('Last-Modified: ' . gmdate(DATE_RFC850, $time));
+        } else {
+            header('Content-Type: ' . self::_mime_type($file));
+            header('Content-Length: ' . $size);
+            header("Etag: $etag");
+            header('Last-Modified: ' . gmdate(DATE_RFC850, $time));
+            readfile($file);
+        }
     }
 
     private static function _mime_type($filename)

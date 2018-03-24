@@ -36,7 +36,7 @@ class Session extends Common\Service implements SessionHandlerInterface
         } else {
             //判断确实未找到,而非memcache服务器出问题了
             if ($this->_ctx->getMemcached()->getResultCode() == Memcached::RES_NOTFOUND) {
-                $this->_ctx->getService("Security")->inrc_newSession();
+                $this->_ctx->getService("Security")->incr_newSession();
             }
             return '';
         }

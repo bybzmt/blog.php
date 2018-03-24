@@ -69,6 +69,8 @@ class Lists extends Web
 
             $tags = array_merge($tags,$row->getTagsId());
 
+            $row->tags = $row->getTags();
+
             $row->commentsNum = $row->getCommentsNum();
 
             $row->author = $this->_ctx->getLazyRow("User", $row->user_id);
@@ -77,7 +79,7 @@ class Lists extends Web
             return true;
         });
 
-        $tags = $this->_ctx->getRows("Tag", array_unique($tags));
+        $tags = $this->_ctx->getLazyRows("Tag", array_unique($tags));
 
         $this->render(array(
             'tag' => $this->tag,

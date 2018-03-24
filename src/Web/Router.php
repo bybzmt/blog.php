@@ -22,6 +22,8 @@ class Router extends Common\Router
 
         $this->get('/user', ':User.Show');
         $this->get('/user/articles', ':User.ArticleList');
+        $this->get('/user/article/add', ':User.ArticleAdd');
+        $this->post('/post/user/article/add', ':User.ArticleAddExec');
         $this->get('/login', ':User.Login');
         $this->get('/logout', ':User.Logout');
         $this->get('/captcha', ':User.Captcha');

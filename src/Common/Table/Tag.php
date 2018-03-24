@@ -19,4 +19,11 @@ class Tag extends Common\Table
         'top',
     ];
 
+    public function getTag(string $name)
+    {
+        $sql = "select * from {$this->_tableName} where name = ?";
+
+        return $this->query($sql, [$name])->fetch();
+    }
+
 }

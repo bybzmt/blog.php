@@ -1,12 +1,10 @@
 <?php
-namespace Galaxy\Core;
-
-use Galaxy\Library;
+namespace Bybzmt\Blog\Common\Service;
 
 /**
  * 文件存储服务
  */
-class AsyncTask
+class AsyncTask extends Common\Service
 {
 	/**
 	 * 异步任务(立刻执行)

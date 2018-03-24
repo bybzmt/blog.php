@@ -6,8 +6,11 @@
     <span>Article</span>
 {% endblock %}
 
-{% block title %}
-    {{ article.title}}
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <link rel='stylesheet' href='/css/github-markdown.css' type='text/css' />
 {% endblock %}
 
 {% block content %}
@@ -26,8 +29,9 @@
                                 <span class="data"><a href="#comments"> {{ commentsNum }} Comments</a></span>
                             </div>
 
-                            {{ article.content }}
-
+                            <div class="markdown-body">
+                            {{ article.html |raw }}
+                            </div>
                         </div>
                     </article>
 
@@ -106,7 +110,7 @@
 
                         <h2><i class="fa fa-pencil"></i> Add Comment</h2>
 
-                        <form id="hid_form" onsubmit="dosubmit();return false;" action="{{ mkUrl("Article.Comment") }}" method="post">
+                        <form id="hid_form" onsubmit="return dosubmit()" action="{{ mkUrl("Article.Comment") }}" method="post">
                             <input type="hidden" name="id" value="{{ article.id }}" />
                             <input id="hid_reply" type="hidden" name="reply" value="0" />
 

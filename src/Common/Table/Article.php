@@ -17,6 +17,7 @@ class Article extends Common\Table
         'title',
         'intro',
         'content',
+        'html',
         'addtime',
         'edittime',
         'status',
@@ -29,21 +30,21 @@ class Article extends Common\Table
 
     public function getIndexIds(int $offset, int $length)
     {
-        $sql = "select id from articles where status = 1 order by id desc limit $offset, $length";
+        $sql = "select id from articles where status = 3 and deleted = 0 order by id desc limit $offset, $length";
 
         return $this->query($sql)->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function getUserListIds(int $user_id, int $offset, int $length)
     {
-        $sql = "select id from articles where user_id = ? AND status = 1 order by id desc limit $offset, $length";
+        $sql = "select id from articles where user_id = ? AND deleted = 0 order by id desc limit $offset, $length";
 
         return $this->query($sql, [$user_id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function getUserListCount(int $user_id)
     {
-        $sql = "select Count(*) from articles where user_id = ? AND status = 1";
+        $sql = "select Count(*) from articles where user_id = ? AND deleted = 0";
 
         return $this->query($sql, [$user_id])->fetch(PDO::FETCH_COLUMN, 0);
     }

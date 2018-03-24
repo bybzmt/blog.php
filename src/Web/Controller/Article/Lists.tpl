@@ -28,7 +28,7 @@
                                     <i class="fa fa-user"></i> {{ article.author.nickname }}
                                     <i class="fa fa-calendar"></i> {{ article.addtime | date('Y-m-d') }}
                                     <i class="fa fa-comments"></i>
-                                    <span class="data"><a href="#comments"> {{ article.commentsNum }} Comments</a></span>
+                                    <span class="data"><a href="{{ article.link }}#comments"> {{ article.commentsNum }} Comments</a></span>
                                 </div>
                             </header>
 
@@ -36,6 +36,10 @@
                                 {{ article.intro }}
                             </div>
                             <div class="clearfix">
+                                {% for tag in article.tags %}
+                                    <a href="{{ mkUrl('Article.Lists', {tag:tag.id}) }}">{{ tag.name }}</a>
+                                {% endfor %}
+
                                 <a href="{{ article.link }}" class="btn btn-clean-one">Read more</a>
                             </div>
                                 <hr>

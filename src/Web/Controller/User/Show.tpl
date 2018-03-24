@@ -20,7 +20,7 @@
                         <ul class="clean-list">
                             <li><a href="{{ mkUrl("User.Show") }}">评论记录</a></li>
                             <li><a href="{{ mkUrl("User.ArticleList") }}">文章列表</a></li>
-                            <li><a href="{{ mkUrl("User.Show") }}">发表文章</a></li>
+                            <li><a href="{{ mkUrl("User.ArticleAdd") }}">发表文章</a></li>
                         </ul>
                     </div>
                 </div>

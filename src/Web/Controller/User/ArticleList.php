@@ -3,7 +3,6 @@ namespace Bybzmt\Blog\Web\Controller\User;
 
 use Bybzmt\Blog\Web\Controller\AuthWeb;
 use Bybzmt\Blog\Web\Reverse;
-use ReflectionObject;
 use Bybzmt\Blog\Common\Helper\Pagination;
 
 class ArticleList extends AuthWeb
@@ -43,16 +42,17 @@ class ArticleList extends AuthWeb
 
     public function show()
     {
-        $articles = $this->user->getArticles($this->offset, $this->length);
-        $count = $this->user->getArticleCount();
+        $service = $this->_ctx->getService("Article");
+
+        $articles = $service->getUserList($this->user, $this->offset, $this->length);
+        $count = $service->getUserListCount($this->user);
 
         //预加载用户
         array_walk($articles, function(&$row){
             $row->author = $this->_ctx->getLazyRow("User", $row->user_id);
             $row->commentsNum = $row->getCommentsNum();
-
+            $row->tags = $row->getTags();
             $row->link = Reverse::mkUrl('Article.Show', ['id'=>$row->id]);
-
         });
 
         $this->render(array(

@@ -4,7 +4,6 @@ namespace Bybzmt\Blog\Common;
 use PDO;
 use Memcached;
 use Redis;
-use Bybzmt\DB\PDOConn;
 use Bybzmt\DB\Monitor;
 use Bybzmt\Logger\Factory;
 use bybzmt\Locker\SocketLock;
@@ -23,7 +22,7 @@ class Resource
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ];
 
-        $db = new PDOConn($dsn, $user, $pass, $opts);
+        $db = new PDO($dsn, $user, $pass, $opts);
 
         $logger = self::getLogger('sql');
 

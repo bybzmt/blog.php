@@ -38,39 +38,6 @@ class User extends Common\Row
         return $ok;
     }
 
-    public function addArticle($title, $intro, $content)
-    {
-        $data = array(
-            'user_id' => $this->id,
-            'title' => $title,
-            'intro' => $intro,
-            'content' => $content,
-            'addtime' => date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']),
-            'edittime' => date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']),
-            'status' => 0,
-            'top' => 0,
-            'cache_tags' => '',
-            'cache_comments_num' => 0,
-        );
-
-        //保存数据
-        $id = $this->_ctx->getTable('Article')->insert($data);
-
-        return $id;
-    }
-
-    public function getArticles(int $offset, int $length)
-    {
-        $ids = $this->_ctx->getTable("Article")->getUserListIds($this->id, $offset, $length);
-
-        return $this->_ctx->getLazyRows("Article", $ids);
-    }
-
-    public function getArticleCount()
-    {
-        return $this->_ctx->getTable("Article")->getUserListCount($this->id);
-    }
-
     public function getRecords(int $offset, int $length)
     {
         $rows = $this->_ctx->getTable("Record")->getList($this->id, $offset, $length);

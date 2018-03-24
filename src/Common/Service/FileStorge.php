@@ -1,12 +1,10 @@
 <?php
-namespace Galaxy\Core;
-
-use Galaxy\Library;
+namespace Bybzmt\Blog\Common\Service;
 
 /**
  * 文件存储服务
  */
-class FileStorge
+class FileStorge extends Common\Service
 {
 	/**
 	 * 得到文件管理服务

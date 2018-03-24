@@ -87,10 +87,15 @@ class LoginExec extends Web
         header("Location: $login");
     }
 
-    public function show()
+    public function exec()
     {
         $_SESSION['uid'] = $this->user->id;
 
+        return true;
+    }
+
+    public function show()
+    {
         $go = $this->go ? $this->go : Reverse::mkUrl("Article.Lists");
 
         header("Location: $go");

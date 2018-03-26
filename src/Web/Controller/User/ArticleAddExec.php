@@ -55,7 +55,7 @@ class ArticleAddExec extends AuthWeb
             return false;
         }
 
-        $user_id = isset($_SESSION['uid']) ? $_SESSION['uid'] : 0;
+        $user_id = isset($this->_ctx->session['uid']) ? $this->_ctx->session['uid'] : 0;
         $this->user = $this->_ctx->getRow("User", $user_id);
         if (!$this->user) {
             throw new Exception("SESSION uid:{$user_id} not exists.");

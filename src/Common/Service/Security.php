@@ -20,7 +20,7 @@ class Security extends Common\Service
 
     protected function _init()
     {
-        $this->_ip = $this->_ctx->getRequest()->getIP();
+        $this->_ip = $this->_ctx->request->server['remote_addr'];
         $this->_cachekey .= "-" . $this->_ip;
     }
 
@@ -90,10 +90,8 @@ class Security extends Common\Service
         } while(!$this->set($val));
 
         //记录锁定日志
-        $this->_ctx->getTable("SecurityLog")->insert(array(
-            'ip' => $this->_ip,
-            'type' => $key,
-        ));
+        $msg = $this->_ip . " " . $key;
+        $this->_ctx->getLogger('security')->info($msg);
     }
 
     //展示验证码次数

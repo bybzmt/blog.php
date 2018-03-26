@@ -6,24 +6,33 @@ namespace Bybzmt\Blog\Common\Helper;
  */
 class StaticFile
 {
-    public static function readfile($file)
+    private $_ctx;
+
+    public function __construct($context)
+    {
+        $this->_ctx = $context;
+    }
+
+    public function readfile($file)
     {
         $size = filesize($file);
         $time = filemtime($file);
         $etag = "\"$time-$size\"";
 
-        $_etag = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? $_SERVER['HTTP_IF_NONE_MATCH'] : null;
+        $server = $this->_ctx->request->server;
+        $_etag = isset($server['http_if_none_match']) ? $server['http_if_none_match'] : null;
 
         if ($_etag && $_etag == $etag) {
-            header("HTTP/1.0 304 Not Modified");
-            header("Etag: $etag");
-            header('Last-Modified: ' . gmdate(DATE_RFC850, $time));
+            $this->_ctx->response->status(304);
+            $this->_ctx->response->header("Etag", $etag);
+            $this->_ctx->response->header('Last-Modified', gmdate(DATE_RFC850, $time));
+            $this->_ctx->response->end();
         } else {
-            header('Content-Type: ' . self::_mime_type($file));
-            header('Content-Length: ' . $size);
-            header("Etag: $etag");
-            header('Last-Modified: ' . gmdate(DATE_RFC850, $time));
-            readfile($file);
+            $this->_ctx->response->header('Content-Type', self::_mime_type($file));
+            $this->_ctx->response->header('Content-Length', $size);
+            $this->_ctx->response->header("Etag", $etag);
+            $this->_ctx->response->header('Last-Modified', gmdate(DATE_RFC850, $time));
+            $this->_ctx->response->sendfile($file);
         }
     }
 

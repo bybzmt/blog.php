@@ -7,7 +7,12 @@ namespace Bybzmt\Blog\Common;
 class Context
 {
     //请求对像
-    protected $request;
+    public $request;
+
+    //响应对像
+    public $response;
+
+    public $session = array();
 
     //db连接
     protected $dbConns;
@@ -32,19 +37,6 @@ class Context
 
     //标记的批量加载
     public $lazyRow;
-
-    public function getRequest()
-    {
-        if (!$this->request) {
-            $this->request = new Request();
-        }
-        return $this->request;
-    }
-
-    public function setRequest($request)
-    {
-        $this->request = $request;
-    }
 
     ####################
     ## 初始化基础对像 ##

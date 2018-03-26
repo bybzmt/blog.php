@@ -37,10 +37,11 @@ class Router extends Common\Router
         $file = STATIC_PATH .'/web'. $this->getUri();
 
         if (file_exists($file)) {
-            StaticFile::readfile($file);
+            $static = new StaticFile($this->_ctx);
+            $static->readfile($file);
         } else {
-            header('HTTP/1.0 404 Not Found');
-            echo "Web 404 page not found\n";
+            $this->_ctx->response->status(404);
+            $this->_ctx->response->end("Web 404 page not found\n");
         }
     }
 

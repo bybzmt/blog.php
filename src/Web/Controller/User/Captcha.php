@@ -14,8 +14,11 @@ class Captcha extends Web
 
         $obj = new Helper\CaptchaCode(118, 36);
 
-        $_SESSION['captcha'] = $obj->getCode();
+        $this->_ctx->session['captcha'] = $obj->getCode();
 
-        $obj->show([0xDD,0xDD,0xDD], [0x99,0x99,0x99]);
+        $image = $obj->show([0xDD,0xDD,0xDD], [0x99,0x99,0x99]);
+
+        $this->_ctx->response->header('Content-type', 'image/jpg');
+        $this->_ctx->response->end($image);
     }
 }

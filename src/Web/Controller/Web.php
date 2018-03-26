@@ -15,9 +15,7 @@ abstract class Web extends Common\Controller
     {
         parent::__construct($context);
 
-        session_start();
-
-        $this->_uid = isset($_SESSION['uid']) ? (int)$_SESSION['uid'] : 0;
+        $this->_uid = isset($context->session['uid']) ? (int)$context->session['uid'] : 0;
     }
 
     public function init()
@@ -66,7 +64,9 @@ abstract class Web extends Common\Controller
         ));
         $twig->addExtension(new TwigExtension($twig));
 
-        echo $twig->render($file, $data);
+        $html = $twig->render($file, $data);
+
+        $this->_ctx->response->end($html);
     }
 
 }

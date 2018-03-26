@@ -13,5 +13,5 @@ abstract class Bootstrap
         throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
     }
 
-    abstract public function run();
+    abstract public function run($request, $response);
 }

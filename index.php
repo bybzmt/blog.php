@@ -2,6 +2,7 @@
 namespace Bybzmt\Blog;
 
 use Bybzmt\Blog\Common\Config;
+use Bybzmt\Blog\Common\Front;
 
 //配置文件目录 (根据当前环境载入不同配置)
 define('CONFIG_PATH', __DIR__ . "/config/" . (isset($_ENV['ENVIRONMENT']) ? $_ENV['ENVIRONMENT'] : 'dev'));
@@ -21,21 +22,23 @@ define('STATIC_PATH', __DIR__ . "/static");
 //composer自动加载
 require __DIR__ . '/vendor/autoload.php';
 
-if (PHP_SAPI == 'cli') {
-    (new Console\Bootstrap())->run();
-} else {
-    switch ($_SERVER['HTTP_HOST']) {
+$front = new Front(function($name) {
+    switch ($name) {
+    //命令行
+    case '#CLI' : return new Console\Bootstrap();
     //静态文件
-    case Config::get('host.static'): (new StaticFile\Bootstrap())->run(); break;
+    case Config::get('host.static'): return new StaticFile\Bootstrap();
     //api接口
-    case Config::get('host.api'): (new Api\Bootstrap())->run(); break;
+    case Config::get('host.api'): return new Api\Bootstrap();
     //内部访问
-    case Config::get('host.backend'): (new Backend\Bootstrap())->run(); break;
+    case Config::get('host.backend'): return new Backend\Bootstrap();
     //合作商接口
-    case Config::get('host.partner'): (new Partner\Bootstrap())->run(); break;
+    case Config::get('host.partner'): return new Partner\Bootstrap();
     //后台
-    case Config::get('host.admin'): (new Admin\Bootstrap())->run(); break;
+    case Config::get('host.admin'): return new Admin\Bootstrap();
     //默认
-    default: (new Web\Bootstrap())->run(); break;
+    default: return new Web\Bootstrap();
     }
-}
+});
+
+$front->run();

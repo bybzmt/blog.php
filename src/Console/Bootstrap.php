@@ -16,17 +16,6 @@ class Bootstrap extends PBootstrap
             $router->setUri($_SERVER['argv'][1]);
         }
 
-        $this->_initParams();
-
-        $router->run();
-    }
-
-    /*
-     * 初史化参数 转换命令行参数到$_GET数组
-     * 格式: --key=value
-     */
-    protected function _initParams()
-    {
         for ($i=2; $i<$_SERVER['argc']; $i++) {
             //从命令行取得参数
             $params = array();
@@ -37,5 +26,9 @@ class Bootstrap extends PBootstrap
             }
             parse_str(implode("&", $params), $_GET);
         }
+
+        $router->run();
     }
+
+
 }

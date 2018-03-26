@@ -30,11 +30,13 @@ return array(
         'apple-pay' => ['syslog', 'php-apple-pay', 'LOG_USER'],
         'alipay' => ['syslog', 'php-alipay', 'LOG_USER'],
         'debug' => ['syslog', 'php-debug', 'LOG_USER'],
+        //'security' => ['PHPlog', 'security'],
+        'security' => ['null'],
     ],
     //缓存配置
     'memcached' => [
         'default' => [
-            'persistent_id' => null,
+            'persistent_id' => 'test1',
             'servers' => [
                 ['localhost', 11211, 100],
             ],

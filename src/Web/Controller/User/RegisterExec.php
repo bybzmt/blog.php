@@ -20,9 +20,9 @@ class RegisterExec extends Web
         $this->password = isset($_POST['password']) ? trim($_POST['password']) : null;
         $this->nickname = isset($_POST['nickname']) ? trim($_POST['nickname']) : null;
         $this->captcha = isset($_POST['captcha']) ? trim($_POST['captcha']) : null;
-        $this->se_captcha = isset($_SESSION['captcha']) ? $_SESSION['captcha'] : null;
+        $this->se_captcha = isset($this->_ctx->session['captcha']) ? $this->_ctx->session['captcha'] : null;
 
-        $_SESSION['captcha'] = null;
+        $this->_ctx->session['captcha'] = null;
 
         //记录注册调用次数
         $this->_ctx->getService("Security")->incr_doRegister();

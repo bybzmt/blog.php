@@ -125,11 +125,7 @@ class CaptchaCode
 
 		$image->setImageFormat('jpg');
 
-		header('Content-type: image/jpg');
-		echo $image;
-
-		//释放资源
-		$image->destroy();
+        return $image;
 	}
 
 }

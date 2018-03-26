@@ -19,5 +19,7 @@ class Bootstrap extends Common\Bootstrap
         $router = new Router($context);
 
         $router->run();
+
+        $context->session->save();
     }
 }

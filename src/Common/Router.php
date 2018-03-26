@@ -35,11 +35,13 @@ abstract class Router extends PRouter
 
     public function getURI()
     {
-        $uri = $this->_ctx->request->server['request_uri'];
+        $uri = parse_url($this->_ctx->request->server['request_uri'], PHP_URL_PATH);
+
         $len = strlen($this->getBasePath());
         if ($len > 0) {
             $uri = substr($uri, $len);
         }
+
         return $uri;
     }
 

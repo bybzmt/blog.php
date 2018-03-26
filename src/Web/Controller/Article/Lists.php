@@ -63,7 +63,7 @@ class Lists extends Web
         $tags = [];
 
         $articles = array_filter($articles, function($row) use(&$tags) {
-            if (!$row || !$row->id || $row->status != 1) {
+            if (!$row || !$row->id || $row->status == 1) {
                 return false;
             }
 

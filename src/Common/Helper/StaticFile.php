@@ -19,8 +19,8 @@ class StaticFile
         $time = filemtime($file);
         $etag = "\"$time-$size\"";
 
-        $server = $this->_ctx->request->server;
-        $_etag = isset($server['http_if_none_match']) ? $server['http_if_none_match'] : null;
+        $header = $this->_ctx->request->header;
+        $_etag = isset($header['if_none_match']) ? $header['if_none_match'] : null;
 
         if ($_etag && $_etag == $etag) {
             $this->_ctx->response->status(304);

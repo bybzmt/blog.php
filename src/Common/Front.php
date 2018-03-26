@@ -47,7 +47,7 @@ class Front
         $http = new swoole_http_server($addr, $port);
 
         $http->on('request', function ($request, $response) {
-            $host = isset($request->server['HTTP_HOST']) ? $request->server['HTTP_HOST'] : null;
+            $host = isset($request->header['host']) ? $request->header['host'] : null;
 
             $module = call_user_func($this->_module, $host);
 

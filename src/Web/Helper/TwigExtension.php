@@ -6,9 +6,12 @@ use Twig_Environment;
 use Twig_Extension;
 use Twig_Function;
 use Bybzmt\Blog\Web\Reverse;
+use Bybzmt\Framework\ComponentTrait;
 
 class TwigExtension extends Twig_Extension
 {
+    use ComponentTrait;
+
     private $_ctx;
     private $twig;
 
@@ -27,7 +30,7 @@ class TwigExtension extends Twig_Extension
 
     public function mkUrl(string $action, array $params=array(), bool $https=false)
     {
-        return $this->_ctx->get("Helper\\Utils")->mkUrl($action, $params, $https);
+        return $this->getHelper("Utils")->mkUrl($action, $params, $https);
     }
 
 }

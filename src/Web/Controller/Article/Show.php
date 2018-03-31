@@ -106,7 +106,7 @@ class Show extends Web
     protected function pagination($count)
     {
         //评论分页
-        return Pagination::style2($count, $this->length, $this->page, function($page){
+        return $this->_ctx->get("Helper.Pagination")->style2($count, $this->length, $this->page, function($page){
             $params = array(
                 'id' => $this->id,
             );
@@ -115,7 +115,7 @@ class Show extends Web
                 $params['page'] = $page;
             }
 
-            return Reverse::mkUrl('Article.Show', $params);
+            return $this->_ctx->get("Reverse")->mkUrl('Article.Show', $params);
         });
     }
 

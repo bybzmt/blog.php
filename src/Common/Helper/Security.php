@@ -1,13 +1,13 @@
 <?php
-namespace Bybzmt\Blog\Common\Service;
+namespace Bybzmt\Blog\Common\Helper;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Helper;
 use Memcached;
 
 /**
  * 安全
  */
-class Security extends Common\Service
+class Security extends Helper
 {
     protected $_cachekey = __CLASS__;
     protected $_expiration = 60*60*12;
@@ -18,8 +18,10 @@ class Security extends Common\Service
     protected $_value;
     protected $_retry = 0;
 
-    protected function _init()
+    public function __construct($context)
     {
+        parent::__construct($context);
+
         $this->_ip = $this->_ctx->request->server['remote_addr'];
         $this->_cachekey .= "-" . $this->_ip;
     }
@@ -27,7 +29,7 @@ class Security extends Common\Service
     protected function get()
     {
         if (!$this->_hold) {
-            $res = $this->_ctx->getMemcached()->get($this->_cachekey, null, Memcached::GET_EXTENDED);
+            $res = $this->_ctx->get("Resource")->getMemcached()->get($this->_cachekey, null, Memcached::GET_EXTENDED);
             if ($res) {
                 $this->_cas = $res['cas'];
                 $this->_value = (array)$res['value'];
@@ -44,9 +46,9 @@ class Security extends Common\Service
     {
         //乐观锁设置
         if ($this->_cas) {
-            $ok = $this->_ctx->getMemcached()->cas($this->_cas, $this->_cachekey, $val, $this->_expiration);
+            $ok = $this->_ctx->get("Resource")->getMemcached()->cas($this->_cas, $this->_cachekey, $val, $this->_expiration);
         } else {
-            $ok = $this->_ctx->getMemcached()->add($this->_cachekey, $val, $this->_expiration);
+            $ok = $this->_ctx->get("Resource")->getMemcached()->add($this->_cachekey, $val, $this->_expiration);
         }
 
         if (!$ok) {

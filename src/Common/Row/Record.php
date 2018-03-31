@@ -1,9 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Common\Row;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Row;
 
-class Record extends Common\Row
+class Record extends Row
 {
     const TYPE_COMMENT = 1;
     const TYPE_REPLY = 2;

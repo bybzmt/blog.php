@@ -3,7 +3,6 @@ namespace Bybzmt\Blog\Web\Controller\User;
 
 use Bybzmt\Blog\Web\Controller\AuthWeb;
 use Bybzmt\Blog\Web\Reverse;
-use Bybzmt\Blog\Common\Helper\Pagination;
 
 class ArticleList extends AuthWeb
 {
@@ -42,7 +41,7 @@ class ArticleList extends AuthWeb
 
     public function show()
     {
-        $service = $this->_ctx->getService("Article");
+        $service = $this->get("Service.Article");
 
         $articles = $service->getUserList($this->user, $this->offset, $this->length);
         $count = $service->getUserListCount($this->user);
@@ -52,7 +51,7 @@ class ArticleList extends AuthWeb
             $row->author = $this->_ctx->getLazyRow("User", $row->user_id);
             $row->commentsNum = $row->getCommentsNum();
             $row->tags = $row->getTags();
-            $row->link = Reverse::mkUrl('Article.Show', ['id'=>$row->id]);
+            $row->link = $this->_ctx->get("Reverse")->mkUrl('Article.Show', ['id'=>$row->id]);
         });
 
         $this->render(array(
@@ -64,14 +63,14 @@ class ArticleList extends AuthWeb
     protected function pagination($count)
     {
         //评论分页
-        return Pagination::style2($count, $this->length, $this->page, function($page){
+        return $this->_ctx->get("Helper.Pagination")->style2($count, $this->length, $this->page, function($page){
             $params = array();
 
             if ($page > 1) {
                 $params['page'] = $page;
             }
 
-            return Reverse::mkUrl('User.Show', $params);
+            return $this->_ctx->get("Reverse")->mkUrl('User.Show', $params);
         });
     }
 

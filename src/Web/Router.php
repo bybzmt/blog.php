@@ -1,10 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Web;
 
-use Bybzmt\Blog\Common;
-use Bybzmt\Blog\Common\Helper\StaticFile;
+use Bybzmt\Framework\Router as Base;
 
-class Router extends Common\Router
+class Router extends Base
 {
     public function _init()
     {
@@ -37,8 +36,7 @@ class Router extends Common\Router
         $file = STATIC_PATH .'/web'. $this->getUri();
 
         if (file_exists($file)) {
-            $static = new StaticFile($this->_ctx);
-            $static->readfile($file);
+            $this->_ctx->get("Helper.StaticFile")->readfile($file);
         } else {
             $this->_ctx->response->status(404);
             $this->_ctx->response->end("Web 404 page not found\n");

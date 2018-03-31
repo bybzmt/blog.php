@@ -1,11 +1,12 @@
 <?php
 namespace Bybzmt\Blog\Common\Table;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\TableSplit;
+use Bybzmt\Framework\TableRowCache;
 
-class Record extends Common\TableSplit
+class Record extends TableSplit
 {
-    use Common\TableRowCache;
+    use TableRowCache;
 
     protected $_dbName = 'blog';
     protected $_tablePrefix = "user_records_";

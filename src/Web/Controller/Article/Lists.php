@@ -3,7 +3,6 @@ namespace Bybzmt\Blog\Web\Controller\Article;
 
 use Bybzmt\Blog\Web\Controller\Web;
 use Bybzmt\Blog\Web\Reverse;
-use Bybzmt\Blog\Common\Helper\Pagination;
 use Bybzmt\Blog\Web\Helper\Cfg;
 
 class Lists extends Web
@@ -56,8 +55,8 @@ class Lists extends Web
             $articles = $this->tag->getArticleList($this->offset, $this->length);
             $count = $this->tag->getArticleCount();
         } else {
-            $articles = $this->_ctx->getService('Article')->getIndexList($this->offset, $this->length);
-            $count = $this->_ctx->getService('Article')->getIndexCount();
+            $articles = $this->_ctx->get("Service.Article")->getIndexList($this->offset, $this->length);
+            $count = $this->_ctx->get("Service.Article")->getIndexCount();
         }
 
         $tags = [];
@@ -74,7 +73,7 @@ class Lists extends Web
             $row->commentsNum = $row->getCommentsNum();
 
             $row->author = $this->_ctx->getLazyRow("User", $row->user_id);
-            $row->link = Reverse::mkUrl('Article.Show', ['id'=>$row->id]);
+            $row->link = $this->_ctx->get("Reverse")->mkUrl('Article.Show', ['id'=>$row->id]);
 
             return true;
         });
@@ -91,7 +90,7 @@ class Lists extends Web
 
     protected function pagination($count)
     {
-        return Pagination::style2($count, $this->length, $this->page, function($page){
+        return $this->_ctx->get("Helper.Pagination")->style2($count, $this->length, $this->page, function($page){
             $params = array();
             if ($page > 1) {
                 $params['page'] = $page;
@@ -100,7 +99,7 @@ class Lists extends Web
                 $params['tag'] = $this->tag_id;
             }
 
-            return Reverse::mkUrl('Article.Lists', $params);
+            return $this->_ctx->get("Reverse")->mkUrl('Article.Lists', $params);
         });
     }
 

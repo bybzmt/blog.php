@@ -1,6 +1,8 @@
 <?php
 namespace Bybzmt\Blog\Common\Cache;
 
+use Bybzmt\Framework\ListCache;
+
 /**
  * 文章评论列表
  */
@@ -13,7 +15,7 @@ class TagArticles extends ListCache
 
     protected function loadData(int $length):array
     {
-        return $this->_ctx->getTable('ArticleTag')->getArticleIds($this->list_id, 0, $length);
+        return $this->_ctx->get('Table.ArticleTag')->getArticleIds($this->list_id, 0, $length);
     }
 
 

@@ -17,7 +17,7 @@ class Login extends Web
 
     public function show()
     {
-        $this->_ctx->getService("Security")->incr_doRegister();
+        $this->_ctx->get("Helper.Security")->incr_doRegister();
 
         $this->render([
             'go' => $this->go,

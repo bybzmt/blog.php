@@ -1,15 +1,16 @@
 <?php
 namespace Bybzmt\Blog\Web;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Reverse as Base;
+use Bybzmt\Framework\Config;
 
-class Reverse extends Common\Reverse
+class Reverse extends Base
 {
-    static public function mkUrl(string $action, array $params=array(), bool $https=false)
+    public function mkUrl(string $action, array $params=array(), bool $https=false)
     {
-        $uri = self::init()->buildUri($action, $params);
+        $uri = $this->buildUri($action, $params);
 
-        $host = Common\Config::get('host.web');
+        $host = Config::get('host.web');
 
         if ($https) {
             return 'https://' . $host . $uri;

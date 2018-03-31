@@ -30,7 +30,7 @@ class ArticleAddExec extends AuthWeb
     public function valid()
     {
         //验证安全情况
-        if ($this->_ctx->getService("Security")->isLocked()) {
+        if ($this->_ctx->get("Helper.Security")->isLocked()) {
             $this->error = "操作过于频繁请明天再试!";
             return false;
         }
@@ -55,7 +55,7 @@ class ArticleAddExec extends AuthWeb
             return false;
         }
 
-        $user_id = isset($this->_ctx->session['uid']) ? $this->_ctx->session['uid'] : 0;
+        $user_id = isset($this->_session['uid']) ? $this->_ctx->session['uid'] : 0;
         $this->user = $this->_ctx->getRow("User", $user_id);
         if (!$this->user) {
             throw new Exception("SESSION uid:{$user_id} not exists.");
@@ -67,9 +67,9 @@ class ArticleAddExec extends AuthWeb
     public function exec()
     {
         //发表文章次数
-        $this->_ctx->getService("Security")->incr_addArticle();
+        $this->_ctx->get("Helper.Security")->incr_addArticle();
 
-        $service = $this->_ctx->getService("Article");
+        $service = $this->get("Service.Article");
 
         $id = $service->addArticle($this->user, $this->title, $this->intro, $this->content);
         if (!$id) {

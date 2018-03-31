@@ -1,7 +1,7 @@
 <?php
-namespace Bybzmt\Blog\Common;
+namespace Bybzmt\Blog\Web;
 
-use Bybzmt\Framework\Context as Base;
+use Bybzmt\Blog\Common\Context as Base;
 
 class Context extends Base
 {

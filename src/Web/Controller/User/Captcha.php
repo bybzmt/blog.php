@@ -10,11 +10,11 @@ class Captcha extends Web
     public function show()
     {
         //记录验证码生成次数
-        $this->_ctx->getService("Security")->incr_showCaptcha();
+        $this->_ctx->get("Helper.Security")->incr_showCaptcha();
 
-        $obj = new Helper\CaptchaCode(118, 36);
+        $obj = $this->_ctx->get("Helper.Captcha");
 
-        $this->_ctx->session['captcha'] = $obj->getCode();
+        $this->_session['captcha'] = $obj->getCode();
 
         $image = $obj->show([0xDD,0xDD,0xDD], [0x99,0x99,0x99]);
 

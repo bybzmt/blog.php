@@ -1,9 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Common\Row;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Row;
 
-class Comment extends Common\Row
+class Comment extends Row
 {
     const max_cache_replys_num=60;
 
@@ -30,7 +30,7 @@ class Comment extends Common\Row
         if ($offset+$length <= intval(strlen($this->_replys_id)/4)) {
             $ids = array_slice($this->_getCacheReplyIds(), $offset, $length);
         } else {
-            $ids = $this->_ctx->getTable('Reply')->getListIds($this->id, $offset, $length);
+            $ids = $this->_ctx->get('Table.Reply')->getListIds($this->id, $offset, $length);
         }
 
         $rows = [];
@@ -53,13 +53,13 @@ class Comment extends Common\Row
         );
 
         //保存数据
-        $id = $this->_ctx->getTable('Reply')->insert($data);
+        $id = $this->_ctx->get('Table.Reply')->insert($data);
         if (!$id) {
             return false;
         }
 
         //给用户增加发评论的关联记录
-        $this->_ctx->getTable("Record")->insert(array(
+        $this->_ctx->get("Table.Record")->insert(array(
             'id' => "{$user->id}:",
             'user_id' => $user->id,
             'type' => Record::TYPE_REPLY,
@@ -75,7 +75,7 @@ class Comment extends Common\Row
     public function del()
     {
         //标记删除
-        $ok = $this->_ctx->getTable('Comment')->update($this->article_id.":".$this->id, ['status'=>0]);
+        $ok = $this->_ctx->get('Table.Comment')->update($this->article_id.":".$this->id, ['status'=>0]);
         if ($ok) {
             $this->status = 0;
 
@@ -89,7 +89,7 @@ class Comment extends Common\Row
     //恢复评论
     public function restore()
     {
-        $ok = $this->_ctx->getTable("Comment")->update($this->article_id.":".$this->id, array('status'=>1));
+        $ok = $this->_ctx->get("Table.Comment")->update($this->article_id.":".$this->id, array('status'=>1));
         if ($ok) {
             $this->status = 1;
 
@@ -102,14 +102,14 @@ class Comment extends Common\Row
 
     public function getCurrentPage($length)
     {
-        return $this->_ctx->getTable("Comment")
+        return $this->_ctx->get("Table.Comment")
             ->getIdPage($this->article_id, $this->id, $length);
     }
 
 
     public function _restCacheReplysId()
     {
-        $ids = $this->_ctx->getTable('Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
+        $ids = $this->_ctx->get('Table.Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
         $this->_setCacheReplyIds($ids);
     }
 
@@ -121,7 +121,7 @@ class Comment extends Common\Row
             if (count($replyIds) < self::max_cache_replys_num) {
                 $ids = array_diff($replyIds, [$id]);
             } else {
-                $ids = $this->_ctx->getTable('Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
+                $ids = $this->_ctx->get('Table.Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
             }
 
             $this->_setCacheReplyIds($ids);
@@ -139,7 +139,7 @@ class Comment extends Common\Row
         if (intval(strlen($this->_replys_id)/4) < self::max_cache_replys_num) {
             $this->_replys_id .= pack("N", $id);
 
-            $this->_ctx->getTable('Comment')->update($this->article_id.":".$this->id, ['_replys_id'=>$this->_replys_id]);
+            $this->_ctx->get('Table.Comment')->update($this->article_id.":".$this->id, ['_replys_id'=>$this->_replys_id]);
         }
     }
 
@@ -151,6 +151,6 @@ class Comment extends Common\Row
         }
 
         //更新评论记录
-        $this->_ctx->getTable('Comment')->update($this->article_id.":".$this->id, ['_replys_id'=>$str]);
+        $this->_ctx->get('Table.Comment')->update($this->article_id.":".$this->id, ['_replys_id'=>$str]);
     }
 }

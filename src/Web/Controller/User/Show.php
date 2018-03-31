@@ -61,7 +61,7 @@ class Show extends AuthWeb
                     'type' => $record->type,
                     'id' => $comment->id,
                     'content' => $comment->content,
-                    'link' => Reverse::mkUrl("Article.Redirect", ['type'=>$record->type, 'toid'=>$record->to_id]),
+                    'link' => $this->_ctx->get("Reverse")->mkUrl("Article.Redirect", ['type'=>$record->type, 'toid'=>$record->to_id]),
                     'article_intro' => $article->intro,
                 );
                 break;
@@ -81,7 +81,7 @@ class Show extends AuthWeb
                     'type' => $record->type,
                     'id' => $reply->id,
                     'content' => $reply->content,
-                    'link' => Reverse::mkUrl("Article.Redirect", ['type'=>$record->type, 'toid'=>$record->to_id]),
+                    'link' => $this->_ctx->get("Reverse")->mkUrl("Article.Redirect", ['type'=>$record->type, 'toid'=>$record->to_id]),
                     'comment_content' => $target->content,
                 );
                 break;
@@ -104,7 +104,7 @@ class Show extends AuthWeb
                 $params['page'] = $page;
             }
 
-            return Reverse::mkUrl('User.Show', $params);
+            return $this->_ctx->get("Reverse")->mkUrl('User.Show', $params);
         });
     }
 

@@ -9,10 +9,12 @@ use Bybzmt\Blog\Web\Reverse;
 
 class TwigExtension extends Twig_Extension
 {
+    private $_ctx;
     private $twig;
 
-    public function __construct(Twig_Environment $twig)
+    public function __construct($context, Twig_Environment $twig)
     {
+        $this->_ctx = $context;
         $this->twig = $twig;
     }
 
@@ -25,7 +27,7 @@ class TwigExtension extends Twig_Extension
 
     public function mkUrl(string $action, array $params=array(), bool $https=false)
     {
-        return Reverse::mkUrl($action, $params, $https);
+        return $this->_ctx->get("Reverse")->mkUrl($action, $params, $https);
     }
 
 }

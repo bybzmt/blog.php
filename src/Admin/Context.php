@@ -10,7 +10,7 @@ class Context extends Common\Context
      */
     public function initService(string $name)
     {
-        $class = __NAMESPACE__ ."\\Service\\". str_replace('.', '\\', $name);
+        $class = __NAMESPACE__ ."\\Service\\". $name;
         if (class_exists($class)) {
             return new $class($this);
         } else {
@@ -23,7 +23,7 @@ class Context extends Common\Context
      */
     public function initTable(string $name)
     {
-        $class = __NAMESPACE__ ."\\Table\\". str_replace('.', '\\', $name);
+        $class = __NAMESPACE__ ."\\Table\\". $name;
         if (class_exists($class)) {
             return new $class($this);
         } else {
@@ -36,7 +36,7 @@ class Context extends Common\Context
      */
     public function initCache(string $name, string $id='', ...$args)
     {
-        $class = __NAMESPACE__ ."\\Cache\\". str_replace('.', '\\', $name);
+        $class = __NAMESPACE__ ."\\Cache\\". $name;
         if (class_exists($class)) {
             return new $class($this, $id, ...$args);
         } else {
@@ -49,7 +49,7 @@ class Context extends Common\Context
      */
     public function initRow(string $name, array $row)
     {
-        $class = __NAMESPACE__ . "\\Row\\" . str_replace('.', '\\', $name);
+        $class = __NAMESPACE__ . "\\Row\\" . $name;
         if (class_exists($class)) {
             return new $class($this, $row);
         } else {

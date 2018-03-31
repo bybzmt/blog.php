@@ -7,15 +7,20 @@
     },
     "require": {
         "bybzmt/memcached": "^1.0",
+        "bybzmt/framework": "dev-master",
         "bybzmt/router":"^1.0",
-        "bybzmt/logger":"dev-master",
         "twig/twig": "^2.4",
-        "bybzmt/phpdb": "dev-master",
         "bybzmt/tcplock": "^1.0",
         "flexihash/flexihash": "^2.0",
-        "erusev/parsedown": "^1.6"
+        "erusev/parsedown": "^1.6",
+        "bybzmt/logger": "^0.0.2",
+        "bybzmt/phpdb": "^1.0"
     },
     "repositories": [
+        {
+            "type":"git",
+            "url" : "/mnt/bybzmt/code/framework.php"
+        }
     ],
     "require-dev": {
         "phpunit/phpunit": "^6.5"

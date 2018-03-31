@@ -1,12 +1,13 @@
 <?php
 namespace Bybzmt\Blog\Common\Table;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Table;
+use Bybzmt\Framework\TableRowCache;
 use PDO;
 
-class Tag extends Common\Table
+class Tag extends Table
 {
-    use Common\TableRowCache;
+    use TableRowCache;
 
     protected $_dbName = 'blog';
     protected $_tableName = 'tags';

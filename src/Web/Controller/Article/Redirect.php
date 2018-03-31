@@ -31,7 +31,7 @@ class Redirect extends Web
 
             $page = $comment->getCurrentPage(Cfg::COMMENT_LENGTH);
 
-            $this->url = Reverse::mkUrl("Article.Show", ['id'=>$comment->article_id, 'page'=>$page]);
+            $this->url = $this->_ctx->get("Reverse")->mkUrl("Article.Show", ['id'=>$comment->article_id, 'page'=>$page]);
             $this->url .= "#comment-". $comment->id;
 
             return true;
@@ -47,7 +47,7 @@ class Redirect extends Web
 
             $page2 = $reply->getCurrentPage(Cfg::REPLY_LENGTH);
 
-            $this->url = Reverse::mkUrl("Article.Show", ['id'=>$reply->article_id, 'page'=>$page]);
+            $this->url = $this->_ctx->get("Reverse")->mkUrl("Article.Show", ['id'=>$reply->article_id, 'page'=>$page]);
             $this->url .= "#torid=".$reply->comment_id.":".$page2.":".$reply->id;
 
             return true;

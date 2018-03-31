@@ -21,18 +21,18 @@ class LoginExec extends Web
         $this->password = isset($_POST['password']) ? trim($_POST['password']) : null;
         $this->go = isset($_POST['go']) ? $_POST['go'] : null;
         $this->captcha = isset($_POST['captcha']) ? trim($_POST['captcha']) : null;
-        $this->se_captcha = isset($this->_ctx->session['captcha']) ? $this->_ctx->session['captcha'] : null;
+        $this->se_captcha = isset($this->_session['captcha']) ? $this->_ctx->session['captcha'] : null;
 
-        $this->_ctx->session['captcha'] = null;
+        $this->_session['captcha'] = null;
 
         //记录登陆接口调用次数
-        $this->_ctx->getService("Security")->incr_doLogin();
+        $this->_ctx->get("Helper.Security")->incr_doLogin();
     }
 
     public function valid()
     {
         //验证安全情况
-        if ($this->_ctx->getService("Security")->isLocked()) {
+        if ($this->_ctx->get("Helper.Security")->isLocked()) {
             $this->error = "操作过于频繁请明天再试!";
             return false;
         }
@@ -46,7 +46,7 @@ class LoginExec extends Web
             $this->error = "验证码错误";
 
             //记录验证码错
-            $this->_ctx->getService("Security")->incr_captchaError();
+            $this->_ctx->get("Helper.Security")->incr_captchaError();
 
             return false;
         }
@@ -56,12 +56,12 @@ class LoginExec extends Web
             return false;
         }
 
-        $this->user = $this->_ctx->getService("User")->getUser($this->username);
+        $this->user = $this->get("Service.User")->getUser($this->username);
         if (!$this->user) {
             $this->error = "用户名或密码错误";
 
             //记录用户名密码出错
-            $this->_ctx->getService("Security")->incr_UserOrPassError();
+            $this->_ctx->get("Helper.Security")->incr_UserOrPassError();
 
             return false;
         }
@@ -70,7 +70,7 @@ class LoginExec extends Web
             $this->error = "用户名或密码错误";
 
             //记录用户名密码出错
-            $this->_ctx->getService("Security")->incr_UserOrPassError();
+            $this->_ctx->get("Helper.Security")->incr_UserOrPassError();
 
             return false;
         }
@@ -80,23 +80,23 @@ class LoginExec extends Web
 
     public function fail()
     {
-        $go = $this->go ? $this->go : Reverse::mkUrl("Article.Lists");
+        $go = $this->go ? $this->go : $this->_ctx->get("Reverse")->mkUrl("Article.Lists");
 
-        $login = Reverse::mkUrl("User.Login", ['go'=>$go, 'msg'=>$this->error]);
+        $login = $this->_ctx->get("Reverse")->mkUrl("User.Login", ['go'=>$go, 'msg'=>$this->error]);
 
         header("Location: $login");
     }
 
     public function exec()
     {
-        $this->_ctx->session['uid'] = $this->user->id;
+        $this->_session['uid'] = $this->user->id;
 
         return true;
     }
 
     public function show()
     {
-        $go = $this->go ? $this->go : Reverse::mkUrl("Article.Lists");
+        $go = $this->go ? $this->go : $this->_ctx->get("Reverse")->mkUrl("Article.Lists");
 
         header("Location: $go");
         echo ("Location: $go");

@@ -8,7 +8,7 @@ class User extends Common\Service
     //得到用户
     public function getUser(string $username)
     {
-        $row = $this->_ctx->getTable('User')->findByUsername($username);
+        $row = $this->_ctx->get('Table.User')->findByUsername($username);
         if (!$row) {
             return false;
         }
@@ -26,7 +26,7 @@ class User extends Common\Service
             'status' => 1,
         );
 
-        $id = $this->_ctx->getTable("User")->insert($data);
+        $id = $this->_ctx->get("Table.User")->insert($data);
 
         if ($id) {
             return $this->_ctx->getRow("User", $id);

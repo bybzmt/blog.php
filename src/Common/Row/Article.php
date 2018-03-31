@@ -1,9 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Common\Row;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Row;
 
-class Article extends Common\Row
+class Article extends Row
 {
     const max_tag_num=60;
 
@@ -39,11 +39,11 @@ class Article extends Common\Row
         );
 
         //保存回复
-        $id = $this->_ctx->getTable('Comment')->insert($data);
+        $id = $this->_ctx->get('Table.Comment')->insert($data);
 
         if ($id) {
             //给用户增加发评论的关联记录
-            $this->_ctx->getTable("Record")->insert(array(
+            $this->_ctx->get("Table.Record")->insert(array(
                 'id' => "{$user->id}:",
                 'user_id' => $user->id,
                 'type' => Record::TYPE_COMMENT,
@@ -55,7 +55,7 @@ class Article extends Common\Row
                 $this->restCommentCacheNum();
             } else {
                 //修改文章回复数缓存
-                $this->_ctx->getTable('Article')->incrCommentsNum($this->id, 1);
+                $this->_ctx->get('Table.Article')->incrCommentsNum($this->id, 1);
 
                 $this->_comments_num++;
             }
@@ -71,7 +71,7 @@ class Article extends Common\Row
     public function delCommentCache(int $comment_id)
     {
         //修改数据
-        $ok = $this->_ctx->getTable('Article')->decrCommentsNum($this->id, 1);
+        $ok = $this->_ctx->get('Table.Article')->decrCommentsNum($this->id, 1);
         if ($ok) {
             //内存中的变量
             $this->_comments_num--;
@@ -85,9 +85,9 @@ class Article extends Common\Row
     public function restCommentCacheNum()
     {
         //重新统计表中的评论数量
-        $num = $this->_ctx->getTable("Comment")->getListNum($this->id);
+        $num = $this->_ctx->get("Table.Comment")->getListNum($this->id);
         //修改数据
-        $ok = $this->_ctx->getTable("Article")->update($this->id, ['_comments_num'=>$num]);
+        $ok = $this->_ctx->get("Table.Article")->update($this->id, ['_comments_num'=>$num]);
         if ($ok) {
             //文章评论列表缓存重置
             $this->_ctx->getCache('ArticleComments', $this->id)->del();
@@ -123,10 +123,10 @@ class Article extends Common\Row
         }
 
         //修改关连关系
-        $ok = $this->_ctx->getTable('ArticleTag')->setTags($this->id, $tag_ids);
+        $ok = $this->_ctx->get('Table.ArticleTag')->setTags($this->id, $tag_ids);
         if ($ok) {
             //修改关连缓存
-            $this->_ctx->getTable('Article')->update($this->id, ['_tags' => $tag_sids]);
+            $this->_ctx->get('Table.Article')->update($this->id, ['_tags' => $tag_sids]);
 
             //修改当前对像
             $this->_tags = $tag_sids;
@@ -145,7 +145,7 @@ class Article extends Common\Row
         }
 
         //标记删除自身数据
-        $ok = $this->_ctx->getTable('Article')->update($this->id, ['status'=>2]);
+        $ok = $this->_ctx->get('Table.Article')->update($this->id, ['status'=>2]);
         if ($ok) {
             //审核标记
             $this->status = 2;
@@ -158,7 +158,7 @@ class Article extends Common\Row
     public function publish()
     {
         //修改自身数据
-        $ok = $this->_ctx->getTable('Article')->update($this->id, ['status'=>3]);
+        $ok = $this->_ctx->get('Table.Article')->update($this->id, ['status'=>3]);
         if ($ok) {
             //状态改为正式
             $this->status = 3;
@@ -179,7 +179,7 @@ class Article extends Common\Row
     public function hidden()
     {
         //标记删除自身数据
-        $ok = $this->_ctx->getTable('Article')->update($this->id, ['status'=>4]);
+        $ok = $this->_ctx->get('Table.Article')->update($this->id, ['status'=>4]);
         if ($ok) {
             //记标为下线
             $this->status = 4;
@@ -200,7 +200,7 @@ class Article extends Common\Row
     public function locked()
     {
         //记标为锁定状态
-        $ok = $this->_ctx->getTable('Article')->update($this->id, ['locked'=>1]);
+        $ok = $this->_ctx->get('Table.Article')->update($this->id, ['locked'=>1]);
         if ($ok) {
             $this->locked = 1;
         }
@@ -212,7 +212,7 @@ class Article extends Common\Row
     public function unlock()
     {
         //记标为解除锁定
-        $ok = $this->_ctx->getTable('Article')->update($this->id, ['locked'=>0]);
+        $ok = $this->_ctx->get('Table.Article')->update($this->id, ['locked'=>0]);
         if ($ok) {
             $this->locked = 0;
         }
@@ -224,7 +224,7 @@ class Article extends Common\Row
     public function del()
     {
         //标记删除自身数据
-        $ok = $this->_ctx->getTable('Article')->update($this->id, ['deleted'=>1]);
+        $ok = $this->_ctx->get('Table.Article')->update($this->id, ['deleted'=>1]);
         if ($ok) {
             //记标为删除
             $this->deleted = 1;

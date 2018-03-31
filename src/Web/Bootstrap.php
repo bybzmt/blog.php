@@ -1,11 +1,10 @@
 <?php
 namespace Bybzmt\Blog\Web;
 
-use Bybzmt\Blog\Common;
-use Bybzmt\Blog\Common\Context;
+use Bybzmt\Framework\Bootstrap as Base;
 use Bybzmt\Blog\Common\Helper\Session;
 
-class Bootstrap extends Common\Bootstrap
+class Bootstrap extends Base
 {
     public function run($request, $response)
     {
@@ -13,13 +12,8 @@ class Bootstrap extends Common\Bootstrap
         $context->request = $request;
         $context->response = $response;
 
-        //自定义SESSION处理
-        $context->session = new Session($context);
-
-        $router = new Router($context);
+        $router = $context->get("Router");
 
         $router->run();
-
-        $context->session->save();
     }
 }

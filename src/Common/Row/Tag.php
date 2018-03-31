@@ -1,9 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Common\Row;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Row;
 
-class Tag extends Common\Row
+class Tag extends Row
 {
     //标签文章列表
     public function getArticleList(int $offset, int $length)

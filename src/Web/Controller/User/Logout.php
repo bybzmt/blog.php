@@ -8,9 +8,9 @@ class Logout extends Web
 {
     public function exec()
     {
-        session_destroy();
+        $this->_session->destroy();
 
-        $url = Reverse::mkUrl("Article.Lists");
+        $url = $this->_ctx->get("Reverse")->mkUrl("Article.Lists");
 
         header("Location: {$url}");
     }

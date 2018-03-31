@@ -2,12 +2,13 @@
 namespace Bybzmt\Blog\Common\Table;
 
 use Flexihash\Flexihash;
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\TableSplit;
+use Bybzmt\Framework\TableRowCache;
 use PDO;
 
-class Reply extends Common\TableSplit
+class Reply extends TableSplit
 {
-    use Common\TableRowCache;
+    use TableRowCache;
 
     protected $_dbName = 'blog';
     protected $_tablePrefix = "article_replys_";

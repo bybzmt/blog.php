@@ -2,10 +2,10 @@
 namespace Bybzmt\Blog\Common\Service;
 
 use Parsedown;
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Service;
 use Bybzmt\Blog\Common\Row\User;
 
-class Article extends Common\Service
+class Article extends Service
 {
 
     //首页列表 (从首页列表缓存中取)
@@ -22,7 +22,7 @@ class Article extends Common\Service
 
     public function getTag(string $name)
     {
-        $row = $this->_ctx->getTable("Tag")->getTag($name);
+        $row = $this->_ctx->get("Table.Tag")->getTag($name);
         if (!$row) {
             return false;
         }
@@ -39,7 +39,7 @@ class Article extends Common\Service
             'status' => 1,
         );
 
-        return $this->_ctx->getTable("Tag")->insert($data);
+        return $this->_ctx->get("Table.Tag")->insert($data);
     }
 
     public function addArticle(User $user, $title, $intro, $content)
@@ -64,7 +64,7 @@ class Article extends Common\Service
         );
 
         //保存数据
-        $id = $this->_ctx->getTable('Article')->insert($data);
+        $id = $this->_ctx->get('Table.Article')->insert($data);
 
         return $id;
     }
@@ -74,7 +74,7 @@ class Article extends Common\Service
      */
     public function getUserList(User $user, int $offset, int $length)
     {
-        $ids = $this->_ctx->getTable("Article")->getUserListIds($user->id, $offset, $length);
+        $ids = $this->_ctx->get("Table.Article")->getUserListIds($user->id, $offset, $length);
 
         return $this->_ctx->getLazyRows("Article", $ids);
     }
@@ -84,7 +84,7 @@ class Article extends Common\Service
      */
     public function getUserListCount(User $user)
     {
-        return $this->_ctx->getTable("Article")->getUserListCount($user->id);
+        return $this->_ctx->get("Table.Article")->getUserListCount($user->id);
     }
 
 }

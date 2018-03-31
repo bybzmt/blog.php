@@ -1,17 +1,68 @@
 <?php
 namespace Bybzmt\Blog\Common;
 
+use Bybzmt\Framework\Component;
+use Bybzmt\Framework\Config;
 use PDO;
 use Memcached;
 use Redis;
 use Bybzmt\DB\Monitor;
 use Bybzmt\Logger\Factory;
-use bybzmt\Locker\SocketLock;
-use bybzmt\Locker\FileLock;
+use Bybzmt\Locker\SocketLock;
+use Bybzmt\Locker\FileLock;
 
-class Resource
+//连接各种外部资源
+class Resource extends Component
 {
-    public static function getDb($name='default')
+    //db连接
+    protected $dbConns;
+
+    //memcached连接
+    protected $memcachedConns;
+
+    //redis连接
+    protected $redisConns;
+
+    //日志
+    protected $loggers;
+
+    public function getMemcached($name='default')
+    {
+        if (!isset($this->memcachedConns[$name])) {
+            $this->memcachedConns[$name] = $this->initMemcached($name);
+        }
+
+        return $this->memcachedConns[$name];
+    }
+
+	public function getRedis($name='default')
+	{
+		if (!isset($this->redisConns[$name])) {
+			$this->redisConns[$name] = $this->initRedis($name);
+		}
+
+		return $this->redisConns;
+	}
+
+    public function getDb($name='default')
+    {
+        if (!isset($this->dbConns[$name])) {
+            $this->dbConns[$name] = $this->initDb($name);
+        }
+
+        return $this->dbConns[$name];
+    }
+
+    public function getLogger($name='default')
+    {
+		if (!isset($this->loggers[$name])) {
+			$this->loggers[$name] = $this->initLogger($name);
+		}
+
+		return $this->loggers[$name];
+    }
+
+    public function initDb($name='default')
     {
         $cfgs = Config::get("db.{$name}");
 
@@ -24,7 +75,7 @@ class Resource
 
         $db = new PDO($dsn, $user, $pass, $opts);
 
-        $logger = self::getLogger('sql');
+        $logger = $this->getLogger('sql');
 
         $monitor = new Monitor($db, function($time, $sql, $params=[]) use($logger) {
             $msg = sprintf("time:%0.6f sql:%s", $time, $sql);
@@ -34,7 +85,7 @@ class Resource
         return $monitor;
     }
 
-    public static function getMemcached($name='default')
+    public function initMemcached($name='default')
     {
         $config = Config::get("memcached.$name");
 
@@ -53,7 +104,7 @@ class Resource
         return $client;
     }
 
-	public static function getRedis($name='default')
+	public function initRedis($name='default')
 	{
         $config = Config::get("redis.$name");
 
@@ -68,13 +119,13 @@ class Resource
         return $md;
 	}
 
-    public static function getLogger($name='default')
+    public function initLogger($name='default')
     {
         $cfgs = Config::get("log.$name");
         return Factory::getLogger($cfgs);
     }
 
-	public static function getLocker($key)
+	public function initLocker($key)
 	{
         $config = Config::get("locker");
 

@@ -1,10 +1,10 @@
 <?php
 namespace Bybzmt\Blog\Common\Table;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Table;
 use PDO;
 
-class ArticleTag extends Common\Table
+class ArticleTag extends Table
 {
     protected $_dbName = 'blog';
     protected $_tableName = 'article_tags';

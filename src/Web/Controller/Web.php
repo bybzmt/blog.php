@@ -4,18 +4,27 @@ namespace Bybzmt\Blog\Web\Controller;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Controller;
 use Bybzmt\Blog\Web\Helper\TwigExtension;
 
-abstract class Web extends Common\Controller
+abstract class Web extends Controller
 {
     protected $_uid;
+    protected $_session;
 
     public function __construct($context)
     {
         parent::__construct($context);
 
-        $this->_uid = isset($context->session['uid']) ? (int)$context->session['uid'] : 0;
+        $this->_session = $context->get("Helper.Session");
+        $this->_uid = $this->_session->get('uid');
+    }
+
+    public function execute()
+    {
+        parent::execute();
+
+        $this->_session->save();
     }
 
     public function init()
@@ -62,7 +71,7 @@ abstract class Web extends Common\Controller
             'auto_reload' => true,
             'strict_variables' => true,
         ));
-        $twig->addExtension(new TwigExtension($twig));
+        $twig->addExtension(new TwigExtension($this->_ctx, $twig));
 
         $html = $twig->render($file, $data);
 

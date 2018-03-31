@@ -1,9 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Common\Row;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Row;
 
-class User extends Common\Row
+class User extends Row
 {
     public function encryptPass($pass)
     {
@@ -21,7 +21,7 @@ class User extends Common\Row
     {
         $saved = $this->encryptPass($pass);
 
-        $ok = $this->_ctx->getTable("User")->update($this->id, array('pass'=>$saved));
+        $ok = $this->_ctx->get("Table.User")->update($this->id, array('pass'=>$saved));
         if ($ok) {
             $this->pass = $saved;
         }
@@ -31,7 +31,7 @@ class User extends Common\Row
     //修改昵称
     public function setNickname($nickname)
     {
-        $ok = $this->_ctx->getTable("User")->update($this->id, array('nickname'=>$nickname));
+        $ok = $this->_ctx->get("Table.User")->update($this->id, array('nickname'=>$nickname));
         if ($ok) {
             $this->nickname = $nickname;
         }
@@ -40,7 +40,7 @@ class User extends Common\Row
 
     public function getRecords(int $offset, int $length)
     {
-        $rows = $this->_ctx->getTable("Record")->getList($this->id, $offset, $length);
+        $rows = $this->_ctx->get("Table.Record")->getList($this->id, $offset, $length);
 
         $records = array();
         foreach ($rows as $row) {
@@ -51,7 +51,7 @@ class User extends Common\Row
 
     public function getRecordCount()
     {
-        return $this->_ctx->getTable("Record")->getListCount($this->id);
+        return $this->_ctx->get("Table.Record")->getListCount($this->id);
     }
 
     public function loginlog(int $offset, int $length)
@@ -60,7 +60,7 @@ class User extends Common\Row
 
     public function disable()
     {
-        $ok = $this->_ctx->getTable("User")->update($this->id, array('status'=>0));
+        $ok = $this->_ctx->get("Table.User")->update($this->id, array('status'=>0));
         if ($ok) {
             $this->status = 0;
         }
@@ -69,7 +69,7 @@ class User extends Common\Row
 
     public function enable()
     {
-        $ok = $this->_ctx->getTable("User")->update($this->id, array('status'=>1));
+        $ok = $this->_ctx->get("Table.User")->update($this->id, array('status'=>1));
         if ($ok) {
             $this->status = 1;
         }

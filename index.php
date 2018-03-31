@@ -1,8 +1,8 @@
 <?php
 namespace Bybzmt\Blog;
 
-use Bybzmt\Blog\Common\Config;
-use Bybzmt\Blog\Common\Front;
+use Bybzmt\Framework\Config;
+use Bybzmt\Framework\Front;
 
 //配置文件目录 (根据当前环境载入不同配置)
 define('CONFIG_PATH', __DIR__ . "/config/" . (isset($_ENV['ENVIRONMENT']) ? $_ENV['ENVIRONMENT'] : 'dev'));

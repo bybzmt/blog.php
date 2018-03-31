@@ -25,7 +25,7 @@ class Comment extends Web
     public function valid()
     {
         //验证安全情况
-        if ($this->_ctx->getService("Security")->isLocked()) {
+        if ($this->_ctx->get("Helper.Security")->isLocked()) {
             $this->error = "操作过于频繁请明天再试!";
             return false;
         }
@@ -71,7 +71,7 @@ class Comment extends Web
     public function exec()
     {
         //发表评论次数
-        $this->_ctx->getService("Security")->incr_addComment();
+        $this->_ctx->get("Helper.Security")->incr_addComment();
 
         if ($this->reply) {
             $ok = $this->reply->addReply($this->user, $this->content);

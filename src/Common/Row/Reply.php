@@ -48,7 +48,7 @@ class Reply extends Common\Row
     public function del()
     {
         //标记删除
-        $ok = $this->_ctx->getTable('Reply')->update($this->comment_id.":".$this->id, ['status'=>0]);
+        $ok = $this->_ctx->get('Table.Reply')->update($this->comment_id.":".$this->id, ['status'=>0]);
         if ($ok) {
             $this->status = 0;
 
@@ -62,7 +62,7 @@ class Reply extends Common\Row
     //恢复评论
     public function restore()
     {
-        $ok = $this->_ctx->getTable("Reply")->update($this->comment_id.":".$this->id, array('status'=>1));
+        $ok = $this->_ctx->get("Table.Reply")->update($this->comment_id.":".$this->id, array('status'=>1));
         if ($ok) {
             $this->status = 1;
 
@@ -75,7 +75,7 @@ class Reply extends Common\Row
 
     public function getCurrentPage($length)
     {
-        return $this->_ctx->getTable("Reply")
+        return $this->_ctx->get("Table.Reply")
             ->getIdPage($this->comment_id, $this->id, $length);
     }
 

@@ -1,12 +1,12 @@
 <?php
 namespace Bybzmt\Blog\Common\Table;
 
-use Bybzmt\Blog\Common;
-use Bybzmt\Blog\Common\Helper\SQLBuilder;
+use Bybzmt\Framework\Table;
+use Bybzmt\Framework\TableRowCache;
 
-class User extends Common\Table
+class User extends Table
 {
-    use Common\TableRowCache;
+    use TableRowCache;
 
     protected $_dbName = 'blog';
     protected $_tableName = 'users';
@@ -22,7 +22,7 @@ class User extends Common\Table
 
     public function findByUsername($username)
     {
-        list($sql, $vals) = SQLBuilder::select($this->_columns, $this->_tableName, ['user'=>$username, 'status'=>1]);
+        list($sql, $vals) = $this->_ctx->getHelper("SQLBuilder")->select($this->_columns, $this->_tableName, ['user'=>$username, 'status'=>1]);
 
         return $this->query($sql, $vals)->fetch();
     }

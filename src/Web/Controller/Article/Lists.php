@@ -33,7 +33,7 @@ class Lists extends Web
     public function valid()
     {
         if ($this->tag_id) {
-            $this->tag = $this->_ctx->getRow('Tag', $this->tag_id);
+            $this->tag = $this->getRow('Tag', $this->tag_id);
             if (!$this->tag) {
                 $this->msg = "tag未定义";
                 return false;
@@ -55,8 +55,8 @@ class Lists extends Web
             $articles = $this->tag->getArticleList($this->offset, $this->length);
             $count = $this->tag->getArticleCount();
         } else {
-            $articles = $this->_ctx->get("Service.Article")->getIndexList($this->offset, $this->length);
-            $count = $this->_ctx->get("Service.Article")->getIndexCount();
+            $articles = $this->getService("Article")->getIndexList($this->offset, $this->length);
+            $count = $this->getService("Article")->getIndexCount();
         }
 
         $tags = [];
@@ -72,13 +72,13 @@ class Lists extends Web
 
             $row->commentsNum = $row->getCommentsNum();
 
-            $row->author = $this->_ctx->getLazyRow("User", $row->user_id);
-            $row->link = $this->_ctx->get("Reverse")->mkUrl('Article.Show', ['id'=>$row->id]);
+            $row->author = $this->getLazyRow("User", $row->user_id);
+            $row->link = $this->getHelper("Utils")->mkUrl('Article.Show', ['id'=>$row->id]);
 
             return true;
         });
 
-        $tags = $this->_ctx->getLazyRows("Tag", array_unique($tags));
+        $tags = $this->getLazyRows("Tag", array_unique($tags));
 
         $this->render(array(
             'tag' => $this->tag,
@@ -90,7 +90,7 @@ class Lists extends Web
 
     protected function pagination($count)
     {
-        return $this->_ctx->get("Helper.Pagination")->style2($count, $this->length, $this->page, function($page){
+        return $this->getHelper("Pagination")->style2($count, $this->length, $this->page, function($page){
             $params = array();
             if ($page > 1) {
                 $params['page'] = $page;
@@ -99,7 +99,7 @@ class Lists extends Web
                 $params['tag'] = $this->tag_id;
             }
 
-            return $this->_ctx->get("Reverse")->mkUrl('Article.Lists', $params);
+            return $this->getHelper("Utils")->mkUrl('Article.Lists', $params);
         });
     }
 

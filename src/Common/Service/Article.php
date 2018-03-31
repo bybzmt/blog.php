@@ -11,18 +11,18 @@ class Article extends Service
     //首页列表 (从首页列表缓存中取)
     public function getIndexList(int $offset, int $length)
     {
-        return $this->_ctx->getCache('IndexArticles')->gets($offset, $length);
+        return $this->getCache('IndexArticles')->gets($offset, $length);
     }
 
     //首页列表文章数量 (从首页列表缓存中取)
     public function getIndexCount()
     {
-        return $this->_ctx->getCache('IndexArticles')->count();
+        return $this->getCache('IndexArticles')->count();
     }
 
     public function getTag(string $name)
     {
-        $row = $this->_ctx->get("Table.Tag")->getTag($name);
+        $row = $this->getTable("Tag")->getTag($name);
         if (!$row) {
             return false;
         }
@@ -39,7 +39,7 @@ class Article extends Service
             'status' => 1,
         );
 
-        return $this->_ctx->get("Table.Tag")->insert($data);
+        return $this->getTable("Tag")->insert($data);
     }
 
     public function addArticle(User $user, $title, $intro, $content)
@@ -64,7 +64,7 @@ class Article extends Service
         );
 
         //保存数据
-        $id = $this->_ctx->get('Table.Article')->insert($data);
+        $id = $this->getTable('Article')->insert($data);
 
         return $id;
     }
@@ -74,9 +74,9 @@ class Article extends Service
      */
     public function getUserList(User $user, int $offset, int $length)
     {
-        $ids = $this->_ctx->get("Table.Article")->getUserListIds($user->id, $offset, $length);
+        $ids = $this->getTable("Article")->getUserListIds($user->id, $offset, $length);
 
-        return $this->_ctx->getLazyRows("Article", $ids);
+        return $this->getLazyRows("Article", $ids);
     }
 
     /**
@@ -84,7 +84,7 @@ class Article extends Service
      */
     public function getUserListCount(User $user)
     {
-        return $this->_ctx->get("Table.Article")->getUserListCount($user->id);
+        return $this->getTable("Article")->getUserListCount($user->id);
     }
 
 }

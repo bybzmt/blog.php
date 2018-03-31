@@ -2,14 +2,14 @@
 return array(
     //域名
     'host' => [
-        'api' => 'blogapi',
-        'web' => 'blog',
-        'static' => 's.blog',
-        'admin' => 'admin.blog',
-        'wap' => 'wap.blog',
-        'apph5' => 'apph5.blog',
-        'backend' => 'backend.blog',
-        'partner' => 'partner.blog',
+        'Api' => 'blogapi',
+        'Web' => 'blog',
+        'Static' => 's.blog',
+        'Admin' => 'admin.blog',
+        'Wap' => 'wap.blog',
+        'Apph5' => 'apph5.blog',
+        'Backend' => 'backend.blog',
+        'Partner' => 'partner.blog',
     ],
     //是使用缓存路由
     'routes_cached' => true,

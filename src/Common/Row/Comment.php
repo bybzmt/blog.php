@@ -9,7 +9,7 @@ class Comment extends Row
 
     public function getArticle()
     {
-        $article = $this->_ctx->getRow("Article", $this->article_id);
+        $article = $this->getRow("Article", $this->article_id);
         if (!$article) {
             throw new Exception("Row Comment:{$this->id} 关联 Article:{$this->article_id} 不存在");
         }
@@ -18,7 +18,7 @@ class Comment extends Row
 
     public function getUser()
     {
-        $user = $this->_ctx->getRow("User", $this->user_id);
+        $user = $this->getRow("User", $this->user_id);
         if (!$user) {
             throw new Exception("Row Comment:{$this->id} 关联 User:{$this->user_id} 不存在");
         }
@@ -30,12 +30,12 @@ class Comment extends Row
         if ($offset+$length <= intval(strlen($this->_replys_id)/4)) {
             $ids = array_slice($this->_getCacheReplyIds(), $offset, $length);
         } else {
-            $ids = $this->_ctx->get('Table.Reply')->getListIds($this->id, $offset, $length);
+            $ids = $this->getTable('Reply')->getListIds($this->id, $offset, $length);
         }
 
         $rows = [];
         foreach ($ids as $id) {
-            $rows[] = $this->_ctx->getLazyRow('Reply', $this->id.":".$id);
+            $rows[] = $this->getLazyRow('Reply', $this->id.":".$id);
         }
         return $rows;
     }
@@ -53,13 +53,13 @@ class Comment extends Row
         );
 
         //保存数据
-        $id = $this->_ctx->get('Table.Reply')->insert($data);
+        $id = $this->getTable('Reply')->insert($data);
         if (!$id) {
             return false;
         }
 
         //给用户增加发评论的关联记录
-        $this->_ctx->get("Table.Record")->insert(array(
+        $this->getTable("Record")->insert(array(
             'id' => "{$user->id}:",
             'user_id' => $user->id,
             'type' => Record::TYPE_REPLY,
@@ -75,7 +75,7 @@ class Comment extends Row
     public function del()
     {
         //标记删除
-        $ok = $this->_ctx->get('Table.Comment')->update($this->article_id.":".$this->id, ['status'=>0]);
+        $ok = $this->getTable('Comment')->update($this->article_id.":".$this->id, ['status'=>0]);
         if ($ok) {
             $this->status = 0;
 
@@ -89,7 +89,7 @@ class Comment extends Row
     //恢复评论
     public function restore()
     {
-        $ok = $this->_ctx->get("Table.Comment")->update($this->article_id.":".$this->id, array('status'=>1));
+        $ok = $this->getTable("Comment")->update($this->article_id.":".$this->id, array('status'=>1));
         if ($ok) {
             $this->status = 1;
 
@@ -102,14 +102,14 @@ class Comment extends Row
 
     public function getCurrentPage($length)
     {
-        return $this->_ctx->get("Table.Comment")
+        return $this->getTable("Comment")
             ->getIdPage($this->article_id, $this->id, $length);
     }
 
 
     public function _restCacheReplysId()
     {
-        $ids = $this->_ctx->get('Table.Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
+        $ids = $this->getTable('Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
         $this->_setCacheReplyIds($ids);
     }
 
@@ -121,7 +121,7 @@ class Comment extends Row
             if (count($replyIds) < self::max_cache_replys_num) {
                 $ids = array_diff($replyIds, [$id]);
             } else {
-                $ids = $this->_ctx->get('Table.Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
+                $ids = $this->getTable('Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
             }
 
             $this->_setCacheReplyIds($ids);
@@ -139,7 +139,7 @@ class Comment extends Row
         if (intval(strlen($this->_replys_id)/4) < self::max_cache_replys_num) {
             $this->_replys_id .= pack("N", $id);
 
-            $this->_ctx->get('Table.Comment')->update($this->article_id.":".$this->id, ['_replys_id'=>$this->_replys_id]);
+            $this->getTable('Comment')->update($this->article_id.":".$this->id, ['_replys_id'=>$this->_replys_id]);
         }
     }
 
@@ -151,6 +151,6 @@ class Comment extends Row
         }
 
         //更新评论记录
-        $this->_ctx->get('Table.Comment')->update($this->article_id.":".$this->id, ['_replys_id'=>$str]);
+        $this->getTable('Comment')->update($this->article_id.":".$this->id, ['_replys_id'=>$str]);
     }
 }

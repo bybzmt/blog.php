@@ -27,7 +27,7 @@ class TwigExtension extends Twig_Extension
 
     public function mkUrl(string $action, array $params=array(), bool $https=false)
     {
-        return $this->_ctx->get("Reverse")->mkUrl($action, $params, $https);
+        return $this->_ctx->get("Helper\\Utils")->mkUrl($action, $params, $https);
     }
 
 }

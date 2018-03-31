@@ -23,7 +23,7 @@ class Redirect extends Web
     {
         switch($this->type) {
         case Record::TYPE_COMMENT:
-            $comment = $this->_ctx->getRow("Comment", $this->to_id);
+            $comment = $this->getRow("Comment", $this->to_id);
             if (!$comment) {
                 $this->msg = "目标错误";
                 return false;
@@ -31,23 +31,23 @@ class Redirect extends Web
 
             $page = $comment->getCurrentPage(Cfg::COMMENT_LENGTH);
 
-            $this->url = $this->_ctx->get("Reverse")->mkUrl("Article.Show", ['id'=>$comment->article_id, 'page'=>$page]);
+            $this->url = $this->getHelper("Utils")->mkUrl("Article.Show", ['id'=>$comment->article_id, 'page'=>$page]);
             $this->url .= "#comment-". $comment->id;
 
             return true;
         case Record::TYPE_REPLY:
-            $reply = $this->_ctx->getRow("Reply", $this->to_id);
+            $reply = $this->getRow("Reply", $this->to_id);
             if (!$reply) {
                 $this->msg = "目标错误";
                 return false;
             }
 
-            $parent = $this->_ctx->getRow("Comment", $reply->article_id.":".$reply->comment_id);
+            $parent = $this->getRow("Comment", $reply->article_id.":".$reply->comment_id);
             $page = $parent->getCurrentPage(Cfg::COMMENT_LENGTH);
 
             $page2 = $reply->getCurrentPage(Cfg::REPLY_LENGTH);
 
-            $this->url = $this->_ctx->get("Reverse")->mkUrl("Article.Show", ['id'=>$reply->article_id, 'page'=>$page]);
+            $this->url = $this->getHelper("Utils")->mkUrl("Article.Show", ['id'=>$reply->article_id, 'page'=>$page]);
             $this->url .= "#torid=".$reply->comment_id.":".$page2.":".$reply->id;
 
             return true;

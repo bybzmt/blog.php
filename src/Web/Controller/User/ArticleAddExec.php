@@ -30,7 +30,7 @@ class ArticleAddExec extends AuthWeb
     public function valid()
     {
         //验证安全情况
-        if ($this->_ctx->get("Helper.Security")->isLocked()) {
+        if ($this->getHelper("Security")->isLocked()) {
             $this->error = "操作过于频繁请明天再试!";
             return false;
         }
@@ -56,7 +56,7 @@ class ArticleAddExec extends AuthWeb
         }
 
         $user_id = isset($this->_session['uid']) ? $this->_ctx->session['uid'] : 0;
-        $this->user = $this->_ctx->getRow("User", $user_id);
+        $this->user = $this->getRow("User", $user_id);
         if (!$this->user) {
             throw new Exception("SESSION uid:{$user_id} not exists.");
         }
@@ -67,7 +67,7 @@ class ArticleAddExec extends AuthWeb
     public function exec()
     {
         //发表文章次数
-        $this->_ctx->get("Helper.Security")->incr_addArticle();
+        $this->getHelper("Security")->incr_addArticle();
 
         $service = $this->get("Service.Article");
 
@@ -76,7 +76,7 @@ class ArticleAddExec extends AuthWeb
             throw new Exception("add article fail.");
         }
 
-        $article = $this->_ctx->getRow("Article", $id);
+        $article = $this->getRow("Article", $id);
         if (!$article) {
             throw new Exception("add article id:{$id} not exists.");
         }
@@ -91,7 +91,7 @@ class ArticleAddExec extends AuthWeb
                     throw new Exception("add tag fail.");
                 }
 
-                $obj = $this->_ctx->getRow("Tag", $tag_id);
+                $obj = $this->getRow("Tag", $tag_id);
                 if (!$obj) {
                     throw new Exception("add tag id:{$tag_id} not exists.");
                 }

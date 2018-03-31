@@ -12,9 +12,9 @@ class Record extends Row
     {
         switch($this->type) {
         case self::TYPE_COMMENT:
-            return $this->_ctx->getRow("Comment", $this->to_id);
+            return $this->getRow("Comment", $this->to_id);
         case self::TYPE_REPLY:
-            return $this->_ctx->getRow("Reply", $this->to_id);
+            return $this->getRow("Reply", $this->to_id);
         }
 
         return false;

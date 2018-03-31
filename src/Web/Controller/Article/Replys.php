@@ -30,7 +30,7 @@ class Replys extends Web
 
     public function valid()
     {
-        $this->comment = $this->_ctx->getRow('Comment', $this->article_id.":".$this->comment_id);
+        $this->comment = $this->getRow('Comment', $this->article_id.":".$this->comment_id);
         if (!$this->comment) {
             $this->msg = "被回复的评论不存在";
             return false;
@@ -71,7 +71,7 @@ class Replys extends Web
                 return false;
             }
 
-            $row->user = $this->_ctx->getLazyRow("User", $row->user_id);
+            $row->user = $this->getLazyRow("User", $row->user_id);
             return true;
         });
 

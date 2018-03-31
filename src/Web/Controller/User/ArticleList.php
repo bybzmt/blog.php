@@ -24,7 +24,7 @@ class ArticleList extends AuthWeb
 
     public function valid()
     {
-        $this->user = $this->_ctx->getRow('User', $this->_uid);
+        $this->user = $this->getRow('User', $this->_uid);
         if ($this->user) {
             return true;
         }
@@ -48,10 +48,10 @@ class ArticleList extends AuthWeb
 
         //预加载用户
         array_walk($articles, function(&$row){
-            $row->author = $this->_ctx->getLazyRow("User", $row->user_id);
+            $row->author = $this->getLazyRow("User", $row->user_id);
             $row->commentsNum = $row->getCommentsNum();
             $row->tags = $row->getTags();
-            $row->link = $this->_ctx->get("Reverse")->mkUrl('Article.Show', ['id'=>$row->id]);
+            $row->link = $this->getHelper("Utils")->mkUrl('Article.Show', ['id'=>$row->id]);
         });
 
         $this->render(array(
@@ -63,14 +63,14 @@ class ArticleList extends AuthWeb
     protected function pagination($count)
     {
         //评论分页
-        return $this->_ctx->get("Helper.Pagination")->style2($count, $this->length, $this->page, function($page){
+        return $this->getHelper("Pagination")->style2($count, $this->length, $this->page, function($page){
             $params = array();
 
             if ($page > 1) {
                 $params['page'] = $page;
             }
 
-            return $this->_ctx->get("Reverse")->mkUrl('User.Show', $params);
+            return $this->getHelper("Utils")->mkUrl('User.Show', $params);
         });
     }
 

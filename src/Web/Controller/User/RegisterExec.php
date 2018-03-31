@@ -25,13 +25,13 @@ class RegisterExec extends Web
         $this->_session['captcha'] = null;
 
         //记录注册调用次数
-        $this->_ctx->get("Helper.Security")->incr_doRegister();
+        $this->getHelper("Security")->incr_doRegister();
     }
 
     public function valid()
     {
         //验证安全情况
-        if ($this->_ctx->get("Helper.Security")->isLocked()) {
+        if ($this->getHelper("Security")->isLocked()) {
             $this->error = "操作过于频繁请明天再试!";
             return false;
         }
@@ -45,7 +45,7 @@ class RegisterExec extends Web
             $this->error = "验证码错误";
 
             //记录验证码错误次数
-            $this->_ctx->get("Helper.Security")->incr_captchaError();
+            $this->getHelper("Security")->incr_captchaError();
 
             return false;
         }
@@ -74,7 +74,7 @@ class RegisterExec extends Web
         $user = $this->get("Service.User")->addUser($this->username, $this->nickname);
         if ($user) {
             //记录注册成功
-            $this->_ctx->get("Helper.Security")->incr_registerSuccess();
+            $this->getHelper("Security")->incr_registerSuccess();
 
             return $user->setPass($this->password);
         }
@@ -84,14 +84,14 @@ class RegisterExec extends Web
 
     public function fail()
     {
-        $go = $this->_ctx->get("Reverse")->mkUrl("User.Register", ['msg'=>$this->error]);
+        $go = $this->getHelper("Utils")->mkUrl("User.Register", ['msg'=>$this->error]);
 
         header("Location: $go");
     }
 
     public function show()
     {
-        $go = $this->_ctx->get("Reverse")->mkUrl("User.Register", ['msg'=>'注册成功']);
+        $go = $this->getHelper("Utils")->mkUrl("User.Register", ['msg'=>'注册成功']);
 
         header("Location: $go");
     }

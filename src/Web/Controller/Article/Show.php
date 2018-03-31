@@ -28,7 +28,7 @@ class Show extends Web
 
     public function valid()
     {
-        $this->article = $this->_ctx->getRow('Article', $this->id);
+        $this->article = $this->getRow('Article', $this->id);
         if ($this->article) {
             return true;
         }
@@ -46,7 +46,7 @@ class Show extends Web
     public function show()
     {
         //文章作者
-        $author = $this->_ctx->getLazyRow("User", $this->article->user_id);
+        $author = $this->getLazyRow("User", $this->article->user_id);
 
         //文章标签列表
         $tags = $this->article->getTags();
@@ -72,7 +72,7 @@ class Show extends Web
             }
 
             //预加载用户
-            $comment->user = $this->_ctx->getLazyRow("User", $comment->user_id);
+            $comment->user = $this->getLazyRow("User", $comment->user_id);
 
             return true;
         });
@@ -85,7 +85,7 @@ class Show extends Web
                 }
 
                 //预加载用户
-                $reply->user = $this->_ctx->getLazyRow("User", $reply->user_id);
+                $reply->user = $this->getLazyRow("User", $reply->user_id);
 
                 return true;
             });
@@ -106,7 +106,7 @@ class Show extends Web
     protected function pagination($count)
     {
         //评论分页
-        return $this->_ctx->get("Helper.Pagination")->style2($count, $this->length, $this->page, function($page){
+        return $this->getHelper("Pagination")->style2($count, $this->length, $this->page, function($page){
             $params = array(
                 'id' => $this->id,
             );
@@ -115,7 +115,7 @@ class Show extends Web
                 $params['page'] = $page;
             }
 
-            return $this->_ctx->get("Reverse")->mkUrl('Article.Show', $params);
+            return $this->getHelper("Utils")->mkUrl('Article.Show', $params);
         });
     }
 

@@ -26,7 +26,7 @@ class Show extends AuthWeb
 
     public function valid()
     {
-        $this->user = $this->_ctx->getRow('User', $this->_uid);
+        $this->user = $this->getRow('User', $this->_uid);
         if ($this->user) {
             return true;
         }
@@ -61,7 +61,7 @@ class Show extends AuthWeb
                     'type' => $record->type,
                     'id' => $comment->id,
                     'content' => $comment->content,
-                    'link' => $this->_ctx->get("Reverse")->mkUrl("Article.Redirect", ['type'=>$record->type, 'toid'=>$record->to_id]),
+                    'link' => $this->getHelper("Utils")->mkUrl("Article.Redirect", ['type'=>$record->type, 'toid'=>$record->to_id]),
                     'article_intro' => $article->intro,
                 );
                 break;
@@ -81,7 +81,7 @@ class Show extends AuthWeb
                     'type' => $record->type,
                     'id' => $reply->id,
                     'content' => $reply->content,
-                    'link' => $this->_ctx->get("Reverse")->mkUrl("Article.Redirect", ['type'=>$record->type, 'toid'=>$record->to_id]),
+                    'link' => $this->getHelper("Utils")->mkUrl("Article.Redirect", ['type'=>$record->type, 'toid'=>$record->to_id]),
                     'comment_content' => $target->content,
                 );
                 break;
@@ -104,7 +104,7 @@ class Show extends AuthWeb
                 $params['page'] = $page;
             }
 
-            return $this->_ctx->get("Reverse")->mkUrl('User.Show', $params);
+            return $this->getHelper("Utils")->mkUrl('User.Show', $params);
         });
     }
 

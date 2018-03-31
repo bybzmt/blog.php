@@ -8,14 +8,14 @@ use Bybzmt\Framework\ListCache;
  */
 class IndexArticles extends ListCache
 {
-    protected function getRows(array $ids): array
+    protected function findRows(array $ids): array
     {
-        return $this->_ctx->getLazyRows('Article', $ids);
+        return $this->getLazyRows('Article', $ids);
     }
 
     protected function loadData(int $length): array
     {
-        return $this->_ctx->get('Table.Article')->getIndexIds(0, $length);
+        return $this->getTable('Article')->getIndexIds(0, $length);
     }
 
 

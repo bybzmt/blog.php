@@ -36,7 +36,7 @@ class Router extends Base
         $file = STATIC_PATH .'/web'. $this->getUri();
 
         if (file_exists($file)) {
-            $this->_ctx->get("Helper.StaticFile")->readfile($file);
+            $this->_ctx->get("Helper\\StaticFile")->readfile($file);
         } else {
             $this->_ctx->response->status(404);
             $this->_ctx->response->end("Web 404 page not found\n");

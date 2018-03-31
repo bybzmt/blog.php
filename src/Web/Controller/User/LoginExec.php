@@ -26,13 +26,13 @@ class LoginExec extends Web
         $this->_session['captcha'] = null;
 
         //记录登陆接口调用次数
-        $this->_ctx->get("Helper.Security")->incr_doLogin();
+        $this->getHelper("Security")->incr_doLogin();
     }
 
     public function valid()
     {
         //验证安全情况
-        if ($this->_ctx->get("Helper.Security")->isLocked()) {
+        if ($this->getHelper("Security")->isLocked()) {
             $this->error = "操作过于频繁请明天再试!";
             return false;
         }
@@ -46,7 +46,7 @@ class LoginExec extends Web
             $this->error = "验证码错误";
 
             //记录验证码错
-            $this->_ctx->get("Helper.Security")->incr_captchaError();
+            $this->getHelper("Security")->incr_captchaError();
 
             return false;
         }
@@ -61,7 +61,7 @@ class LoginExec extends Web
             $this->error = "用户名或密码错误";
 
             //记录用户名密码出错
-            $this->_ctx->get("Helper.Security")->incr_UserOrPassError();
+            $this->getHelper("Security")->incr_UserOrPassError();
 
             return false;
         }
@@ -70,7 +70,7 @@ class LoginExec extends Web
             $this->error = "用户名或密码错误";
 
             //记录用户名密码出错
-            $this->_ctx->get("Helper.Security")->incr_UserOrPassError();
+            $this->getHelper("Security")->incr_UserOrPassError();
 
             return false;
         }
@@ -80,9 +80,9 @@ class LoginExec extends Web
 
     public function fail()
     {
-        $go = $this->go ? $this->go : $this->_ctx->get("Reverse")->mkUrl("Article.Lists");
+        $go = $this->go ? $this->go : $this->getHelper("Utils")->mkUrl("Article.Lists");
 
-        $login = $this->_ctx->get("Reverse")->mkUrl("User.Login", ['go'=>$go, 'msg'=>$this->error]);
+        $login = $this->getHelper("Utils")->mkUrl("User.Login", ['go'=>$go, 'msg'=>$this->error]);
 
         header("Location: $login");
     }
@@ -96,7 +96,7 @@ class LoginExec extends Web
 
     public function show()
     {
-        $go = $this->go ? $this->go : $this->_ctx->get("Reverse")->mkUrl("Article.Lists");
+        $go = $this->go ? $this->go : $this->getHelper("Utils")->mkUrl("Article.Lists");
 
         header("Location: $go");
         echo ("Location: $go");

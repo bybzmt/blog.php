@@ -9,11 +9,12 @@ class Bootstrap extends Base
     public function run($request, $response)
     {
         $context = new Context();
+        $context->moduleName = "Web";
         $context->request = $request;
         $context->response = $response;
 
-        $router = $context->get("Router");
+        $context->router = $context->init("Router");
 
-        $router->run();
+        $context->router->run();
     }
 }

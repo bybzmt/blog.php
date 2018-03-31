@@ -10,7 +10,7 @@ class Logout extends Web
     {
         $this->_session->destroy();
 
-        $url = $this->_ctx->get("Reverse")->mkUrl("Article.Lists");
+        $url = $this->getHelper("Utils")->mkUrl("Article.Lists");
 
         header("Location: {$url}");
     }

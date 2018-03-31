@@ -25,7 +25,7 @@ class Comment extends Web
     public function valid()
     {
         //验证安全情况
-        if ($this->_ctx->get("Helper.Security")->isLocked()) {
+        if ($this->getHelper("Security")->isLocked()) {
             $this->error = "操作过于频繁请明天再试!";
             return false;
         }
@@ -35,13 +35,13 @@ class Comment extends Web
             return false;
         }
 
-        $this->user = $this->_ctx->getRow("User", $this->_uid);
+        $this->user = $this->getRow("User", $this->_uid);
         if (!$this->user) {
             $this->msg = "请先登陆";
             return false;
         }
 
-        $this->article = $this->_ctx->getRow('Article', $this->article_id);
+        $this->article = $this->getRow('Article', $this->article_id);
         if (!$this->article) {
             $this->msg = "文章不存在";
             return false;
@@ -53,7 +53,7 @@ class Comment extends Web
         }
 
         if ($this->reply_id) {
-            $this->reply = $this->_ctx->getRow('Comment', $this->article_id.":".$this->reply_id);
+            $this->reply = $this->getRow('Comment', $this->article_id.":".$this->reply_id);
             if (!$this->reply) {
                 $this->msg = "被回复的评论不存在";
                 return false;
@@ -71,7 +71,7 @@ class Comment extends Web
     public function exec()
     {
         //发表评论次数
-        $this->_ctx->get("Helper.Security")->incr_addComment();
+        $this->getHelper("Security")->incr_addComment();
 
         if ($this->reply) {
             $ok = $this->reply->addReply($this->user, $this->content);

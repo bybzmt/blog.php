@@ -9,7 +9,7 @@ class Bootstrap extends Base
     public function run($request, $response)
     {
         $context = new Context();
-        $context->moduleName = "Web";
+        $context->moduleName = "web";
         $context->request = $request;
         $context->response = $response;
 

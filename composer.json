@@ -14,7 +14,8 @@
         "flexihash/flexihash": "^2.0",
         "erusev/parsedown": "^1.6",
         "bybzmt/logger": "^0.0.2",
-        "bybzmt/phpdb": "^1.0"
+        "bybzmt/phpdb": "^1.0",
+        "bybzmt/simple-http-storage": "^1.0"
     },
     "repositories": [
         {

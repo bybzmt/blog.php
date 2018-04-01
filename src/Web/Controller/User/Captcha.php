@@ -16,9 +16,6 @@ class Captcha extends Web
 
         $this->_session['captcha'] = $obj->getCode();
 
-        $image = $obj->show([0xDD,0xDD,0xDD], [0x99,0x99,0x99]);
-
-        $this->_ctx->response->header('Content-type', 'image/jpg');
-        $this->_ctx->response->end($image);
+        $image = $obj->show("#dddddd", "#999999");
     }
 }

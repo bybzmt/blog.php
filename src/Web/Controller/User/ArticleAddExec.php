@@ -18,10 +18,10 @@ class ArticleAddExec extends AuthWeb
 
     public function init()
     {
-        $this->title = isset($_POST['title']) ? trim($_POST['title']) : '';
-        $tags = isset($_POST['tags']) ? $_POST['tags'] : '';
-        $this->intro = isset($_POST['intro']) ? trim($_POST['intro']) : '';
-        $this->content = isset($_POST['content']) ? $_POST['content'] : '';
+        $this->title = trim($this->getPost("title"));
+        $this->intro = trim($this->getPost("intro"));
+        $this->content = $this->getPost("content");
+        $tag = $this->getPost("tag");
 
         $tags = preg_split("/，|,|\s/", $tags);
         $this->tags = array_filter(array_map('trim', $tags));
@@ -55,10 +55,9 @@ class ArticleAddExec extends AuthWeb
             return false;
         }
 
-        $user_id = isset($this->_session['uid']) ? $this->_ctx->session['uid'] : 0;
-        $this->user = $this->getRow("User", $user_id);
+        $this->user = $this->getRow("User", $this->_uid);
         if (!$this->user) {
-            throw new Exception("SESSION uid:{$user_id} not exists.");
+            throw new Exception("uid:{$this->_uid} not exists.");
         }
 
         return true;
@@ -69,7 +68,7 @@ class ArticleAddExec extends AuthWeb
         //发表文章次数
         $this->getHelper("Security")->incr_addArticle();
 
-        $service = $this->get("Service.Article");
+        $service = $this->getService("Article");
 
         $id = $service->addArticle($this->user, $this->title, $this->intro, $this->content);
         if (!$id) {

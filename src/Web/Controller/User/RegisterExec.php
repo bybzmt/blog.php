@@ -16,13 +16,11 @@ class RegisterExec extends Web
 
     public function init()
     {
-        $this->username = isset($_POST['username']) ? trim($_POST['username']) : null;
-        $this->password = isset($_POST['password']) ? trim($_POST['password']) : null;
-        $this->nickname = isset($_POST['nickname']) ? trim($_POST['nickname']) : null;
-        $this->captcha = isset($_POST['captcha']) ? trim($_POST['captcha']) : null;
-        $this->se_captcha = isset($this->_session['captcha']) ? $this->_ctx->session['captcha'] : null;
-
-        $this->_session['captcha'] = null;
+        $this->username = trim($this->getPost("username"));
+        $this->password = trim($this->getPost("password"));
+        $this->nickname = trim($this->getPost("nickname"));
+        $this->captcha = trim($this->getPost("captcha"));
+        $this->se_captcha = $this->getHelper("Session")->flash("captcha");
 
         //记录注册调用次数
         $this->getHelper("Security")->incr_doRegister();
@@ -55,7 +53,7 @@ class RegisterExec extends Web
             return false;
         }
 
-        $user = $this->get("Service.User")->getUser($this->username);
+        $user = $this->getService("User")->getUser($this->username);
         if ($user) {
             $this->error = "用户名己存在";
             return false;
@@ -71,7 +69,7 @@ class RegisterExec extends Web
 
     public function exec()
     {
-        $user = $this->get("Service.User")->addUser($this->username, $this->nickname);
+        $user = $this->getService("User")->addUser($this->username, $this->nickname);
         if ($user) {
             //记录注册成功
             $this->getHelper("Security")->incr_registerSuccess();

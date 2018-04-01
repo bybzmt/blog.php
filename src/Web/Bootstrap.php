@@ -10,17 +10,19 @@ class Bootstrap extends Base
     {
         $context = new Context();
         $context->moduleName = "web";
-        $context->router = $context->init("Router");
+        $context->module = $this;
 
         return $context;
     }
 
-    public function run($request, $response)
+    protected function default404($ctx)
     {
-        $context = $this->getContext();
-        $context->request = $request;
-        $context->response = $response;
+        $file = STATIC_PATH .'/web'. $this->getURI($ctx->request);
 
-        $context->router->run();
+        if (file_exists($file)) {
+            $ctx->get("Helper\\StaticFile")->readfile($file);
+        } else {
+            parent::default404($ctx);
+        }
     }
 }

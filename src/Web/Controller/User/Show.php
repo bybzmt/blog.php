@@ -2,9 +2,6 @@
 namespace Bybzmt\Blog\Web\Controller\User;
 
 use Bybzmt\Blog\Web\Controller\AuthWeb;
-use Bybzmt\Blog\Web\Reverse;
-use ReflectionObject;
-use Bybzmt\Blog\Common\Helper\Pagination;
 
 class Show extends AuthWeb
 {
@@ -16,7 +13,7 @@ class Show extends AuthWeb
 
     public function init()
     {
-        $this->page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $this->page = (int)$this->getQuery("page");
         if ($this->page < 1) {
             $this->page = 1;
         }
@@ -97,7 +94,7 @@ class Show extends AuthWeb
     protected function pagination($count)
     {
         //评论分页
-        return Pagination::style2($count, $this->length, $this->page, function($page){
+        return $this->getHelper("Pagination")->style2($count, $this->length, $this->page, function($page){
             $params = array();
 
             if ($page > 1) {

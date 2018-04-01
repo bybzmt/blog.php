@@ -1,9 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Common\Row;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Row;
 
-class Reply extends Common\Row
+class Reply extends Row
 {
     public function getArticle()
     {

@@ -22,7 +22,7 @@ class User extends Table
 
     public function findByUsername($username)
     {
-        list($sql, $vals) = $this->_ctx->getHelper("SQLBuilder")->select($this->_columns, $this->_tableName, ['user'=>$username, 'status'=>1]);
+        list($sql, $vals) = $this->getHelper("SQLBuilder")->select($this->_columns, $this->_tableName, ['user'=>$username, 'status'=>1]);
 
         return $this->query($sql, $vals)->fetch();
     }

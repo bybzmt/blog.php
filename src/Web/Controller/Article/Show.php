@@ -17,8 +17,8 @@ class Show extends Web
 
     public function init()
     {
-        $this->id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-        $this->page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $this->id = (int)$this->getQuery('id');
+        $this->page = (int)$this->getQuery('page');
         if ($this->page < 1) {
             $this->page = 1;
         }

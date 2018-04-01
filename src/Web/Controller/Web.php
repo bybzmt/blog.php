@@ -10,13 +10,13 @@ use Bybzmt\Blog\Web\Helper\TwigExtension;
 abstract class Web extends Controller
 {
     protected $_uid;
-    protected $_session;
+    private $_session;
 
     public function __construct($context)
     {
         parent::__construct($context);
 
-        $this->_session = $context->get("Helper.Session");
+        $this->_session = $this->getHelper("Session");
         $this->_uid = $this->_session->get('uid');
     }
 

@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog\Common\Helper;
+namespace Bybzmt\Blog\Web\Helper;
 
 use Bybzmt\Framework\Helper\Security as Base;
 
@@ -73,15 +73,6 @@ class Security extends Base
 
     //发表文章数量
     public function incr_addArticle()
-    {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 100) {
-            $this->setLocked(__FUNCTION__);
-        }
-    }
-
-    //新会话产生次数
-    public function incr_newSession()
     {
         $num = $this->incr(__FUNCTION__);
         if ($num > 100) {

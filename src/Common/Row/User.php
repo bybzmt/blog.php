@@ -44,7 +44,7 @@ class User extends Row
 
         $records = array();
         foreach ($rows as $row) {
-            $records[] = $this->_ctx->initRow("Record", $row);
+            $records[] = $this->initRow("Record", $row);
         }
         return $records;
     }

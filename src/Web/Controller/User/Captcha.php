@@ -14,7 +14,7 @@ class Captcha extends Web
 
         $obj = $this->getHelper("Captcha");
 
-        $this->_session['captcha'] = $obj->getCode();
+        $this->getHelper("Session")->set("captcha", $obj->getCode());
 
         $image = $obj->show("#dddddd", "#999999");
     }

@@ -11,8 +11,8 @@ class Login extends Web
 
     public function init()
     {
-        $this->go = isset($_GET['go']) ? $_GET['go'] : '';
-        $this->msg = isset($_GET['msg']) ? $_GET['msg'] : '';
+        $this->go = $this->getQuery("go");
+        $this->msg = $this->getQuery("msg");
     }
 
     public function show()

@@ -17,9 +17,9 @@ class Comment extends Web
 
     public function init()
     {
-        $this->article_id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
-        $this->reply_id = isset($_POST['reply']) ? (int)$_POST['reply'] : 0;
-        $this->content = isset($_POST['content']) ? trim($_POST['content']) : '';
+        $this->article_id = (int)$this->getPost("id");
+        $this->reply_id = (int)$this->getPost("reply");
+        $this->content = trim($this->getPost("content"));
     }
 
     public function valid()

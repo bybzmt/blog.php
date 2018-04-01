@@ -10,7 +10,7 @@ class Register extends Web
 
     public function init()
     {
-        $this->msg = isset($_GET['msg']) ? $_GET['msg'] : '';
+        $this->msg = $this->getQuery("msg");
     }
 
     public function show()

@@ -1,9 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Common\Service;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Service;
 
-class User extends Common\Service
+class User extends Service
 {
     //得到用户
     public function getUser(string $username)
@@ -13,7 +13,7 @@ class User extends Common\Service
             return false;
         }
 
-        return $this->_ctx->initRow("User", $row);
+        return $this->initRow("User", $row);
     }
 
     //添加新用户

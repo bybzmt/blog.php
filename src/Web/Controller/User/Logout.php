@@ -8,7 +8,7 @@ class Logout extends Web
 {
     public function exec()
     {
-        $this->_session->destroy();
+        $this->getHelper("Session")->destroy();
 
         $url = $this->getHelper("Utils")->mkUrl("Article.Lists");
 

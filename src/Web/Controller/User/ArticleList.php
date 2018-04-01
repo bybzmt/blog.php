@@ -2,7 +2,6 @@
 namespace Bybzmt\Blog\Web\Controller\User;
 
 use Bybzmt\Blog\Web\Controller\AuthWeb;
-use Bybzmt\Blog\Web\Reverse;
 
 class ArticleList extends AuthWeb
 {
@@ -14,7 +13,7 @@ class ArticleList extends AuthWeb
 
     public function init()
     {
-        $this->page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $this->page = (int)$this->getQuery("page");
         if ($this->page < 1) {
             $this->page = 1;
         }
@@ -41,7 +40,7 @@ class ArticleList extends AuthWeb
 
     public function show()
     {
-        $service = $this->get("Service.Article");
+        $service = $this->getService("Article");
 
         $articles = $service->getUserList($this->user, $this->offset, $this->length);
         $count = $service->getUserListCount($this->user);

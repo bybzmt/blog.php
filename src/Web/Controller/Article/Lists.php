@@ -19,12 +19,12 @@ class Lists extends Web
 
     public function init()
     {
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page = (int)$this->getQuery('page');
         if ($page < 1) {
             $page = 1;
         }
 
-        $this->tag_id = isset($_GET['tag']) ? (int)$_GET['tag'] : 0;
+        $this->tag_id = (int)$this->getQuery('tag');
 
         $this->page = $page;
         $this->offset = ($page-1) * $this->length;

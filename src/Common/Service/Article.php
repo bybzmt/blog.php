@@ -27,7 +27,7 @@ class Article extends Service
             return false;
         }
 
-        return $this->_ctx->initRow("Tag", $row);
+        return $this->initRow("Tag", $row);
     }
 
     public function addTag(string $name)

@@ -17,13 +17,11 @@ class LoginExec extends Web
 
     public function init()
     {
-        $this->username = isset($_POST['username']) ? trim($_POST['username']) : null;
-        $this->password = isset($_POST['password']) ? trim($_POST['password']) : null;
-        $this->go = isset($_POST['go']) ? $_POST['go'] : null;
-        $this->captcha = isset($_POST['captcha']) ? trim($_POST['captcha']) : null;
-        $this->se_captcha = isset($this->_session['captcha']) ? $this->_ctx->session['captcha'] : null;
-
-        $this->_session['captcha'] = null;
+        $this->username = trim($this->getPost("username"));
+        $this->password = trim($this->getPost("password"));
+        $this->go = $this->getPost("go");
+        $this->captcha = trim($this->getPost("captcha"));
+        $this->se_captcha = $this->getHelper("Session")->flash("captcha");
 
         //记录登陆接口调用次数
         $this->getHelper("Security")->incr_doLogin();
@@ -56,7 +54,7 @@ class LoginExec extends Web
             return false;
         }
 
-        $this->user = $this->get("Service.User")->getUser($this->username);
+        $this->user = $this->getService("User")->getUser($this->username);
         if (!$this->user) {
             $this->error = "用户名或密码错误";
 
@@ -89,7 +87,7 @@ class LoginExec extends Web
 
     public function exec()
     {
-        $this->_session['uid'] = $this->user->id;
+        $this->getHelper("Session")->set("uid", $this->user->id);
 
         return true;
     }

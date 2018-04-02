@@ -1,12 +1,10 @@
 <?php
-namespace Bybzmt\Blog\Web\Controller\User;
+namespace Bybzmt\Blog\Web\Controller\UserCenter\Article;
 
 use Bybzmt\Blog\Web\Controller\AuthWeb;
-use Bybzmt\Blog\Web\Reverse;
 use Bybzmt\Blog\Web\Exception;
-use Bybzmt\Blog\Common\Helper\Pagination;
 
-class ArticleAddExec extends AuthWeb
+class AddExec extends AuthWeb
 {
     public $msg;
     public $user;
@@ -21,7 +19,7 @@ class ArticleAddExec extends AuthWeb
         $this->title = trim($this->getPost("title"));
         $this->intro = trim($this->getPost("intro"));
         $this->content = $this->getPost("content");
-        $tag = $this->getPost("tag");
+        $tags = $this->getPost("tags");
 
         $tags = preg_split("/，|,|\s/", $tags);
         $this->tags = array_filter(array_map('trim', $tags));

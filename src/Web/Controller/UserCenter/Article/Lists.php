@@ -1,9 +1,9 @@
 <?php
-namespace Bybzmt\Blog\Web\Controller\User;
+namespace Bybzmt\Blog\Web\Controller\UserCenter\Article;
 
 use Bybzmt\Blog\Web\Controller\AuthWeb;
 
-class ArticleList extends AuthWeb
+class Lists extends AuthWeb
 {
     protected $length = 10;
     protected $offset;
@@ -50,7 +50,6 @@ class ArticleList extends AuthWeb
             $row->author = $this->getLazyRow("User", $row->user_id);
             $row->commentsNum = $row->getCommentsNum();
             $row->tags = $row->getTags();
-            $row->link = $this->getHelper("Utils")->mkUrl('Article.Show', ['id'=>$row->id]);
         });
 
         $this->render(array(
@@ -69,7 +68,7 @@ class ArticleList extends AuthWeb
                 $params['page'] = $page;
             }
 
-            return $this->getHelper("Utils")->mkUrl('User.Show', $params);
+            return $this->getHelper("Utils")->mkUrl('UserCenter.Records', $params);
         });
     }
 

@@ -26,6 +26,23 @@ class Article extends Row
         return $this->getCache('ArticleComments', $this->id)->gets($offset, $length);
     }
 
+    public function edit($title, $intro, $content)
+    {
+        $data = array(
+            'title' => $title,
+            'intro' => $intro,
+            'content' => $content,
+        );
+
+        $ok = $this->getTable("Article")->update($this->id, $data);
+        if ($ok) {
+            $this->title = $title;
+            $this->intro = $intro;
+            $this->content = $content;
+        }
+        return $ok;
+    }
+
     public function addComment(User $user, string $content)
     {
         $data = array(
@@ -164,11 +181,11 @@ class Article extends Row
             $this->status = 3;
 
             //添加到首页缓存
-            $this->getCache('IndexArticles')->addItem($this->id);
+            $this->getCache('IndexArticles')->itemLPush($this->id);
 
             //添加到标签列表缓存
             foreach ($this->getTags() as $tag) {
-                $this->getCache('TagArticles', $tag->id)->addItem($this->id);
+                $this->getCache('TagArticles', $tag->id)->itemLPush($this->id);
             }
         }
 

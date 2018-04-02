@@ -16,9 +16,12 @@ class ArticleTag extends Table
         'sort',
     ];
 
+    //得到指定标签下己发布的文章id
     public function getArticleIds(int $tag_id, int $offset, int $length)
     {
-        $sql = "SELECT article_id FROM {$this->_tableName} WHERE tag_id = ? LIMIT $offset,$length";
+        $sql = "SELECT A.article_id FROM {$this->_tableName} AS A
+            RIGHT JOIN articles AS B ON (A.article_id = B.id)
+            WHERE A.tag_id = ? AND B.status = 3 LIMIT $offset,$length";
 
         return $this->query($sql, [$tag_id])->fetchAll(PDO::FETCH_COLUMN, 0);
     }
@@ -37,13 +40,13 @@ class ArticleTag extends Table
 
         $data = [];
         foreach ($tag_ids as $sort => $tag_id) {
-            $data[] = array(
+            $this->insert(array(
                 'article_id' => $article_id,
                 'tag_id' => $tag_id,
                 'sort' => $sort,
-            );
+            ));
         }
 
-        return $this->inserts($data);
+        return true;
     }
 }

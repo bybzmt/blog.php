@@ -50,7 +50,7 @@
                                 <a href="{{ mkUrl("About.Hello") }}">About</a>
                             </li>
                             <li>
-                                <a href="{{ mkUrl("User.Show") }}">User</a>
+                                <a href="{{ mkUrl("UserCenter.Records") }}">User</a>
                             </li>
                         </ul>
                     </div>

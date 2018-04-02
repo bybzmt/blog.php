@@ -3,7 +3,7 @@
 {% block title %}Contact Me{% endblock %}
 
 {% block breadcrumb %}
-    <a href="{{ mkUrl("User.Show") }}">User</a>
+    <a href="{{ mkUrl("UserCenter.Records") }}">User</a>
 
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="{{ mkUrl("User.Logout") }}">Logout</a>
@@ -18,33 +18,35 @@
                 <div class="aside-widget">
                     <div class="body">
                         <ul class="clean-list">
-                            <li><a href="{{ mkUrl("User.Show") }}">评论记录</a></li>
-                            <li><a href="{{ mkUrl("User.ArticleList") }}">文章列表</a></li>
-                            <li><a href="{{ mkUrl("User.ArticleAdd") }}">发表文章</a></li>
+                            <li><a href="{{ mkUrl("UserCenter.Records") }}">评论记录</a></li>
+                            <li><a href="{{ mkUrl("UserCenter.Article.Lists") }}">文章列表</a></li>
+                            <li><a href="{{ mkUrl("UserCenter.Article.Add") }}">发表文章</a></li>
                         </ul>
                     </div>
                 </div>
             </aside>
             <div class="col-md-10">
-                <form id="hid_form" action="{{mkUrl("User.ArticleAddExec")}}" method="post" class="contact-form" onsubmit="return dosubmit()" />
+                <form id="hid_form" action="{{mkUrl("UserCenter.Article.EditExec")}}" method="post" class="contact-form" onsubmit="return dosubmit()" />
+                    <input type="hidden" name="id" value="{{ article.id }}" />
+
                     <div class="col-md-12 form-group">
                         <label for="ipt-title">标题:</label>
-                        <input type="text" id="ipt-title" name="title" placeholder="Title" class="form-control" />
+                        <input type="text" id="ipt-title" name="title" value="{{ article.title }}" placeholder="Title" class="form-control" />
                     </div>
                     <div class="col-md-12 form-group">
                         <label for="ipt-tags">标签:</label>
                         <span class="text-muted">(TagA, TagB, ... TagN)</span>
-                        <input type="text" id="ipt-tags" name="tags" class="form-control" />
+                        <input type="text" id="ipt-tags" name="tags" value="{{ tags }}" class="form-control" />
                     </div>
                     <div class="col-md-12 form-group">
                         <label for="ipt-intro">简介:</label>
                         <span class="text-muted">(无格式)</span>
-                        <textarea id="ipt-intro" name="intro" class="form-control"></textarea>
+                        <textarea id="ipt-intro" name="intro" class="form-control">{{ article.intro }}</textarea>
                     </div>
                     <div class="col-md-12 form-group">
                         <label for="ipt-content">正文:</label>
                         <span class="text-muted">(Markdown格式)</span>
-                        <textarea id="ipt-content" name="content" class="form-control" rows="20"></textarea>
+                        <textarea id="ipt-content" name="content" class="form-control" rows="20">{{ article.content }}</textarea>
                     </div>
                     <div class="col-md-12 form-group">
                         <button class="btn btn-default" type="submit">保存草稿</button>

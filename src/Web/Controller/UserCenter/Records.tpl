@@ -3,7 +3,7 @@
 {% block title %}Contact Me{% endblock %}
 
 {% block breadcrumb %}
-    <a href="{{ mkUrl("User.Show") }}">User</a>
+    <a href="{{ mkUrl("UserCenter.Records") }}">User</a>
 
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="{{ mkUrl("User.Logout") }}">Logout</a>
@@ -18,9 +18,9 @@
                 <div class="aside-widget">
                     <div class="body">
                         <ul class="clean-list">
-                            <li><a href="{{ mkUrl("User.Show") }}">评论记录</a></li>
-                            <li><a href="{{ mkUrl("User.ArticleList") }}">文章列表</a></li>
-                            <li><a href="{{ mkUrl("User.ArticleAdd") }}">发表文章</a></li>
+                            <li><a href="{{ mkUrl("UserCenter.Records") }}">评论记录</a></li>
+                            <li><a href="{{ mkUrl("UserCenter.Article.Lists") }}">文章列表</a></li>
+                            <li><a href="{{ mkUrl("UserCenter.Article.Add") }}">发表文章</a></li>
                         </ul>
                     </div>
                 </div>

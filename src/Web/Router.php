@@ -19,10 +19,15 @@ class Router extends Base
         $this->post('/article/comment', ':Article.Comment');
         $this->post('/article/replys', ':Article.Replys');
 
-        $this->get('/user', ':User.Show');
-        $this->get('/user/articles', ':User.ArticleList');
-        $this->get('/user/article/add', ':User.ArticleAdd');
-        $this->post('/post/user/article/add', ':User.ArticleAddExec');
+        $this->get('/user', ':UserCenter.Records');
+        $this->get('/user/articles', ':UserCenter.Article.Lists');
+        $this->get('/user/article/(\d+)/preview', ':UserCenter.Article.Preview:id');
+        $this->get('/user/article/(\d+)/edit', ':UserCenter.Article.Edit:id');
+        $this->get('/user/article/add', ':UserCenter.Article.Add');
+        $this->post('/post/user/article/add', ':UserCenter.Article.AddExec');
+        $this->post('/post/user/article/edit', ':UserCenter.Article.EditExec');
+        $this->post('/post/user/article/action', ':UserCenter.Article.Action');
+
         $this->get('/login', ':User.Login');
         $this->get('/logout', ':User.Logout');
         $this->get('/captcha', ':User.Captcha');

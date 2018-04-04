@@ -1,38 +1,37 @@
 <?php
 namespace Bybzmt\Blog\Admin;
 
-use Bybzmt\Blog\Common;
-use Bybzmt\Blog\Common\Helper\StaticFile;
+use Bybzmt\Framework\Router as Base;
 
-class Router extends Common\Router
+class Router extends Base
 {
     public function _init()
     {
         $this->get('/', ':Admin.Dashboard');
-        $this->get('/login', ':Admin.Login');
-        $this->get('/register', ':Admin.Register');
-        $this->post('/json/register', ':Admin.RegisterExec');
-        $this->post('/json/login', ':Admin.LoginExec');
-        $this->get('/logout', ':Admin.Logout');
-        $this->get('/captcha', ':Admin.Captcha');
+        $this->get('/login', ':Admin.Reg.Login');
+        $this->get('/register', ':Admin.Reg.Register');
+        $this->post('/json/register', ':Admin.Reg.RegisterExec');
+        $this->post('/json/login', ':Admin.Reg.LoginExec');
+        $this->get('/logout', ':Admin.Reg.Logout');
+        $this->get('/captcha', ':Admin.Reg.Captcha');
 
         //管理员管理
-        $this->get('/admin/users', ':Admin.UserList');
-        $this->get('/admin/user/add', ':Admin.UserAdd');
-        $this->get('/admin/user/(\d+)', ':Admin.UserEdit:id');
-        $this->post('/json/admin/user/add', ':Admin.UserAddExec');
-        $this->post('/json/admin/user/audit', ':Admin.UserAuditExec');
-        $this->post('/json/admin/user/edit', ':Admin.UserEditExec');
-        $this->post('/json/admin/user/password', ':Admin.UserPasswordExec');
-        $this->post('/json/admin/user/del', ':Admin.UserDelExec');
+        $this->get('/admin/users', ':Admin.User.Lists');
+        $this->get('/admin/user/add', ':Admin.User.Add');
+        $this->get('/admin/user/(\d+)', ':Admin.User.Edit:id');
+        $this->post('/json/admin/user/add', ':Admin.User.AddExec');
+        $this->post('/json/admin/user/audit', ':Admin.User.AuditExec');
+        $this->post('/json/admin/user/edit', ':Admin.User.EditExec');
+        $this->post('/json/admin/user/password', ':Admin.User.PasswordExec');
+        $this->post('/json/admin/user/del', ':Admin.User.DelExec');
 
         //管理员组管理
-        $this->get('/admin/roles', ':Admin.RoleList');
-        $this->get('/admin/role/add', ':Admin.RoleAdd');
-        $this->get('/admin/role/(\d+)', ':Admin.RoleEdit:id');
-        $this->post('/json/admin/role/add', ':Admin.RoleAddExec');
-        $this->post('/json/admin/role/edit', ':Admin.RoleEditExec');
-        $this->post('/json/admin/role/del', ':Admin.RoleDelExec');
+        $this->get('/admin/roles', ':Admin.Role.Lists');
+        $this->get('/admin/role/add', ':Admin.Role.Add');
+        $this->get('/admin/role/(\d+)', ':Admin.Role.Edit:id');
+        $this->post('/json/admin/role/add', ':Admin.Role.AddExec');
+        $this->post('/json/admin/role/edit', ':Admin.Role.EditExec');
+        $this->post('/json/admin/role/del', ':Admin.Role.DelExec');
 
         //用户管理
         $this->get('/users', ':Member.UserList');
@@ -50,18 +49,5 @@ class Router extends Common\Router
         $this->get('/blog/comment/(\d+)', ':Blog.CommentEdit:id');
         $this->post('/json/blog/comment/audit', ':Blog.CommentAuditExec');
     }
-
-    protected function default404()
-    {
-        $file = STATIC_PATH . "/admin" . $this->getUri();
-
-        if (file_exists($file)) {
-            StaticFile::readfile($file);
-        } else {
-            header('HTTP/1.0 404 Not Found');
-            echo "Web 404 page not found\n";
-        }
-    }
-
 
 }

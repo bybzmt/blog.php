@@ -12,8 +12,8 @@ class CommentAuditExec extends AuthJson
 
     public function init()
     {
-        $this->id = isset($_POST['id']) ? $_POST['id'] : 0;
-        $this->flag = isset($_POST['flag']) ? $_POST['flag'] : 0;
+        $this->id = $this->getPost('id');
+        $this->flag = $this->getPost('flag');
     }
 
     public function valid()
@@ -24,7 +24,7 @@ class CommentAuditExec extends AuthJson
             return false;
         }
 
-        $this->comment = $this->_ctx->getRow("Comment", $this->id);
+        $this->comment = $this->getRow("Comment", $this->id);
 
         if (!$this->comment) {
             $this->ret = 1;

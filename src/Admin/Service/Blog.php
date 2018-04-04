@@ -1,17 +1,18 @@
 <?php
 namespace Bybzmt\Blog\Admin\Service;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Framework\Service;
 
-class Blog extends Admin\Service
+
+class Blog extends Service
 {
     public function getArticleList($type, $search, $offset, $length)
     {
-        list($rows, $count) = $this->_ctx->getTable("Article")->getAdminList($type, $search, $offset, $length);
+        list($rows, $count) = $this->getTable("Article")->getAdminList($type, $search, $offset, $length);
 
         $objs = [];
         foreach ($rows as $row) {
-            $objs[] = $this->_ctx->initRow("Article", $row);
+            $objs[] = $this->initRow("Article", $row);
         }
 
         return [$objs, $count];
@@ -19,11 +20,11 @@ class Blog extends Admin\Service
 
     public function getCommentList($type, $search, $offset, $length)
     {
-        list($rows, $count) = $this->_ctx->getTable("Comment")->getAdminList($type, $search, $offset, $length);
+        list($rows, $count) = $this->getTable("Comment")->getAdminList($type, $search, $offset, $length);
 
         $objs = [];
         foreach ($rows as $row) {
-            $objs[] = $this->_ctx->initRow("Comment", $row);
+            $objs[] = $this->initRow("Comment", $row);
         }
 
         return [$objs, $count];

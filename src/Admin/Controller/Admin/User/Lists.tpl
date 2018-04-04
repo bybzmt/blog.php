@@ -32,7 +32,7 @@
         </div>
         <button type="submit" class="btn btn-default">搜索</button>
 
-        <a target="_blank" href="{{ mkUrl("Admin.Register") }}">
+        <a target="_blank" href="{{ mkUrl("Admin.Reg.Register") }}">
             <button type="button" class="btn btn-default">添加</button>
         </a>
     </form>
@@ -87,7 +87,7 @@
                                         {% endif %}
                                   </td>
                                   <td>
-                                    {{ mymacro.editButton(mkUrl("Admin.UserEdit", {id:user.id})) }}
+                                    {{ mymacro.editButton(mkUrl("Admin.User.Edit", {id:user.id})) }}
 
                                         {% if user.status == 1 %}
 
@@ -182,7 +182,7 @@ function doAudit(flag)
 
     $('#ResultModal').modal('show');
 
-    var url = "{{ mkUrl("Admin.UserAuditExec") }}";
+    var url = "{{ mkUrl("Admin.User.AuditExec") }}";
     var data = {id:audit_id, flag:flag};
 
     $.post(url, data, function(json){
@@ -214,7 +214,7 @@ function doUserDel()
 
     $('#ResultModal').modal('show');
 
-    var url = "{{ mkUrl("Admin.UserDelExec") }}";
+    var url = "{{ mkUrl("Admin.User.DelExec") }}";
     var data = {id:del_id};
 
     $.post(url, data, function(json){

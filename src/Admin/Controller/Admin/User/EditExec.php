@@ -1,10 +1,10 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\User;
 
 use Bybzmt\Blog\Admin\Controller\AuthJson;
 use Bybzmt\Blog\Admin\Helper\Permissions;
 
-class UserEditExec extends AuthJson
+class EditExec extends AuthJson
 {
     public $id;
     public $nickname;
@@ -16,16 +16,16 @@ class UserEditExec extends AuthJson
 
     public function init()
     {
-        $this->id = isset($_POST['id']) ? $_POST['id'] : '';
-        $this->nickname = isset($_POST['nickname']) ? trim($_POST['nickname']) : '';
-        $this->permissions = isset($_POST['permissions']) ? (array)$_POST['permissions'] : array();
-        $this->role_ids = isset($_POST['roles']) ? (array)$_POST['roles'] : array();
+        $this->id = $this->getPost('id');
+        $this->nickname = trim($this->getPost('nickname'));
+        $this->permissions = (array)$this->getPost('permissions');
+        $this->role_ids = (array)$this->getPost('roles');
 
         //过滤掉不舍法的参数
         $this->permissions = array_intersect($this->permissions, Permissions::getAll());
 
         //过滤掉不合法的id
-        $rows = $this->_ctx->getTable("AdminRole")->gets($this->role_ids);
+        $rows = $this->getTable("AdminRole")->gets($this->role_ids);
         foreach ($rows as $row) {
             $this->roles[] = $this->initRow("AdminRole", $row);
         }
@@ -39,7 +39,7 @@ class UserEditExec extends AuthJson
             return false;
         }
 
-        $this->user = $this->_ctx->getRow("AdminUser", $this->id);
+        $this->user = $this->getRow("AdminUser", $this->id);
         if (!$this->user) {
             $this->ret = 1;
             $this->data = "用户不存在。";

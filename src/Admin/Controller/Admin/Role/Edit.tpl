@@ -7,59 +7,26 @@
 {% endblock %}
 
 {% block content %}
-
-<h4>
+<h4 class="mt">
     <ol class="breadcrumb">
-      <li><i class="fa fa-angle-right"></i> <a href="{{ mkUrl("Admin.UserList") }}">用户管理</a></li>
-      <li class="active">用户详情</li>
+      <li><i class="fa fa-angle-right"></i> <a href="{{ mkUrl("Admin.Role.Lists") }}">角色管理</a></li>
+      <li class="active">角色详情</li>
     </ol>
 </h4>
 
 <!-- BASIC FORM ELELEMNTS -->
-<div class="row">
+<div class="row mt">
     <div class="col-md-12">
       <div class="form-panel">
-          <form id="form" class="form-horizontal style-form" action="{{ mkUrl("Admin.UserEditExec") }}">
-            <input type="hidden" name="id" value="{{ user.id }}" />
+          <form id="form" class="form-horizontal style-form" action="{{ mkUrl("Admin.Role.EditExec") }}">
 
-
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">基本信息</a></li>
-    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">特殊权限</a></li>
-  </ul>
-
-
-<div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="home">
-    <p></p>
+            <input type="hidden" name="id" value="{{ role.id }}" />
               <div class="form-group">
-                  <label class="col-md-2 control-label">用户昵称</label>
+                  <label class="col-md-2 control-label">角色名</label>
                   <div class="col-md-6">
-                      <input type="text" class="form-control" name="nickname" value="{{ user.nickname }}" />
+                      <input type="text" class="form-control" name="name" value="{{ role.name }}" />
                   </div>
               </div>
-
-              <div class="form-group">
-                  <label class="col-md-2 control-label">用户角</label>
-                  <div class="col-md-10">
-                      <div class="row">
-                    {% for role in roles %}
-                    <div class="col-md-3">
-                    <label class="checkbox-inline">
-                      <input type="checkbox" name="roles[]"
-                      {% if role.status %}checked="checked"{% endif %}
-                      value="{{ role.id }}" /> {{ role.name }}
-                    </label>
-                    </div>
-                    {% endfor %}
-                    </div>
-                  </div>
-              </div>
-
-    </div>
-
-    <div role="tabpanel" class="tab-pane" id="profile">
-              <p></p>
 
             {% for name, group in permissions %}
               <div class="form-group">
@@ -79,10 +46,6 @@
                   </div>
               </div>
               {% endfor %}
-            </div>
-  </div>
-
-
 
               <div class="form-group">
                   <label class="col-md-2 control-label"></label>

@@ -1,10 +1,10 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\Role;
 
 use Bybzmt\Blog\Admin\Controller\AuthJson;
 use Bybzmt\Blog\Admin\Helper\Permissions;
 
-class RoleEditExec extends AuthJson
+class EditExec extends AuthJson
 {
     public $id;
     public $name;
@@ -14,9 +14,9 @@ class RoleEditExec extends AuthJson
 
     public function init()
     {
-        $this->id = isset($_POST['id']) ? $_POST['id'] : '';
-        $this->name = isset($_POST['name']) ? trim($_POST['name']) : '';
-        $this->permissions = isset($_POST['permissions']) ? (array)$_POST['permissions'] : array();
+        $this->id = $this->getPost('id');
+        $this->name = trim($this->getPost('name'));
+        $this->permissions = (array)$this->getPost('permissions');
 
         //过滤掉不舍法的参数
         $this->permissions = array_intersect($this->permissions, Permissions::getAll());
@@ -30,7 +30,7 @@ class RoleEditExec extends AuthJson
             return false;
         }
 
-        $this->role = $this->_ctx->getRow("AdminRole", $this->id);
+        $this->role = $this->getRow("AdminRole", $this->id);
         if (!$this->role) {
             $this->ret = 1;
             $this->data = "角色组不存在。";

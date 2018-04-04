@@ -1,11 +1,10 @@
 <?php
 namespace Bybzmt\Blog\Admin\Table;
 
-use Bybzmt\Blog\Common;
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Common\Table\Comment as Base;
 use PDO;
 
-class Comment extends Common\Table\Comment
+class Comment extends Base
 {
     private function buildType(int $type, string $search)
     {

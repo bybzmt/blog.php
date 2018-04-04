@@ -34,7 +34,7 @@
 	  <div id="login-page">
 	  	<div class="container">
 
-		      <form id="login-form" class="form-login" action="{{ mkUrl('Admin.LoginExec') }}">
+		      <form id="login-form" class="form-login" action="{{ mkUrl('Admin.Reg.LoginExec') }}">
 		        <h2 class="form-login-heading">sign in now</h2>
 		        <div class="login-wrap">
                     <div id="err-msg" class="hidden alert alert-danger">错误信息</div>
@@ -56,7 +56,7 @@
                     <i class="fa fa-lock"></i> SIGN IN</button>
 
                     <div class="registration mt">
-		                <a class="" href="{{ mkUrl('Admin.Register') }}">Create an account</a>
+		                <a class="" href="{{ mkUrl('Admin.Reg.Register') }}">Create an account</a>
 		            </div>
 
 		        </div>
@@ -106,7 +106,7 @@
 
         function change_captcha()
         {
-            var src = "{{ mkUrl('Admin.Captcha') }}";
+            var src = "{{ mkUrl('Admin.Reg.Captcha') }}";
             src += "?" + (new Date()).getTime()
             $("#captcha").attr("src", src);
         }

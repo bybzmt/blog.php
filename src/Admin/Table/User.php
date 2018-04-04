@@ -1,10 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Admin\Table;
 
-use Bybzmt\Blog\Common;
-use Bybzmt\Blog\Admin;
+use Bybzmt\Blog\Common\Table\User as Base;
 
-class User extends Common\Table\User
+class User extends Base
 {
     public function getList(int $type, string $search, int $offset, int $length)
     {

@@ -1,15 +1,23 @@
 <?php
 namespace Bybzmt\Blog\Admin\Controller;
 
-use Bybzmt\Blog\Common;
-use Bybzmt\Blog\Admin;
+use Bybzmt\Framework\Controller;
 
-abstract class Base extends Common\Controller
+abstract class Base extends Controller
 {
+    protected $_session;
+
     public function __construct($context)
     {
         parent::__construct($context);
 
-        session_start();
+        $this->_session = $this->getHelper("Session");
+    }
+
+    public function execute()
+    {
+        parent::execute();
+
+        $this->_session->save();
     }
 }

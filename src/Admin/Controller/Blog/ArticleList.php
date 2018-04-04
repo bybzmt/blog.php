@@ -1,8 +1,6 @@
 <?php
 namespace Bybzmt\Blog\Admin\Controller\Blog;
 
-use Bybzmt\Blog\Common\Helper\Pagination;
-use Bybzmt\Blog\Admin\Reverse;
 use Bybzmt\Blog\Admin\Controller\AuthWeb;
 
 class ArticleList extends AuthWeb
@@ -17,10 +15,10 @@ class ArticleList extends AuthWeb
 
     public function init()
     {
-        $this->_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $this->type = isset($_GET['type']) ? (int)$_GET['type'] : 1;
-        $this->status = isset($_GET['status']) ? (int)$_GET['status'] : 0;
-        $this->keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $this->_page = $this->getQuery('page');
+        $this->type = $this->getQuery('type');
+        $this->status = $this->getQuery('status');
+        $this->keyword = trim($this->getQuery('search'));
 
         if ($this->_page < 1) {
             $this->_page = 1;
@@ -35,11 +33,11 @@ class ArticleList extends AuthWeb
     public function show()
     {
         //查出所有管理组
-        list($articles, $count) = $this->_ctx->getService("Blog")
+        list($articles, $count) = $this->getService("Blog")
             ->getArticleList($this->type, $this->keyword, $this->_offset, $this->_length);
 
         array_walk($articles, function($article){
-            $article->author = $this->_ctx->getLazyRow("User", $article->user_id);
+            $article->author = $this->getLazyRow("User", $article->user_id);
         });
 
         $this->render(array(
@@ -54,7 +52,7 @@ class ArticleList extends AuthWeb
 
     protected function pagination($count)
     {
-        return Pagination::style2($count, $this->_length, $this->_page, function($page){
+        return $this->getHelper("Pagination")->style2($count, $this->_length, $this->_page, function($page){
             $params = array();
 
             if ($this->keyword) {
@@ -66,7 +64,7 @@ class ArticleList extends AuthWeb
                 $params['page'] = $page;
             }
 
-            return Reverse::mkUrl('Blog.ArticleList', $params);
+            return $this->getHelper("Utils")->mkUrl('Blog.ArticleList', $params);
         });
     }
 

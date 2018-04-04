@@ -23,7 +23,7 @@ class Article extends Row
 
     public function getComments(int $offset, int $length)
     {
-        return $this->getCache('ArticleComments', $this->id)->gets($offset, $length);
+        return $this->getCache('ArticleComments', $this->id)->getlist($offset, $length);
     }
 
     public function edit($title, $intro, $content)

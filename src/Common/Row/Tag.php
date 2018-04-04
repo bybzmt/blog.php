@@ -9,7 +9,7 @@ class Tag extends Row
     public function getArticleList(int $offset, int $length)
     {
         //从标签列表缓存中取
-        return $this->getCache('TagArticles', $this->id)->gets($offset, $length);
+        return $this->getCache('TagArticles', $this->id)->getlist($offset, $length);
     }
 
     //从标签列表缓存中取

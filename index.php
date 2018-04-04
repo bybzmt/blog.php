@@ -27,15 +27,15 @@ $front = new Front(function($name) {
     //命令行
     case '#CLI' : return new Console\Bootstrap();
     //静态文件
-    case Config::get('host.Static'): return new StaticFile\Bootstrap();
+    case Config::get('host.static'): return new StaticFile\Bootstrap();
     //api接口
-    case Config::get('host.Api'): return new Api\Bootstrap();
+    case Config::get('host.api'): return new Api\Bootstrap();
     //内部访问
-    case Config::get('host.Backend'): return new Backend\Bootstrap();
+    case Config::get('host.backend'): return new Backend\Bootstrap();
     //合作商接口
-    case Config::get('host.Partner'): return new Partner\Bootstrap();
+    case Config::get('host.partner'): return new Partner\Bootstrap();
     //后台
-    case Config::get('host.Admin'): return new Admin\Bootstrap();
+    case Config::get('host.admin'): return new Admin\Bootstrap();
     //默认
     default: return new Web\Bootstrap();
     }

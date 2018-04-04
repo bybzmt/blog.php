@@ -1,14 +1,12 @@
 <?php
 namespace Bybzmt\Blog\Admin\Table;
 
-use Bybzmt\Blog\Admin;
-use Bybzmt\Blog\Common;
-use PDO;
+use Bybzmt\Framework\Table;
 
 /**
  * 权限说明
  */
-class AdminPermission extends Common\Table
+class AdminPermission extends Table
 {
     protected $_dbName = 'blog';
     protected $_tableName = 'admin_permissions';

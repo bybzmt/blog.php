@@ -20,7 +20,7 @@
     </div>
     <div class="col-md-10">
         <form class="navbar-form navbar-right" role="search">
-            <a href="{{ mkUrl("Admin.RoleAdd") }}">
+            <a href="{{ mkUrl("Admin.Role.Add") }}">
                 <button type="button" class="btn btn-default">添加</button>
             </a>
         </form>
@@ -46,7 +46,7 @@
                       <td class="hidden-phone">{{role.name}}</td>
                       <td>{{ mymacro.date(role.addtime) }}</td>
                       <td>
-                        {{ mymacro.editButton(mkUrl("Admin.RoleEdit", {id:role.id})) }}
+                        {{ mymacro.editButton(mkUrl("Admin.Role.Edit", {id:role.id})) }}
         <button title="删除" onclick="delPanel({{ role.id|json_encode }}, {{ role.name|json_encode }})" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button>
                       </td>
                     </tr>
@@ -112,7 +112,7 @@ function doUserDel()
 
     $('#ResultModal').modal('show');
 
-    var url = "{{ mkUrl("Admin.RoleDelExec") }}";
+    var url = "{{ mkUrl("Admin.Role.DelExec") }}";
     var data = {id:del_id};
 
     $.post(url, data, function(json){

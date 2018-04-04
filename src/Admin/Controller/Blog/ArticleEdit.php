@@ -13,12 +13,12 @@ class ArticleEdit extends AuthWeb
 
     public function init()
     {
-        $this->_id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
+        $this->_id = $this->getQuery('id');
     }
 
     public function valid()
     {
-        $this->article = $this->_ctx->getRow("Article", $this->_id);
+        $this->article = $this->getRow("Article", $this->_id);
 
         if (!$this->article) {
             return false;
@@ -29,7 +29,7 @@ class ArticleEdit extends AuthWeb
 
     public function show()
     {
-        $this->article->author = $this->_ctx->getRow("User", $this->article->user_id);
+        $this->article->author = $this->getRow("User", $this->article->user_id);
 
         $this->render(array(
             'sidebarMenu' => '文章管理',

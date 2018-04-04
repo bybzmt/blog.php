@@ -11,12 +11,12 @@ class UserEdit extends AuthWeb
 
     public function init()
     {
-        $this->user_id = isset($_GET['id']) ? $_GET['id'] : 0;
+        $this->user_id = $this->getQuery('id');
     }
 
     public function valid()
     {
-        $this->user = $this->_ctx->getRow('User', $this->user_id);
+        $this->user = $this->getRow('User', $this->user_id);
 
         if (!$this->user) {
             return false;

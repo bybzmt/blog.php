@@ -14,8 +14,8 @@ class UserEditExec extends AuthJson
 
     public function init()
     {
-        $this->id = isset($_POST['id']) ? $_POST['id'] : '';
-        $this->nickname = isset($_POST['nickname']) ? trim($_POST['nickname']) : '';
+        $this->id = $this->getPost('id');
+        $this->nickname = trim($this->getPost('nickname'));
     }
 
     public function valid()
@@ -26,7 +26,7 @@ class UserEditExec extends AuthJson
             return false;
         }
 
-        $this->user = $this->_ctx->getRow("User", $this->id);
+        $this->user = $this->getRow("User", $this->id);
         if (!$this->user) {
             $this->ret = 1;
             $this->data = "用户不存在。";

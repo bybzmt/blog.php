@@ -1,22 +1,22 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\Role;
 
 use Bybzmt\Blog\Admin\Controller\AuthWeb;
 use Bybzmt\Blog\Admin\Helper\Permissions;
 
-class RoleEdit extends AuthWeb
+class Edit extends AuthWeb
 {
     public $role_id;
     public $role;
 
     public function init()
     {
-        $this->role_id = isset($_GET['id']) ? $_GET['id'] : 0;
+        $this->role_id = $this->getQuery('id');
     }
 
     public function valid()
     {
-        $this->role = $this->_ctx->getRow('AdminRole', $this->role_id);
+        $this->role = $this->getRow('AdminRole', $this->role_id);
 
         if (!$this->role) {
             return false;
@@ -32,7 +32,7 @@ class RoleEdit extends AuthWeb
         $permissions = $this->role->getPermissions();
 
         //重新整理下格式
-        $_permissions = Permissions::reorganize($this->_ctx->getTable("AdminPermission"), $permissions);
+        $_permissions = Permissions::reorganize($this->getTable("AdminPermission"), $permissions);
 
         $this->render(array(
             'permissions' => $_permissions,

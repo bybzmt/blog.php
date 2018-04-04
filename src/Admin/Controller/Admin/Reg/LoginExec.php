@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\Reg;
 
 use Bybzmt\Blog\Admin\Controller\Json;
 
@@ -19,31 +19,30 @@ class LoginExec extends Json
 
     public function init()
     {
-        $this->user = isset($_POST['user']) ? trim($_POST['user']) : '';
-        $this->pass = isset($_POST['pass']) ? trim($_POST['pass']) : '';
-        $this->captcha = isset($_POST['captcha']) ? strtoupper(trim($_POST['captcha'])) : '';
-        $this->se_captcha = isset($_SESSION['admin_captcha']) ? strtoupper($_SESSION['admin_captcha']) : '';
-        $_SESSION['admin_captcha'] = "";
+        $this->user = trim($this->getPost("user"));
+        $this->pass = trim($this->getPost("pass"));
+        $this->captcha = trim($this->getPost('captcha'));
+        $this->se_captcha = $this->getHelper("Session")->flash('admin_captcha');
+
+        //记录登陆接口调用次数
+        $this->getHelper("Security")->incr_doLogin();
     }
 
     public function valid()
     {
-        //验证ip是否请求过多
-        $ip = $_SERVER['REMOTE_ADDR'];
-        $security = $this->_ctx->getCache("IPSecurity", "admin.login");
-        if (!$security->check($ip)) {
-            $this->ret = 1;
-            $this->data = "检测到安全风险请稍后再试。";
+        //验证安全情况
+        if ($this->getHelper("Security")->isLocked()) {
+            $this->data = "操作过于频繁请明天再试!";
             return false;
         }
 
-        if (!$this->captcha || $this->captcha != $this->se_captcha) {
+        if (!$this->captcha || strtoupper($this->captcha) != strtoupper($this->se_captcha)) {
             $this->ret = 1;
             $this->data = "验证码错误";
             return false;
         }
 
-        $this->admin_user = $this->_ctx->getService('Admin')->findUser($this->user);
+        $this->admin_user = $this->getService('Admin')->findUser($this->user);
         if (!$this->admin_user) {
             $this->ret = 1;
             $this->data = "用户名或密码错误.";
@@ -61,10 +60,11 @@ class LoginExec extends Json
 
     public function exec()
     {
-        $_SESSION['admin_id'] = $this->admin_user->id;
-        $_SESSION['admin_isroot'] = $this->admin_user->isroot;
+        $session = $this->getHelper("Session");
+        $session['admin_id'] = $this->admin_user->id;
+        $session['admin_isroot'] = $this->admin_user->isroot;
         if (!$this->admin_user->isroot) {
-            $_SESSION['admin_permissions'] = $this->admin_user->getPermissions();
+            $session['admin_permissions'] = $this->admin_user->getPermissions();
         }
         return true;
     }

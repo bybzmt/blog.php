@@ -5,55 +5,15 @@ use Bybzmt\Blog\Common;
 
 class Context extends Common\Context
 {
-    /**
-     * 初始化数据表对象
-     */
-    public function initService(string $name)
+    //初始化组件
+    public function initComponent(string $name, ...$args)
     {
-        $class = __NAMESPACE__ ."\\Service\\". $name;
+        $class = __NAMESPACE__ ."\\". $name;
         if (class_exists($class)) {
-            return new $class($this);
+            return new $class($this, ...$args);
         } else {
-            return parent::initService($name);
+            return parent::initComponent($name, ...$args);
         }
     }
 
-    /**
-     * 初始化数据表对象
-     */
-    public function initTable(string $name)
-    {
-        $class = __NAMESPACE__ ."\\Table\\". $name;
-        if (class_exists($class)) {
-            return new $class($this);
-        } else {
-            return parent::initTable($name);
-        }
-    }
-
-    /**
-     * 初始化缓存对像
-     */
-    public function initCache(string $name, string $id='', ...$args)
-    {
-        $class = __NAMESPACE__ ."\\Cache\\". $name;
-        if (class_exists($class)) {
-            return new $class($this, $id, ...$args);
-        } else {
-            return parent::initCache($name, $id, ...$args);
-        }
-    }
-
-    /**
-     * 初始化一个数据行对像
-     */
-    public function initRow(string $name, array $row)
-    {
-        $class = __NAMESPACE__ . "\\Row\\" . $name;
-        if (class_exists($class)) {
-            return new $class($this, $row);
-        } else {
-            return parent::initRow($name, $row);
-        }
-    }
 }

@@ -1,11 +1,9 @@
 <?php
 namespace Bybzmt\Blog\Admin\Table;
 
-use Bybzmt\Blog\Common;
-use Bybzmt\Blog\Admin;
-use PDO;
+use Bybzmt\Blog\Common\Table\Article as Base;
 
-class Article extends Common\Table\Article
+class Article extends Base
 {
     private function buildType(int $type, string $search)
     {

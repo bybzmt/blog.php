@@ -20,7 +20,7 @@ class Bootstrap extends Base
         $file = STATIC_PATH .'/web'. $this->getURI($ctx->request);
 
         if (file_exists($file)) {
-            $ctx->get("Helper\\StaticFile")->readfile($file);
+            $ctx->getComponent("Helper\\StaticFile")->readfile($file);
         } else {
             parent::default404($ctx);
         }

@@ -1,9 +1,9 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\User;
 
 use Bybzmt\Blog\Admin\Controller\AuthJson;
 
-class UserAuditExec extends AuthJson
+class AuditExec extends AuthJson
 {
     public $id;
     public $flag;
@@ -12,8 +12,8 @@ class UserAuditExec extends AuthJson
 
     public function init()
     {
-        $this->id = isset($_POST['id']) ? $_POST['id'] : 0;
-        $this->flag = isset($_POST['flag']) ? $_POST['flag'] : 0;
+        $this->id = $this->getPost('id');
+        $this->flag = $this->getPost('flag');
     }
 
     public function valid()
@@ -24,7 +24,7 @@ class UserAuditExec extends AuthJson
             return false;
         }
 
-        $this->user = $this->_ctx->getRow("AdminUser", $this->id);
+        $this->user = $this->getRow("AdminUser", $this->id);
 
         if (!$this->user) {
             $this->ret = 1;

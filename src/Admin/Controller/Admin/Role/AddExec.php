@@ -1,15 +1,15 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\Role;
 
 use Bybzmt\Blog\Admin\Controller\AuthJson;
 
-class RoleAddExec extends AuthJson
+class AddExec extends AuthJson
 {
     private $name;
 
     public function init()
     {
-        $this->name = isset($_POST['name']) ? trim($_POST['name']) : '';
+        $this->name = trim($this->getPost('name'));
     }
 
     public function valid()
@@ -25,7 +25,7 @@ class RoleAddExec extends AuthJson
 
     public function exec()
     {
-        return $this->_ctx->getService("Admin")->roleAdd($this->name);
+        return $this->getService("Admin")->roleAdd($this->name);
     }
 
 

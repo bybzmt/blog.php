@@ -1,20 +1,19 @@
 <?php
-namespace Bybzmt\Blog\Web\Controller\User;
+namespace Bybzmt\Blog\Admin\Controller\Admin\Reg;
 
-use Bybzmt\Blog\Web\Controller\Web;
-
+use Bybzmt\Blog\Admin\Controller\Web;
 
 class Captcha extends Web
 {
     public function show()
     {
-        //记录验证码生成次数
         $this->getHelper("Security")->incr_showCaptcha();
 
         $obj = $this->getHelper("Captcha");
 
-        $this->getHelper("Session")->set("captcha", $obj->getCode());
+        $this->getHelper("Session")->set("admin_captcha", $obj->getCode());
 
         $obj->show("#dddddd", "#999999");
     }
+
 }

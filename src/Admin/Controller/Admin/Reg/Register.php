@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\Reg;
 
 use Bybzmt\Blog\Admin\Controller\Web;
 

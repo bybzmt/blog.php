@@ -1,9 +1,9 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\Role;
 
 use Bybzmt\Blog\Admin\Controller\AuthWeb;
 
-class RoleAdd extends AuthWeb
+class Add extends AuthWeb
 {
     public function show()
     {

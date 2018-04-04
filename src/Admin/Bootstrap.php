@@ -1,20 +1,28 @@
 <?php
 namespace Bybzmt\Blog\Admin;
 
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Bootstrap as Base;
 
-class Bootstrap extends Common\Bootstrap
+class Bootstrap extends Base
 {
-    public function run()
+    public function getContext()
     {
         $context = new Context();
+        $context->moduleName = "admin";
+        $context->module = $this;
 
-        //自定义SESSION处理
-        $handler = $context->getService("Session");
-        session_set_save_handler($handler, false);
-
-        $router = new Router($context);
-
-        $router->run();
+        return $context;
     }
+
+    protected function default404($ctx)
+    {
+        $file = STATIC_PATH .'/admin'. $this->getURI($ctx->request);
+
+        if (file_exists($file)) {
+            $ctx->getComponent("Helper\\StaticFile")->readfile($file);
+        } else {
+            parent::default404($ctx);
+        }
+    }
+
 }

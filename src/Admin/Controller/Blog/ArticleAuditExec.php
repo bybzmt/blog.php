@@ -12,8 +12,8 @@ class ArticleAuditExec extends AuthJson
 
     public function init()
     {
-        $this->id = isset($_POST['id']) ? $_POST['id'] : 0;
-        $this->type = isset($_POST['type']) ? $_POST['type'] : 0;
+        $this->id = $this->getPost('id');
+        $this->type = $this->getPost('type');
     }
 
     public function valid()
@@ -24,7 +24,7 @@ class ArticleAuditExec extends AuthJson
             return false;
         }
 
-        $this->article = $this->_ctx->getRow("Article", $this->id);
+        $this->article = $this->getRow("Article", $this->id);
 
         if (!$this->article) {
             $this->ret = 1;

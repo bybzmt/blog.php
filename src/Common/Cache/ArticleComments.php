@@ -8,17 +8,25 @@ use Bybzmt\Framework\ListCache;
  */
 class ArticleComments extends ListCache
 {
+    protected $id;
+
+    protected function _init($id)
+    {
+        $this->id = $id;
+        $this->key .= $id;
+    }
+
     protected function findRows(array $ids):array
     {
         return $this->getLazyRows('Comment', $ids);
     }
 
-    protected function loadData(int $length):array
+    protected function load()
     {
-        $ids = $this->getTable('Comment')->getListIds($this->list_id, 0, $length);
+        $ids = $this->getTable('Comment')->getListIds($this->id, 0, $this->size);
         $out = array();
         foreach ($ids as $id) {
-            $out[] = $this->list_id.":".$id;
+            $out[] = $this->id.":".$id;
         }
         return $out;
     }

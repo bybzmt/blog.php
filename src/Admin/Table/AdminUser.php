@@ -1,11 +1,10 @@
 <?php
 namespace Bybzmt\Blog\Admin\Table;
 
-use Bybzmt\Blog\Admin;
-use Bybzmt\Blog\Common;
+use Bybzmt\Framework\Table;
 use PDO;
 
-class AdminUser extends Common\Table
+class AdminUser extends Table
 {
     protected $_dbName = 'blog';
     protected $_tableName = 'admin_users';
@@ -115,10 +114,14 @@ class AdminUser extends Common\Table
     }
 
     //设置用户自身的权限
-    public function setUserPermissions($admin_id, array $permissions)
+    public function setUserPermissions($id, array $permissions)
     {
         $sql = "delete from admin_user_permissions where admin_id = ?";
-        $this->exec($sql, [$admin_id]);
+        $this->exec($sql, [$id]);
+
+        if (!$permissions) {
+            return;
+        }
 
         $db = $this->getDB(true);
 

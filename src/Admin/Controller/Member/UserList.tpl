@@ -135,9 +135,9 @@ function auditPanel(id, name, flag)
     audit_flag = flag;
 
     if (flag) {
-        msg = "您确认屏蔽用户：“" + name + "”吗？";
-    } else {
         msg = "您确认给用户：“" + name + "”解除屏蔽吗？";
+    } else {
+        msg = "您确认屏蔽用户：“" + name + "”吗？";
     }
 
     $("#AuditModal .modal-body").html('<p class="alert alert-danger">'+msg+'</p>');

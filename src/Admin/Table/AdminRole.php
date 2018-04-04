@@ -1,10 +1,10 @@
 <?php
 namespace Bybzmt\Blog\Admin\Table;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Framework\Table;
 use PDO;
 
-class AdminRole extends Admin\Table
+class AdminRole extends Table
 {
     protected $_dbName = 'blog';
     protected $_tableName = 'admin_roles';
@@ -34,6 +34,10 @@ class AdminRole extends Admin\Table
     {
         $sql = "delete from admin_role_permissions where role_id = ?";
         $this->exec($sql, [$id]);
+
+        if (!$permissions) {
+            return;
+        }
 
         $db = $this->getDB(true);
 

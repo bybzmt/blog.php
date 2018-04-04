@@ -55,7 +55,7 @@ abstract class Web extends Base
             'auto_reload' => true,
             'strict_variables' => true,
         ));
-        $twig->addExtension(new TwigExtension($twig));
+        $twig->addExtension(new TwigExtension($this->_ctx, $twig));
 
         echo $twig->render($file, $data);
     }

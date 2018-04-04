@@ -1,16 +1,16 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\User;
 
 use Bybzmt\Blog\Admin\Controller\AuthJson;
 
-class UserDelExec extends AuthJson
+class DelExec extends AuthJson
 {
     public $id;
     public $user;
 
     public function init()
     {
-        $this->id = isset($_POST['id']) ? $_POST['id'] : 0;
+        $this->id = $this->getPost('id');
     }
 
     public function valid()
@@ -21,7 +21,7 @@ class UserDelExec extends AuthJson
             return false;
         }
 
-        $this->user = $this->_ctx->getRow("AdminUser", $this->id);
+        $this->user = $this->getRow("AdminUser", $this->id);
 
         if (!$this->user) {
             $this->ret = 1;

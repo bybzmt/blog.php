@@ -13,9 +13,9 @@ class IndexArticles extends ListCache
         return $this->getLazyRows('Article', $ids);
     }
 
-    protected function loadData(int $length): array
+    protected function load()
     {
-        return $this->getTable('Article')->getIndexIds(0, $length);
+        return $this->getTable('Article')->getIndexIds(0, $this->size);
     }
 
 

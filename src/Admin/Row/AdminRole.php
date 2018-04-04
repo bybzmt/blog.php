@@ -1,14 +1,13 @@
 <?php
 namespace Bybzmt\Blog\Admin\Row;
 
-use Bybzmt\Blog\Admin;
-use Bybzmt\Blog\Admin\Helper\Permissions;
+use Bybzmt\Framework\Row;
 
-class AdminRole extends Admin\Row
+class AdminRole extends Row
 {
     public function setName($name)
     {
-        $ok = $this->_ctx->getTable("AdminRole")->update($this->id, array("name"=>$name));
+        $ok = $this->getTable("AdminRole")->update($this->id, array("name"=>$name));
         if ($ok) {
             $this->name = $name;
         }
@@ -17,7 +16,7 @@ class AdminRole extends Admin\Row
 
     public function del()
     {
-        $ok = $this->_ctx->getTable("AdminRole")->update($this->id, array("status"=>0));
+        $ok = $this->getTable("AdminRole")->update($this->id, array("status"=>0));
         if ($ok) {
             $this->status = 0;
         }
@@ -26,11 +25,11 @@ class AdminRole extends Admin\Row
 
     public function setPermissions($permissions)
     {
-        return $this->_ctx->getTable("AdminRole")->setPermissions($this->id, $permissions);
+        return $this->getTable("AdminRole")->setPermissions($this->id, $permissions);
     }
 
     public function getPermissions()
     {
-        return $this->_ctx->getTable("AdminRole")->getPermissions($this->id);
+        return $this->getTable("AdminRole")->getPermissions($this->id);
     }
 }

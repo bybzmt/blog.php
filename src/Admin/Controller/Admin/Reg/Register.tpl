@@ -34,7 +34,7 @@
 	  <div id="login-page">
 	  	<div class="container">
 
-		      <form id="login-form" class="form-login" action="{{ mkUrl('Admin.RegisterExec') }}">
+		      <form id="login-form" class="form-login" action="{{ mkUrl('Admin.Reg.RegisterExec') }}">
 		        <h2 class="form-login-heading">Create an accoun</h2>
 		        <div class="login-wrap">
                     <div id="err-msg" class="hidden alert alert-danger">错误信息</div>
@@ -100,7 +100,7 @@
 
         function change_captcha()
         {
-            var src = "{{ mkUrl('Admin.Captcha') }}";
+            var src = "{{ mkUrl('Admin.Reg.Captcha') }}";
             src += "?" + (new Date()).getTime()
             $("#captcha").attr("src", src);
         }

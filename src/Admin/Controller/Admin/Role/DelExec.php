@@ -1,16 +1,16 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\Role;
 
 use Bybzmt\Blog\Admin\Controller\AuthJson;
 
-class RoleDelExec extends AuthJson
+class DelExec extends AuthJson
 {
     public $id;
     public $role;
 
     public function init()
     {
-        $this->id = isset($_POST['id']) ? $_POST['id'] : 0;
+        $this->id = $this->getPost('id');
     }
 
     public function valid()
@@ -21,7 +21,7 @@ class RoleDelExec extends AuthJson
             return false;
         }
 
-        $this->role = $this->_ctx->getRow("AdminRole", $this->id);
+        $this->role = $this->getRow("AdminRole", $this->id);
 
         if (!$this->role) {
             $this->ret = 1;

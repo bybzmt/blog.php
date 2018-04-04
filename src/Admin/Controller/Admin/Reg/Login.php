@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog\Admin\Controller\Admin;
+namespace Bybzmt\Blog\Admin\Controller\Admin\Reg;
 
 use Bybzmt\Blog\Admin\Controller\Web;
 
@@ -9,7 +9,7 @@ class Login extends Web
 
     public function init()
     {
-        $this->go = isset($_GET['go']) ? $_GET['go'] : '';
+        $this->go = $this->getQuery("go");
     }
 
     public function show()

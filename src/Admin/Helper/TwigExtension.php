@@ -6,13 +6,18 @@ use Twig_Environment;
 use Twig_Extension;
 use Twig_Function;
 use Bybzmt\Blog\Admin;
+use Bybzmt\Framework\ComponentTrait;
 
 class TwigExtension extends Twig_Extension
 {
+    use ComponentTrait;
+
+    private $_ctx;
     private $twig;
 
-    public function __construct(Twig_Environment $twig)
+    public function __construct($ctx, Twig_Environment $twig)
     {
+        $this->_ctx = $ctx;
         $this->twig = $twig;
     }
 
@@ -26,7 +31,7 @@ class TwigExtension extends Twig_Extension
 
     public function mkUrl(string $action, array $params=array(), bool $https=false)
     {
-        return Admin\Reverse::mkUrl($action, $params, $https);
+        return $this->getHelper("Utils")->mkUrl($action, $params, $https);
     }
 
     public function sidebarMenu($active)
@@ -35,8 +40,8 @@ class TwigExtension extends Twig_Extension
             array('name'=>'Dashboard', 'icons'=>'fa-dashboard', 'href'=>$this->mkUrl('Admin.Dashboard')),
 
             array('name'=>'后台管理', 'icons'=>'fa-cogs', 'childs'=>array(
-                array('name'=>'管理员管理', 'href'=>$this->mkUrl('Admin.UserList')),
-                array('name'=>'角色管理', 'href'=>$this->mkUrl('Admin.RoleList')),
+                array('name'=>'管理员管理', 'href'=>$this->mkUrl('Admin.User.Lists')),
+                array('name'=>'角色管理', 'href'=>$this->mkUrl('Admin.Role.Lists')),
             )),
 
             array('name'=>'博客管理', 'icons'=>'fa-book', 'childs'=>array(

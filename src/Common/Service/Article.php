@@ -11,7 +11,7 @@ class Article extends Service
     //首页列表 (从首页列表缓存中取)
     public function getIndexList(int $offset, int $length)
     {
-        return $this->getCache('IndexArticles')->gets($offset, $length);
+        return $this->getCache('IndexArticles')->getlist($offset, $length);
     }
 
     //首页列表文章数量 (从首页列表缓存中取)

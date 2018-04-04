@@ -25,6 +25,7 @@ class Reply extends TableSplit
         'status',
     ];
 
+    //得到回复列表 (不区分多级回复)
     public function getListIds(int $comment_id, int $offset, int $lenght)
     {
         $this->_setTable($comment_id);
@@ -35,13 +36,13 @@ class Reply extends TableSplit
     }
 
     //得到指定id所在分页
-    public function getIdPage(int $comment_id, int $reply_id, int $length)
+    public function getIdPage(int $comment_id, int $id, int $length)
     {
         $this->_setTable($comment_id);
 
         $sql = "SELECT COUNT(*) FROM {$this->_tableName} WHERE comment_id = ? and status=1 and id <= ? ORDER BY id ASC";
 
-        $count = $this->query($sql, [$comment_id, $reply_id])->fetchColumn();
+        $count = $this->query($sql, [$comment_id, $id])->fetchColumn();
 
         return (int)ceil($count / $length);
     }

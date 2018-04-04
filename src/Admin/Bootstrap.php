@@ -5,10 +5,11 @@ use Bybzmt\Framework\Bootstrap as Base;
 
 class Bootstrap extends Base
 {
+    public $name = "admin";
+
     public function getContext()
     {
         $context = new Context();
-        $context->moduleName = "admin";
         $context->module = $this;
 
         return $context;

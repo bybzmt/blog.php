@@ -109,7 +109,7 @@ class Comment extends Row
 
     public function _restCacheReplysId()
     {
-        $ids = $this->getTable('Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
+        $ids = $this->getTable('Reply')->getListIds($this->id, 0, self::max_cache_replys_num);
         $this->_setCacheReplyIds($ids);
     }
 
@@ -121,7 +121,7 @@ class Comment extends Row
             if (count($replyIds) < self::max_cache_replys_num) {
                 $ids = array_diff($replyIds, [$id]);
             } else {
-                $ids = $this->getTable('Reply')->getReplyIds($this->id, 0, self::max_cache_replys_num);
+                $ids = $this->getTable('Reply')->getListIds($this->id, 0, self::max_cache_replys_num);
             }
 
             $this->_setCacheReplyIds($ids);

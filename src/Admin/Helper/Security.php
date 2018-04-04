@@ -11,28 +11,19 @@ class Security extends Base
     //展示验证码次数
     public function incr_showCaptcha()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 100) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 100);
     }
 
     //登陆次数
     public function incr_doLogin()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 30) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 30);
     }
 
     //注册帐号次数
     public function incr_register()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 30) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 30);
     }
 
 

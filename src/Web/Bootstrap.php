@@ -6,10 +6,11 @@ use Bybzmt\Blog\Common\Helper\Session;
 
 class Bootstrap extends Base
 {
+    public $name = "web";
+
     public function getContext()
     {
         $context = new Context();
-        $context->moduleName = "web";
         $context->module = $this;
 
         return $context;

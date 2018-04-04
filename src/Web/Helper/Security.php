@@ -11,73 +11,49 @@ class Security extends Base
     //展示验证码次数
     public function incr_showCaptcha()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 100) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 100);
     }
 
     //验证码错误次数
     public function incr_captchaError()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 20) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 20);
     }
 
     //登陆操作次数
     public function incr_doLogin()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 30) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 30);
     }
 
     //注册用户次数
     public function incr_doRegister()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 30) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 30);
     }
 
     //成功注册用户数量
     public function incr_registerSuccess()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 5) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 5);
     }
 
     //用户名或密码错误次数
     public function incr_UserOrPassError()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 10) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 10);
     }
 
     //发表评论次数
     public function incr_addComment()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 50) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 50);
     }
 
     //发表文章数量
     public function incr_addArticle()
     {
-        $num = $this->incr(__FUNCTION__);
-        if ($num > 100) {
-            $this->setLocked(__FUNCTION__);
-        }
+        $this->check(__FUNCTION__, 100);
     }
 
 }

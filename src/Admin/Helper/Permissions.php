@@ -1,27 +1,29 @@
 <?php
 namespace Bybzmt\Blog\Admin\Helper;
 
-use Bybzmt\Blog\Admin;
+use Bybzmt\Framework\Helper;
 use ReflectionClass;
 
 /**
  * 将控制跟权限进行映射
  */
-class Permissions
+class Permissions extends Helper
 {
-    static private $_cache;
+    private $_cache;
 
-    static public function getAll()
+    public function getAll()
     {
-        if (!self::$_cache) {
-            self::$_cache = self::_getAll();
+        if (!$this->_cache) {
+            $this->_cache = $this->_getAll();
         }
-        return self::$_cache;
+        return $this->_cache;
     }
 
-    static public function reorganize($table, $permissions)
+    public function reorganize($permissions)
     {
-        $allkey = self::getAll();
+        $table = $this->getTable("AdminPermission");
+
+        $allkey = $this->getAll();
 
         $about = $table->getAll();
         $about = array_column($about, 'about', 'permission');
@@ -67,7 +69,7 @@ class Permissions
         return $rows;
     }
 
-    static public function _getAll()
+    public function _getAll()
     {
         $basedir = __DIR__ . "/../Controller";
 

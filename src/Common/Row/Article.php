@@ -174,8 +174,10 @@ class Article extends Row
     //正式发布
     public function publish()
     {
+        $now = date('Y-m-d H:i:s', $this->_ctx->now());
+
         //修改自身数据
-        $ok = $this->getTable('Article')->update($this->id, ['status'=>3]);
+        $ok = $this->getTable('Article')->update($this->id, ['status'=>3, 'publishtime'=>$now]);
         if ($ok) {
             //状态改为正式
             $this->status = 3;

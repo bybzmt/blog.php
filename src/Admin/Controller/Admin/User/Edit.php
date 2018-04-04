@@ -2,7 +2,6 @@
 namespace Bybzmt\Blog\Admin\Controller\Admin\User;
 
 use Bybzmt\Blog\Admin\Controller\AuthWeb;
-use Bybzmt\Blog\Admin\Helper\Permissions;
 
 class Edit extends AuthWeb
 {
@@ -46,7 +45,7 @@ class Edit extends AuthWeb
         }
 
         //重新整理下格式
-        $_permissions = Permissions::reorganize($this->getTable("AdminPermission"), $permissions);
+        $_permissions = $this->getHelper("Permissions")->reorganize($permissions);
 
         $this->render(array(
             'sidebarMenu' => '管理员管理',

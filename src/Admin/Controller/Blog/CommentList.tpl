@@ -63,7 +63,7 @@
                   <td>{{ comment.content }}</td>
                   <td>{{ mymacro.date(comment.addtime) }}</td>
                   <td>
-<button title="删除" onclick="auditPanel({{ comment.id|json_encode }})" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button>
+<button title="删除" onclick="auditPanel({{ "#{comment.article_id}:#{comment.id}"|json_encode }})" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button>
                   </td>
               </tr>
               {% endfor %}

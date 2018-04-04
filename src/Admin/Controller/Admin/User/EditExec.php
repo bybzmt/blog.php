@@ -2,7 +2,6 @@
 namespace Bybzmt\Blog\Admin\Controller\Admin\User;
 
 use Bybzmt\Blog\Admin\Controller\AuthJson;
-use Bybzmt\Blog\Admin\Helper\Permissions;
 
 class EditExec extends AuthJson
 {
@@ -18,11 +17,11 @@ class EditExec extends AuthJson
     {
         $this->id = $this->getPost('id');
         $this->nickname = trim($this->getPost('nickname'));
-        $this->permissions = (array)$this->getPost('permissions');
         $this->role_ids = (array)$this->getPost('roles');
+        $permissions = (array)$this->getPost('permissions');
 
         //过滤掉不舍法的参数
-        $this->permissions = array_intersect($this->permissions, Permissions::getAll());
+        $this->permissions = array_intersect($permissions, $this->getHelper("Permissions")->getAll());
 
         //过滤掉不合法的id
         $rows = $this->getTable("AdminRole")->gets($this->role_ids);

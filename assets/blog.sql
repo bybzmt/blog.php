@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2018-03-24 09:02:24
+-- Generation Time: 2018-04-05 12:47:23
 -- 服务器版本： 10.1.26-MariaDB-0+deb9u1
 -- PHP Version: 7.0.27-0+deb9u1
 
@@ -114,6 +114,7 @@ CREATE TABLE `articles` (
   `html` mediumblob NOT NULL COMMENT '正文html',
   `addtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
   `edittime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `publishtime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `status` tinyint(3) UNSIGNED NOT NULL COMMENT '状态[1草稿][2审核][3正式][4下线]',
   `locked` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否锁定',
   `deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除',
@@ -125,30 +126,12 @@ CREATE TABLE `articles` (
 -- --------------------------------------------------------
 
 --
--- 替换视图以便查看 `article_comments`
--- (See below for the actual view)
---
-CREATE TABLE `article_comments` (
-`id` int(11)
-,`article_id` int(11) unsigned
-,`comment_id` int(11) unsigned
-,`user_id` int(11) unsigned
-,`content` mediumtext
-,`addtime` timestamp
-,`status` tinyint(4)
-,`_replys_id` tinyblob
-);
-
--- --------------------------------------------------------
-
---
 -- 表的结构 `article_comments_0`
 --
 
 CREATE TABLE `article_comments_0` (
   `id` int(11) NOT NULL,
   `article_id` int(10) UNSIGNED NOT NULL,
-  `comment_id` int(10) UNSIGNED NOT NULL COMMENT '评论id',
   `user_id` int(10) UNSIGNED NOT NULL COMMENT '用户id',
   `content` text NOT NULL COMMENT '内容',
   `addtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
@@ -165,7 +148,6 @@ CREATE TABLE `article_comments_0` (
 CREATE TABLE `article_comments_1` (
   `id` int(11) NOT NULL,
   `article_id` int(10) UNSIGNED NOT NULL,
-  `comment_id` int(10) UNSIGNED NOT NULL COMMENT '评论id',
   `user_id` int(10) UNSIGNED NOT NULL COMMENT '用户id',
   `content` text NOT NULL COMMENT '内容',
   `addtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
@@ -182,7 +164,6 @@ CREATE TABLE `article_comments_1` (
 CREATE TABLE `article_comments_2` (
   `id` int(11) NOT NULL,
   `article_id` int(10) UNSIGNED NOT NULL,
-  `comment_id` int(10) UNSIGNED NOT NULL COMMENT '评论id',
   `user_id` int(10) UNSIGNED NOT NULL COMMENT '用户id',
   `content` text NOT NULL COMMENT '内容',
   `addtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
@@ -199,23 +180,6 @@ CREATE TABLE `article_comments_2` (
 CREATE TABLE `article_comments_id` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- 替换视图以便查看 `article_replys`
--- (See below for the actual view)
---
-CREATE TABLE `article_replys` (
-`id` int(11)
-,`article_id` int(11) unsigned
-,`comment_id` int(11) unsigned
-,`reply_id` int(11) unsigned
-,`user_id` int(11) unsigned
-,`content` mediumtext
-,`addtime` timestamp
-,`status` tinyint(4)
-);
 
 -- --------------------------------------------------------
 
@@ -290,19 +254,6 @@ CREATE TABLE `article_tags` (
   `tag_id` int(10) UNSIGNED NOT NULL,
   `sort` tinyint(3) UNSIGNED NOT NULL COMMENT '排序'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- 表的结构 `security_log`
---
-
-CREATE TABLE `security_log` (
-  `id` int(11) NOT NULL,
-  `ip` varbinary(40) NOT NULL COMMENT 'ip址址',
-  `type` varbinary(50) NOT NULL COMMENT '日志类型',
-  `addtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='安全日志表';
 
 -- --------------------------------------------------------
 
@@ -397,24 +348,6 @@ CREATE TABLE `user_records_2` (
 CREATE TABLE `user_records_id` (
   `id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- 视图结构 `article_comments`
---
-DROP TABLE IF EXISTS `article_comments`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `article_comments`  AS  (select `article_comments_0`.`id` AS `id`,`article_comments_0`.`article_id` AS `article_id`,`article_comments_0`.`comment_id` AS `comment_id`,`article_comments_0`.`user_id` AS `user_id`,`article_comments_0`.`content` AS `content`,`article_comments_0`.`addtime` AS `addtime`,`article_comments_0`.`status` AS `status`,`article_comments_0`.`_replys_id` AS `_replys_id` from `article_comments_0`) union all (select `article_comments_1`.`id` AS `id`,`article_comments_1`.`article_id` AS `article_id`,`article_comments_1`.`comment_id` AS `comment_id`,`article_comments_1`.`user_id` AS `user_id`,`article_comments_1`.`content` AS `content`,`article_comments_1`.`addtime` AS `addtime`,`article_comments_1`.`status` AS `status`,`article_comments_1`.`_replys_id` AS `_replys_id` from `article_comments_1`) union all (select `article_comments_2`.`id` AS `id`,`article_comments_2`.`article_id` AS `article_id`,`article_comments_2`.`comment_id` AS `comment_id`,`article_comments_2`.`user_id` AS `user_id`,`article_comments_2`.`content` AS `content`,`article_comments_2`.`addtime` AS `addtime`,`article_comments_2`.`status` AS `status`,`article_comments_2`.`_replys_id` AS `_replys_id` from `article_comments_2`) ;
-
--- --------------------------------------------------------
-
---
--- 视图结构 `article_replys`
---
-DROP TABLE IF EXISTS `article_replys`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `article_replys`  AS  (select `article_replys_0`.`id` AS `id`,`article_replys_0`.`article_id` AS `article_id`,`article_replys_0`.`comment_id` AS `comment_id`,`article_replys_0`.`reply_id` AS `reply_id`,`article_replys_0`.`user_id` AS `user_id`,`article_replys_0`.`content` AS `content`,`article_replys_0`.`addtime` AS `addtime`,`article_replys_0`.`status` AS `status` from `article_replys_0`) union all (select `article_replys_1`.`id` AS `id`,`article_replys_1`.`article_id` AS `article_id`,`article_replys_1`.`comment_id` AS `comment_id`,`article_replys_1`.`reply_id` AS `reply_id`,`article_replys_1`.`user_id` AS `user_id`,`article_replys_1`.`content` AS `content`,`article_replys_1`.`addtime` AS `addtime`,`article_replys_1`.`status` AS `status` from `article_replys_1`) union all (select `article_replys_2`.`id` AS `id`,`article_replys_2`.`article_id` AS `article_id`,`article_replys_2`.`comment_id` AS `comment_id`,`article_replys_2`.`reply_id` AS `reply_id`,`article_replys_2`.`user_id` AS `user_id`,`article_replys_2`.`content` AS `content`,`article_replys_2`.`addtime` AS `addtime`,`article_replys_2`.`status` AS `status` from `article_replys_2`) ;
 
 --
 -- Indexes for dumped tables
@@ -518,13 +451,6 @@ ALTER TABLE `article_tags`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `security_log`
---
-ALTER TABLE `security_log`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `ip` (`ip`);
-
---
 -- Indexes for table `tags`
 --
 ALTER TABLE `tags`
@@ -582,7 +508,7 @@ ALTER TABLE `admin_roles`
 -- 使用表AUTO_INCREMENT `admin_role_permissions`
 --
 ALTER TABLE `admin_role_permissions`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- 使用表AUTO_INCREMENT `admin_users`
@@ -594,19 +520,19 @@ ALTER TABLE `admin_users`
 -- 使用表AUTO_INCREMENT `admin_user_permissions`
 --
 ALTER TABLE `admin_user_permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- 使用表AUTO_INCREMENT `admin_user_roles`
 --
 ALTER TABLE `admin_user_roles`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- 使用表AUTO_INCREMENT `articles`
 --
 ALTER TABLE `articles`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1007;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1008;
 
 --
 -- 使用表AUTO_INCREMENT `article_comments_id`
@@ -624,19 +550,13 @@ ALTER TABLE `article_replys_id`
 -- 使用表AUTO_INCREMENT `article_tags`
 --
 ALTER TABLE `article_tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=341;
-
---
--- 使用表AUTO_INCREMENT `security_log`
---
-ALTER TABLE `security_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=348;
 
 --
 -- 使用表AUTO_INCREMENT `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- 使用表AUTO_INCREMENT `users`

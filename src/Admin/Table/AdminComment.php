@@ -1,11 +1,18 @@
 <?php
 namespace Bybzmt\Blog\Admin\Table;
 
-use Bybzmt\Blog\Common\Table\Comment as Base;
+use Bybzmt\Framework\Table;
 use PDO;
 
-class Comment extends Base
+class AdminComment extends Table
 {
+    protected $_dbName = 'blog';
+
+    public $commentTableNum = 3;
+    public $commentTablePrefix = 'article_comments_';
+    public $replyTableNum = 3;
+    public $replyTablePrefix = 'article_replys_';
+
     private function buildType(int $type, string $search)
     {
         if ($search) {
@@ -45,26 +52,17 @@ class Comment extends Base
         return [];
     }
 
-    //得到后台列表
-    public function getAdminList(int $type, string $search, int $offset, int $length)
+    //得到后台评论列表
+    public function getList(string $table, int $type, string $search, int $offset, int $length)
     {
-        $tmps = $this->buildType($type, $search);
-        $str = [];
+        $condition = $this->buildType($type, $search);
+        $condition['status'] = 1;
+
         $vals = [];
-        foreach ($tmps as $key => $val) {
-            if (is_array($val)) {
-                $str[] = "`$key` in (?".str_repeat(", ?", count($val)-1).")";
-                $vals = array_merge($vals, $val);
-            } else {
-                $str[] = "`$key` = ?";
-                $vals[] = $val;
-            }
-        }
+        $where = $this->getHelper("SQLBuilder")->where($condition, $vals);
 
-        $where = $str ? " AND " . implode(" AND ", $str) : "";
-
-        $sql = "select * from article_comments where status > 0 $where LIMIT $offset, $length";
-        $sql2 = "select COUNT(*) from article_comments where status > 0 " . $where;
+        $sql = "select * from $table where $where LIMIT $offset, $length";
+        $sql2 = "select COUNT(*) from $table where $where";
 
         $rows = $this->query($sql, $vals)->fetchAll();
         $count = $this->query($sql2, $vals)->fetchColumn();

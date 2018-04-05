@@ -31,7 +31,7 @@ class Article extends Table
 
     public function getIndexIds(int $offset, int $length)
     {
-        $sql = "select id from articles where status = 3 and deleted = 0 order by publishtime desc limit $offset, $length";
+        $sql = "select id from articles where status = 3 and deleted = 0 order by top desc, publishtime desc limit $offset, $length";
 
         return $this->query($sql)->fetchAll(PDO::FETCH_COLUMN, 0);
     }

@@ -46,7 +46,6 @@ class Router extends Base
 
         //博客评论管理
         $this->get('/blog/comments', ':Blog.CommentList');
-        $this->get('/blog/comment/(\d+)', ':Blog.CommentEdit:id');
         $this->post('/json/blog/comment/audit', ':Blog.CommentAuditExec');
     }
 

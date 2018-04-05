@@ -8,12 +8,13 @@ class CommentAuditExec extends AuthJson
     public $id;
     public $flag;
 
-    public $comment;
+    public $obj;
 
     public function init()
     {
         $this->id = $this->getPost('id');
         $this->flag = $this->getPost('flag');
+        $this->type = $this->getPost('type');
     }
 
     public function valid()
@@ -24,9 +25,19 @@ class CommentAuditExec extends AuthJson
             return false;
         }
 
-        $this->comment = $this->getRow("Comment", $this->id);
+        if (!in_array($this->type, ['comment', 'reply'])) {
+            $this->ret = 1;
+            $this->data = "类型错误";
+            return false;
+        }
 
-        if (!$this->comment) {
+        if ($this->type == 'comment') {
+            $this->obj = $this->getRow("Comment", $this->id);
+        } else {
+            $this->obj = $this->getRow("Reply", $this->id);
+        }
+
+        if (!$this->obj) {
             $this->ret = 1;
             $this->data = "id不存在。";
             return false;
@@ -38,9 +49,9 @@ class CommentAuditExec extends AuthJson
     public function exec()
     {
         if ($this->flag) {
-            return $this->comment->restore();
+            return $this->obj->restore();
         } else {
-            return $this->comment->del();
+            return $this->obj->del();
         }
     }
 

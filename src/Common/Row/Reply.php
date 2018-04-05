@@ -53,7 +53,7 @@ class Reply extends Row
             $this->status = 0;
 
             //判断是回复文章还是回复评论的
-            $this->comment->_removeCacheReplysId($this->id);
+            $this->getComment()->_removeCacheReplysId($this->id);
         }
 
         return $ok;
@@ -67,7 +67,7 @@ class Reply extends Row
             $this->status = 1;
 
             //重置文章的评论缓存
-            $this->comment->_restCacheReplysId();
+            $this->getComment()->_restCacheReplysId();
         }
 
         return $ok;

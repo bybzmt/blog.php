@@ -21,12 +21,6 @@
     <div class="col-md-10">
     <form class="navbar-form navbar-right" role="search">
         <div class="form-group">
-            <select class="form-control" name="table">
-            {% for table in tables %}
-                <option {% if table == table_current %}selected="selected"{% endif %} value="{{ table }}">{{ table }}</option>
-            {% endfor %}
-            </select>
-
             <select class="form-control" name="type">
                 <option {% if search_type == 1 %}selected="selected"{% endif %} value="1">用户ID</option>
                 <option {% if search_type == 2 %}selected="selected"{% endif %} value="2">用户名</option>
@@ -61,20 +55,16 @@
               </tr>
               </thead>
               <tbody>
-              {% for row in rows %}
+              {% for comment in comments %}
               <tr>
-                  <td>{{row.id}}</td>
-                  <td class="hidden-phone">{{row.article.title}}</td>
-                  <td class="hidden-phone">{{row.user.nickname}}</td>
-                  <td>{{ row.content }}</td>
-                  <td>{{ mymacro.date(row.addtime) }}</td>
+                  <td>{{comment.id}}</td>
+                  <td class="hidden-phone">{{comment.article.title}}</td>
+                  <td class="hidden-phone">{{comment.user.nickname}}</td>
+                  <td>{{ comment.content }}</td>
+                  <td>{{ mymacro.date(comment.addtime) }}</td>
                   <td>
-<button title="删除" onclick="auditPanel({{ row.pid|json_encode }})" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button>
+<button title="删除" onclick="auditPanel({{ "#{comment.article_id}:#{comment.id}"|json_encode }})" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button>
                   </td>
-              </tr>
-              {% else %}
-              <tr>
-                <th colspan="6">没有数据</th>
               </tr>
               {% endfor %}
               </tbody>
@@ -144,8 +134,8 @@ function doAudit()
     $('#ResultModal').modal('show');
 
     var url = "{{ mkUrl("Blog.CommentAuditExec") }}";
-    var row_type = {{ row_type|json_encode|raw }}
-    var data = {id:audit_id, flag:0, type:row_type};
+
+    var data = {id:audit_id, flag:0};
 
     $.post(url, data, function(json){
         if (json.ret > 0) {

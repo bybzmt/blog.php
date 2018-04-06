@@ -8,6 +8,7 @@ Blog
 
 目录结构
 ----
+```
 ├── assets       资源目录(如:字体文件等)
 ├── config
 │   ├── dev      开发环境配置
@@ -28,3 +29,4 @@ Blog
 ├── tests        单元测试目录
 ├── var          可读写目录(如:模板缓存等)
 └── vendor       composer库
+```

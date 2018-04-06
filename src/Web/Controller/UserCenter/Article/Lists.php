@@ -68,7 +68,7 @@ class Lists extends AuthWeb
                 $params['page'] = $page;
             }
 
-            return $this->getHelper("Utils")->mkUrl('UserCenter.Records', $params);
+            return $this->getHelper("Utils")->mkUrl('UserCenter.Article.Lists', $params);
         });
     }
 

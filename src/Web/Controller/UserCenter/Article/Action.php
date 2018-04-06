@@ -22,7 +22,7 @@ class Action extends AuthWeb
     {
         //验证安全情况
         if ($this->getHelper("Security")->isLocked()) {
-            $this->error = "操作过于频繁请明天再试!";
+            $this->msg = "操作过于频繁请明天再试!";
             return false;
         }
 
@@ -53,7 +53,7 @@ class Action extends AuthWeb
             }
             break;
         default:
-            $this->error = "指令不对";
+            $this->msg = "指令不对";
             return false;
         }
 

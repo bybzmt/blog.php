@@ -7,7 +7,6 @@ use Bybzmt\Framework\TableRowCache;
 class Record extends TableSplit
 {
     use TableRowCache;
-    protected $_keyPrefix = __CLASS__;
 
     protected $_dbName = 'blog';
     protected $_tablePrefix = "user_records_";

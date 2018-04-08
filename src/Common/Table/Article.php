@@ -9,7 +9,6 @@ class Article extends Table
 {
     use TableRowCache;
 
-    protected $_keyPrefix = __CLASS__;
     protected $_dbName = 'blog';
     protected $_tableName = 'articles';
     protected $_primary = 'id';

@@ -9,7 +9,6 @@ use PDO;
 class Reply extends TableSplit
 {
     use TableRowCache;
-    protected $_keyPrefix = __CLASS__;
 
     protected $_dbName = 'blog';
     protected $_tablePrefix = "article_replys_";

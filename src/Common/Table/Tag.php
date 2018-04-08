@@ -8,6 +8,7 @@ use PDO;
 class Tag extends Table
 {
     use TableRowCache;
+    protected $_keyPrefix = __CLASS__;
 
     protected $_dbName = 'blog';
     protected $_tableName = 'tags';

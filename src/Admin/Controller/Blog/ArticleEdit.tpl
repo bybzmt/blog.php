@@ -124,7 +124,7 @@
 {% block script %}
 <script type="text/javascript">
 $('#ResultModal').on('hidden.bs.modal', function (e) {
-    history.back();
+    location.reload(true)
 });
 
 function doSubmit(type)

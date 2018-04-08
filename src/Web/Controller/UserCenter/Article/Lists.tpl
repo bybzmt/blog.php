@@ -40,6 +40,7 @@
                                 &nbsp;&nbsp;
 
                                 <span>状态:</span>
+
                                 {% if article.status == 1 %}
                                 <span class="text-primary">草稿</span>
                                 {% elseif article.status == 2 %}
@@ -48,6 +49,10 @@
                                 <span class="text-success">正式</span>
                                 {% elseif article.status == 4 %}
                                 <span class="text-muted">下线</span>
+                                {% endif %}
+
+                                {% if article.locked %}
+                                    <span class="text-success">(锁定)</span>
                                 {% endif %}
                             </div>
                         </header>
@@ -64,7 +69,9 @@
                         {% endif %}
 
                             <a href="{{ mkUrl("UserCenter.Article.Preview", {id:article.id}) }}" class="btn btn-clean-one">预览</a>
-                            <a href="{{ mkUrl("UserCenter.Article.Edit", {id:article.id}) }}" class="btn btn-clean-one">编辑</a>
+
+                            {% if article.locked == 0 %}
+                                <a href="{{ mkUrl("UserCenter.Article.Edit", {id:article.id}) }}" class="btn btn-clean-one">编辑</a>
 
                                 {% if article.status == 1 %}
                                 <a onclick="docmd('publish', {{article.id}})" class="btn btn-clean-one">发布</a>
@@ -77,6 +84,7 @@
                                 <a onclick="docmd('publish', {{article.id}})" class="btn btn-clean-one">发布</a>
                                 <a onclick="docmd('delete', {{article.id}})" class="btn btn-clean-one">删除</a>
                                 {% endif %}
+                            {% endif %}
                         </div>
                         <hr>
                     </article>

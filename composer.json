@@ -6,16 +6,16 @@
         }
     },
     "require": {
-        "bybzmt/memcached": "^1.0",
-        "bybzmt/framework": "^0.0.1",
-        "bybzmt/router":"^1.0",
+        "bybzmt/memcached": "~1.0",
+        "bybzmt/framework": "~0.0.3",
+        "bybzmt/router":"~1.0",
         "twig/twig": "^2.4",
-        "bybzmt/tcplock": "^1.0",
+        "bybzmt/tcplock": "~1.0",
         "flexihash/flexihash": "^2.0",
-        "erusev/parsedown": "^1.6",
-        "bybzmt/logger": "^0.0.2",
-        "bybzmt/phpdb": "^1.0",
-        "bybzmt/simple-http-storage": "^1.0"
+        "erusev/parsedown": "~1.6",
+        "bybzmt/logger": "~0.0.3",
+        "bybzmt/phpdb": "~1.0",
+        "bybzmt/simple-http-storage": "~1.0"
     },
     "repositories": [
     ],

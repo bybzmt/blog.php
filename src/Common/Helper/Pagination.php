@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Framework\Helper;
+namespace Bybzmt\Blog\Common\Helper;
 
 class Pagination
 {

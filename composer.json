@@ -15,7 +15,8 @@
         "erusev/parsedown": "~1.6",
         "bybzmt/logger": "~0.0.3",
         "bybzmt/phpdb": "~1.0",
-        "bybzmt/simple-http-storage": "~1.0"
+        "bybzmt/simple-http-storage": "~1.0",
+        "webonyx/graphql-php": "^0.11.6"
     },
     "repositories": [
     ],

@@ -2,9 +2,9 @@
 namespace Bybzmt\Blog\Api;
 
 use Bybzmt\Framework\Bootstrap as Base;
-use Bybzmt\Blog\Api\GraphQL\Types;
-use Bybzmt\Blog\Api\GraphQL\Server\StandardServer;
-use GraphQL\Type\Schema;
+use Bybzmt\Blog\Api\GraphQL\StandardServer;
+use GraphQL\Utils\BuildSchema;
+use GraphQL\Type\Definition\ResolveInfo;
 
 class Bootstrap extends Base
 {
@@ -14,9 +14,7 @@ class Bootstrap extends Base
 
     public function __construct()
     {
-        $this->schema = new Schema([
-            'query' => Types::get("Query")
-        ]);
+        $this->schema = BuildSchema::build(file_get_contents(__DIR__ . '/GraphQL/schema.graphqls'));
     }
 
     public function getContext()
@@ -36,9 +34,22 @@ class Bootstrap extends Base
             'schema' => $this->schema,
             'QueryBatching' => true,
             'debug' => true,
+            'fieldResolver' => [$this, 'fieldResolver'],
         );
 
         $server = new StandardServer($config);
         $server->handleRequest();
+    }
+
+    public function fieldResolver($source, $args, Context $ctx, ResolveInfo $info)
+    {
+        // var_dump($info->parentType->name, $info->fieldName);
+        $name = $info->parentType->name;
+
+        $class = __NAMESPACE__ . "\\Controller\\" . $name;
+
+        $obj = new $class($ctx, $source, $args, $info);
+
+        return $obj->resolve();
     }
 }

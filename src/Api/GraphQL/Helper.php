@@ -1,5 +1,5 @@
 <?php
-namespace Bybzmt\Blog\Api\GraphQL\Server;
+namespace Bybzmt\Blog\Api\GraphQL;
 
 use GraphQL\Server\Helper as Base;
 use GraphQL\Server\RequestError;

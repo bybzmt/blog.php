@@ -1,21 +1,10 @@
 <?php
-namespace Bybzmt\Blog\Api\GraphQL\Type;
+namespace Bybzmt\Blog\Api\Controller;
 
-use Bybzmt\Blog\Api\GraphQL\Types;
-use Bybzmt\Blog\Api\GraphQL\ObjectType;
+use Bybzmt\Blog\Api\Controller as Base;
 
-class ArticleType extends ObjectType
+class Article extends Base
 {
-    public function __construct()
-    {
-        $config = [
-            'fields' => [
-                'id' => Types::nonNull(Types::id()),
-            ],
-        ];
-        parent::__construct($config);
-    }
-
     /**
      * @return User
      */

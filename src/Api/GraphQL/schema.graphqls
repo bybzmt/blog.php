@@ -1,0 +1,31 @@
+schema {
+  query: Query
+  mutation: Input
+}
+
+type Input {
+}
+
+type Query {
+  ArticleList(id: ID!, offset:Int=0, length:Int=10): Article
+}
+
+type Article {
+    id: ID!
+}
+
+type Comment {
+    id: ID!
+}
+
+type Reply {
+    id: ID!
+}
+
+type Tag {
+    id: ID!
+}
+
+type User {
+    id: ID!
+}

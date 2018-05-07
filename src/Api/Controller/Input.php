@@ -1,21 +1,10 @@
 <?php
-namespace GraphQL\Examples\Blog\Type;
+namespace Bybzmt\Blog\Api\Controller;
 
-use GraphQL\Type\Definition\Type;
-use Bybzmt\Blog\Api\GraphQL\Types;
-use Bybzmt\Blog\Api\GraphQL\ObjectType;
+use Bybzmt\Blog\Api\Controller as Base;
 
-class InputType extends ObjectType
+class Input extends ObjectType
 {
-    public function __construct()
-    {
-        $config = [
-            'fields' => [
-            ]
-        ];
-        parent::__construct($config);
-    }
-
     /**
      * 用户登陆
      *

@@ -1,21 +1,17 @@
 <?php
-namespace GraphQL\Examples\Blog\Type;
+namespace Bybzmt\Blog\Api\GraphQL\Type;
 
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
+use Bybzmt\Blog\Api\GraphQL\Types;
+use Bybzmt\Blog\Api\GraphQL\ObjectType;
 
 class CommentType extends ObjectType
 {
     public function __construct()
     {
         $config = [
-            'name' => 'Query',
             'fields' => [
+                'id' => Types::nonNull(Types::id()),
             ],
-            'resolveField' => function($val, $args, $context, ResolveInfo $info) {
-                return $this->{$info->fieldName}($val, $args, $context, $info);
-            }
         ];
         parent::__construct($config);
     }
@@ -49,7 +45,7 @@ class CommentType extends ObjectType
      * @param length:int=10 取数据条数
      * @return [Reply]
      */
-    public function replys($val, $args, $ctx, $info)
+    public function replys($offset, $length)
     {
     }
 

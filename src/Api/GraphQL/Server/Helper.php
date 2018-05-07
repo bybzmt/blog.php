@@ -2,6 +2,7 @@
 namespace Bybzmt\Blog\Api\GraphQL\Server;
 
 use GraphQL\Server\Helper as Base;
+use GraphQL\Server\RequestError;
 
 
 class Helper extends Base

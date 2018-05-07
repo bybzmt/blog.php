@@ -1,22 +1,31 @@
 <?php
-namespace GraphQL\Examples\Blog\Type;
+namespace Bybzmt\Blog\Api\GraphQL\Type;
 
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
+use Bybzmt\Blog\Api\GraphQL\Types;
+use Bybzmt\Blog\Api\GraphQL\ObjectType;
 
 class QueryType extends ObjectType
 {
     public function __construct()
     {
         $config = [
-            'name' => 'Query',
             'fields' => [
+                'ArticleList' => [
+                    'type' => Types::get("Article"),
+                    'description' => 'Article description',
+                    'args' => [
+                        'offset' => Types::int(),
+                        'length' => Types::int(),
+                        'id' => Types::nonNull(Types::id()),
+                    ]
+                ],
+                'CommentList' => Types::get("Comment"),
+                'Reply' => Types::get("Reply"),
+                'Tag' => Types::get("Tag"),
+                'User' => Types::get("User"),
             ],
-            'resolveField' => function($val, $args, $context, ResolveInfo $info) {
-                return $this->{$info->fieldName}($val, $args, $context, $info);
-            }
         ];
+
         parent::__construct($config);
     }
 
@@ -28,8 +37,11 @@ class QueryType extends ObjectType
      * @param length:int=10 取数据条数
      * @return Article
      */
-    public function articlelistField($val, $args, $ctx, $info)
+    public function articleListResolver($id, $offset=0, $length=10)
     {
+        return array(
+            'id' => 1
+        );
     }
 
     /**
@@ -37,7 +49,7 @@ class QueryType extends ObjectType
      *
      * @return string!
      */
-    public function captchaUrl($val, $args, $ctx, $info)
+    public function captchaUrl()
     {
     }
 

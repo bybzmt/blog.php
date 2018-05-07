@@ -2,12 +2,9 @@
 namespace Bybzmt\Blog\Api;
 
 use Bybzmt\Framework\Bootstrap as Base;
-use GraphQL\Type\Schema;
-use GraphQL\GraphQL;
-use GraphQL\Error\FormattedError;
-use GraphQL\Error\Debug;
-
+use Bybzmt\Blog\Api\GraphQL\Types;
 use Bybzmt\Blog\Api\GraphQL\Server\StandardServer;
+use GraphQL\Type\Schema;
 
 class Bootstrap extends Base
 {
@@ -17,10 +14,13 @@ class Bootstrap extends Base
 
     public function __construct()
     {
-        // GraphQL schema to be passed to query executor:
         $this->schema = new Schema([
-            'query' => Types::query()
+            'query' => Types::get("Query")
         ]);
+    }
+
+    public function getContext()
+    {
     }
 
     public function run($request, $response)
@@ -31,7 +31,14 @@ class Bootstrap extends Base
         $ctx->request = $request;
         $ctx->response = $response;
 
-        $server = new StandardServer($config, $ctx);
+        $config = array(
+            'Context' => $ctx,
+            'schema' => $this->schema,
+            'QueryBatching' => true,
+            'debug' => true,
+        );
+
+        $server = new StandardServer($config);
         $server->handleRequest();
     }
 }

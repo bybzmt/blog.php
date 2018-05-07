@@ -1,12 +1,21 @@
 <?php
-namespace GraphQL\Examples\Blog\Type;
+namespace Bybzmt\Blog\Api\GraphQL\Type;
 
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
+use Bybzmt\Blog\Api\GraphQL\Types;
+use Bybzmt\Blog\Api\GraphQL\ObjectType;
 
 class TagType extends ObjectType
 {
+    public function __construct()
+    {
+        $config = [
+            'fields' => [
+                'id' => Types::nonNull(Types::id())
+            ],
+        ];
+
+        parent::__construct($config);
+    }
     /**
      * @type ID!
      */
@@ -16,4 +25,6 @@ class TagType extends ObjectType
      * @type string
      */
     public $name;
+
+
 }

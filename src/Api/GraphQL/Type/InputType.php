@@ -1,21 +1,17 @@
 <?php
 namespace GraphQL\Examples\Blog\Type;
 
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
+use Bybzmt\Blog\Api\GraphQL\Types;
+use Bybzmt\Blog\Api\GraphQL\ObjectType;
 
 class InputType extends ObjectType
 {
     public function __construct()
     {
         $config = [
-            'name' => 'Query',
             'fields' => [
-            ],
-            'resolveField' => function($val, $args, $context, ResolveInfo $info) {
-                return $this->{$info->fieldName}($val, $args, $context, $info);
-            }
+            ]
         ];
         parent::__construct($config);
     }
@@ -28,7 +24,7 @@ class InputType extends ObjectType
      * @param captcha:string! 验证码
      * @return User
      */
-    public function login($val, $args, $ctx, $info)
+    public function login($user, $pass, $captcha)
     {
     }
 
@@ -37,7 +33,7 @@ class InputType extends ObjectType
      *
      * @return Boolean
      */
-    public function logout($val, $args, $ctx, $info)
+    public function logout()
     {
     }
 
@@ -49,7 +45,7 @@ class InputType extends ObjectType
      * @param context:string! 回复内容
      * @return Comment
      */
-    public function commentAdd($val, $args, $ctx, $info)
+    public function commentAdd($article, $reply, $context)
     {
     }
 }

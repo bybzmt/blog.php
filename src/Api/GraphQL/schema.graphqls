@@ -1,31 +1,124 @@
 schema {
   query: Query
-  mutation: Input
+  mutation: Mutation
 }
 
-type Input {
+type Mutation {
+    login(user: LoginInput!): User
+    logout(user_id: ID!): Boolean
+    register(user: RegisterInput!): User
+
+    addArticle(article: ArticleInput!): Article
+    editArticle(article: ArticleInput!): Article
+    publishArticle(id: ID!): Boolean
+    cancelArticle(id: ID!): Boolean
+    lockArticle(id: ID!): Boolean
+    unLockArticle(id: ID!): Boolean
+    delArticle(id: ID!): Boolean
+
+    addComment(article_id: ID!, content: String!): Comment
+    addReply(article_id: ID!, comment_id: ID!, content: String!): Comment
 }
+
+input LoginInput {
+    username: String!
+    password: String!
+    captcha: String!
+}
+
+input RegisterInput {
+    username: String!
+    password: String!
+    captcha: String!
+}
+
+input ArticleInput {
+    #标题
+    title: String!
+    tags: String!
+    #简介
+    intro: String!
+    #文章正文(markdown)
+    content: String!
+}
+
 
 type Query {
-  ArticleList(id: ID!, offset:Int=0, length:Int=10): Article
+    #首页文章列表
+    articleList(tagId: ID, offset:Int=0, length:Int=10): [Article!]!
+    #得到指定文章
+    article(id: ID!): Article
+    #当前登陆用户
+    user: User
+    #验证码地址
+    captchaUrl: String!
 }
 
+#文章状态
+enum ArticleStatus {
+    DRAFT #草稿
+    AUDITING #审核中
+    ONLINE #正式
+    OFFLINE #下线
+}
+
+#文章
 type Article {
     id: ID!
+    author: User!
+    #标题
+    title: String!
+    #简介
+    intro: String!
+    #文章正文(markdown)
+    content: String!
+    #文章正文(html)
+    html: String!
+    #添加时间
+    addTime: Int!
+    #发布时间
+    publishTime: Int!
+    #是否置顶
+    top: Boolean!
+    #是否被锁定
+    locked: Boolean!
+    status: ArticleStatus!
+    tags: [Tag!]!
+    #文章评论
+    comments(offset: Int=0, length: Int=10): [Comment!]!
 }
 
+#文章评论
 type Comment {
     id: ID!
+    user: User!
+    content: String!
+    addTime: Int!
+    #评论回复
+    replys(offset: Int=0, length: Int=10): [Reply!]!
 }
 
+#评论回复
 type Reply {
     id: ID!
+    user: User!
+    content: String!
+    addtime: Int!
 }
 
 type Tag {
     id: ID!
+    name: String!
 }
+
+#用户发言记录
+union Record = Reply | Comment
 
 type User {
     id: ID!
+    nickname: String!
+    #用户发表的文章列表
+    articleList(offset:Int=0, length:Int=10): [Article!]!
+    #用户发言记录
+    records(offset: Int=0, length:Int=10): [Record!]!
 }

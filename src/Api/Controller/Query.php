@@ -2,31 +2,45 @@
 namespace Bybzmt\Blog\Api\Controller;
 
 use Bybzmt\Blog\Api\Controller as Base;
+use Bybzmt\Blog\Web\Bootstrap as Web;
 
 class Query extends Base
 {
-    /**
-     * 反回指定文章
-     *
-     * @param tag:ID 列表类型
-     * @param offset:int=0 偏移量
-     * @param length:int=10 取数据条数
-     * @return Article
-     */
-    public function articleListResolver($id, $offset=0, $length=10)
+    public function articleList($tag_id, $offset=0, $length=10)
     {
-        return array(
-            'id' => 1
-        );
+        //文章列表
+        if ($tag_id) {
+            $tag = $this->getRow('Tag', $tag_id);
+            if (!$tag) {
+                return [];
+            }
+
+            $articles = $tag->getArticleList($offset, $length);
+        } else {
+            $articles = $this->getService("Article")->getIndexList($offset, $length);
+        }
+
+        return $articles;
     }
 
-    /**
-     * 验证码链接
-     *
-     * @return string!
-     */
     public function captchaUrl()
     {
+        return Web::getContext()->getComponent("Helper\\Utils")->mkUrl("User.Captcha");
+    }
+
+    public function user()
+    {
+        $user_id = $this->getHelper("Session")->get('user_id');
+        if (!$user_id) {
+            return null;
+        }
+
+        return $this->getRow("User", $user_id);
+    }
+
+    public function article($id)
+    {
+        return $this->getRow("Article", $id);
     }
 
 }

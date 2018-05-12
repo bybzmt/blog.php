@@ -4,44 +4,45 @@ namespace Bybzmt\Blog\Api;
 use Bybzmt\Blog\Api\Context;
 use Bybzmt\Framework\Component;
 
-use GraphQL\Executor\Executor;
-
 class Controller extends Component
 {
-    protected $_args;
-    protected $_source;
-    protected $_info;
+    static private $_actions = array();
 
-    public function __construct($ctx, $source, $args, $info)
+    protected $_args;
+    protected $row;
+
+    public function __construct($ctx, $source, $args)
     {
         parent::__construct($ctx);
 
-        $this->_source = $source;
+        $this->row = $source;
         $this->_args = $args;
-        $this->_info = $info;
     }
 
-    public function resolve()
+    static private function _parameters($name)
     {
-        $resolverFn = $this->_info->fieldName . "Resolver";
-        if (!method_exists($this, $resolverFn)) {
-            return Executor::defaultFieldResolver($this->_source, $this->_args, $this->_ctx, $this->_info);
+        if (!isset(self::$_actions[$name])) {
+            $ref = new \ReflectionMethod(static::class, $name);
+            self::$_actions[$name] = $ref->getParameters();
         }
 
-        $refm = new \ReflectionMethod(get_class($this), $resolverFn);
+        return self::$_actions[$name];
+    }
 
+    public function execute($resolverFn)
+    {
         $params = [];
-        foreach ($refm->getParameters() as $parameter) {
+        foreach (self::_parameters($resolverFn) as $parameter) {
             $pos = $parameter->getPosition();
             $key = $parameter->getName();
 
-            if (isset($args[$key])) {
-                $params[$pos] = $args[$key];
+            if (isset($this->_args[$key])) {
+                $params[$pos] = $this->_args[$key];
             } else if ($parameter->isDefaultValueAvailable()) {
                 $params[$pos] = $parameter->getDefaultValue();
             }
         }
 
-        return $refm->invokeArgs($this, $params);
+        return $this->$resolverFn(...$params);
     }
 }

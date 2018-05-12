@@ -5,6 +5,9 @@ use Bybzmt\Framework\Bootstrap as Base;
 use Bybzmt\Blog\Api\GraphQL\StandardServer;
 use GraphQL\Utils\BuildSchema;
 use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Executor\Executor;
+use GraphQL\Error\Debug;
+
 
 class Bootstrap extends Base
 {
@@ -29,11 +32,14 @@ class Bootstrap extends Base
         $ctx->request = $request;
         $ctx->response = $response;
 
+        $debug = Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE | Debug::RETHROW_INTERNAL_EXCEPTIONS;
+        //$debug = Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE;
+
         $config = array(
             'Context' => $ctx,
             'schema' => $this->schema,
             'QueryBatching' => true,
-            'debug' => true,
+            'debug' => $debug,
             'fieldResolver' => [$this, 'fieldResolver'],
         );
 
@@ -43,13 +49,20 @@ class Bootstrap extends Base
 
     public function fieldResolver($source, $args, Context $ctx, ResolveInfo $info)
     {
-        // var_dump($info->parentType->name, $info->fieldName);
-        $name = $info->parentType->name;
+        if (strncmp($info->fieldName, "__", 2) != 0) {
+            $class = __NAMESPACE__ . "\\Controller\\" . $info->parentType->name;
+            if (class_exists($class)) {
+                $obj = new $class($ctx, $source, $args, $info);
 
-        $class = __NAMESPACE__ . "\\Controller\\" . $name;
+                if (!method_exists($obj, $info->fieldName)) {
+                    return Executor::defaultFieldResolver($source, $args, $ctx, $info);
+                }
 
-        $obj = new $class($ctx, $source, $args, $info);
+                return $obj->execute($info->fieldName);
+            }
+        }
 
-        return $obj->resolve();
+        return Executor::defaultFieldResolver($source, $args, $ctx, $info);
     }
+
 }

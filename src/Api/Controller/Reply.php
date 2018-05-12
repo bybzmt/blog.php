@@ -5,27 +5,8 @@ use Bybzmt\Blog\Api\Controller as Base;
 
 class Reply extends Base
 {
-
-    /**
-     * @type ID!
-     */
-    public $id;
-
-    /**
-     * @return User
-     */
-    public function user()
+    public function addTime()
     {
+        return strtotime($this->row->addtime);
     }
-
-    /**
-     * @type string
-     */
-    public $content;
-
-    /**
-     * @type string
-     */
-    public $addtime;
-
 }

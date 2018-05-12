@@ -5,65 +5,39 @@ use Bybzmt\Blog\Api\Controller as Base;
 
 class Article extends Base
 {
-    /**
-     * @return User
-     */
-    public function user()
+    public function author()
     {
+        return $this->getRow("User", $this->row->user_id);
     }
 
-    /**
-     * @type string
-     */
-    public $title;
+    public function addTime()
+    {
+        return strtotime($this->row->addtime);
+    }
 
-    /**
-     * @type string
-     */
-    public $intro;
+    public function publishTime()
+    {
+        return strtotime($this->row->addtime);
+    }
 
-    /**
-     * @type string
-     */
-    public $html;
+    public function status()
+    {
+        switch ($this->row->status) {
+        case 1: return "DRAFT";
+        case 2: return "AUDITING";
+        case 3: return "ONLINE";
+        case 4: return "OFFLINE";
+        }
+    }
 
-    /**
-     * @type string
-     */
-    public $addtime;
-
-    /**
-     * @type string
-     */
-    public $edittime;
-
-    /**
-     * 评论列表
-     *
-     * @param offset:int=0 偏移量
-     * @param length:int=10 取数据条数
-     * @return [Comment]
-     */
     public function comments($offset, $length)
     {
+        return $this->row->getComments($offset, $length);
     }
 
-    /**
-     * 评论列表数量
-     *
-     * @return int
-     */
-    public function commentsNum()
-    {
-    }
-
-    /**
-     * 文章标签列表
-     *
-     * @return [Tag]
-     */
     public function tags()
     {
+        return $this->getTags();
     }
 
 }

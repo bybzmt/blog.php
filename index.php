@@ -22,6 +22,8 @@ define('STATIC_PATH', __DIR__ . "/static");
 //composer自动加载
 require __DIR__ . '/vendor/autoload.php';
 
+header("Access-Control-Allow-Origin: *");
+
 $front = new Front(function($name) {
     switch ($name) {
     //命令行

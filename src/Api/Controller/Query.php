@@ -6,11 +6,11 @@ use Bybzmt\Blog\Web\Bootstrap as Web;
 
 class Query extends Base
 {
-    public function articleList($tag_id, $offset=0, $length=10)
+    public function articleList($tagId, $offset=0, $length=10)
     {
         //文章列表
-        if ($tag_id) {
-            $tag = $this->getRow('Tag', $tag_id);
+        if ($tagId) {
+            $tag = $this->getRow('Tag', $tagId);
             if (!$tag) {
                 return [];
             }

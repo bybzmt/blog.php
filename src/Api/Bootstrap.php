@@ -49,7 +49,7 @@ class Bootstrap extends Base
 
     public function fieldResolver($source, $args, Context $ctx, ResolveInfo $info)
     {
-        if (strncmp($info->fieldName, "__", 2) != 0) {
+        if (strncmp($info->fieldName, "__", 2) !== 0) {
             $class = __NAMESPACE__ . "\\Controller\\" . $info->parentType->name;
             if (class_exists($class)) {
                 $obj = new $class($ctx, $source, $args, $info);

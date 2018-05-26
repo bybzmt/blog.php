@@ -86,6 +86,7 @@ type Article {
     tags: [Tag!]!
     #文章评论
     comments(offset: Int=0, length: Int=10): [Comment!]!
+    commentsNum: Int!
 }
 
 #文章评论

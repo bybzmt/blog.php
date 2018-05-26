@@ -21,12 +21,14 @@ class Controller extends Component
 
     static private function _parameters($name)
     {
-        if (!isset(self::$_actions[$name])) {
+        $key = static::class.'::'.$name;
+
+        if (!isset(self::$_actions[$key])) {
             $ref = new \ReflectionMethod(static::class, $name);
-            self::$_actions[$name] = $ref->getParameters();
+            self::$_actions[$key] = $ref->getParameters();
         }
 
-        return self::$_actions[$name];
+        return self::$_actions[$key];
     }
 
     public function execute($resolverFn)
@@ -40,6 +42,8 @@ class Controller extends Component
                 $params[$pos] = $this->_args[$key];
             } else if ($parameter->isDefaultValueAvailable()) {
                 $params[$pos] = $parameter->getDefaultValue();
+            } else {
+                $params[$pos] = null;
             }
         }
 

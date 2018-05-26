@@ -35,9 +35,14 @@ class Article extends Base
         return $this->row->getComments($offset, $length);
     }
 
+    public function commentsNum()
+    {
+        return $this->row->getCommentsNum();
+    }
+
     public function tags()
     {
-        return $this->getTags();
+        return $this->row->getTags();
     }
 
 }

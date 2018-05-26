@@ -9,4 +9,9 @@ class Reply extends Base
     {
         return strtotime($this->row->addtime);
     }
+
+    public function user()
+    {
+        return $this->row->getUser();
+    }
 }

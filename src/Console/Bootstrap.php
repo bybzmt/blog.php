@@ -1,7 +1,7 @@
 <?php
 namespace Bybzmt\Blog\Console;
 
-use Bybzmt\Blog\Bootstrap as PBootstrap;
+use Bybzmt\Framework\Bootstrap as PBootstrap;
 
 class Bootstrap extends PBootstrap
 {

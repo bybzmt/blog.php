@@ -14,4 +14,9 @@ class Comment extends Base
     {
         return $this->row->getReplys($offset, $length);
     }
+
+    public function user()
+    {
+        return $this->row->getUser();
+    }
 }

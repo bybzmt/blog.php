@@ -45,7 +45,7 @@ input ArticleInput {
 
 type Query {
     #首页文章列表
-    articleList(tagId: ID, offset:Int=0, length:Int=10): [Article!]!
+    articleList(tagId: ID, offset:Int=0, length:Int=10): ArticlePagination!
     #得到指定文章
     article(id: ID!): Article
     #当前登陆用户
@@ -60,6 +60,12 @@ enum ArticleStatus {
     AUDITING #审核中
     ONLINE #正式
     OFFLINE #下线
+}
+
+type ArticlePagination {
+    items: [Article!]!
+    count: Int!,
+    length: Int!,
 }
 
 #文章

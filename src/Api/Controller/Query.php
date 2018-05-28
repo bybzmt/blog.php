@@ -16,11 +16,17 @@ class Query extends Base
             }
 
             $articles = $tag->getArticleList($offset, $length);
+            $count = $tag->getArticleCount();
         } else {
             $articles = $this->getService("Article")->getIndexList($offset, $length);
+            $count = $this->getService("Article")->getIndexCount();
         }
 
-        return $articles;
+        return [
+            'items' => $articles,
+            'count' => $count,
+            'length' => $length,
+        ];
     }
 
     public function captchaUrl()

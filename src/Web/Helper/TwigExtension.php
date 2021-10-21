@@ -1,21 +1,18 @@
 <?php
 namespace Bybzmt\Blog\Web\Helper;
 
-use Twig_Loader_Filesystem;
-use Twig_Environment;
-use Twig_Extension;
-use Twig_Function;
+use Twig;
 use Bybzmt\Blog\Web\Reverse;
 use Bybzmt\Framework\ComponentTrait;
 
-class TwigExtension extends Twig_Extension
+class TwigExtension extends Twig\Extension\AbstractExtension
 {
     use ComponentTrait;
 
     private $_ctx;
     private $twig;
 
-    public function __construct($context, Twig_Environment $twig)
+    public function __construct($context, Twig\Environment $twig)
     {
         $this->_ctx = $context;
         $this->twig = $twig;
@@ -24,7 +21,7 @@ class TwigExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            new Twig_Function('mkUrl', array($this, 'mkUrl')),
+            new Twig\TwigFunction('mkUrl', array($this, 'mkUrl')),
         );
     }
 

@@ -1,8 +1,7 @@
 <?php
 namespace Bybzmt\Blog\Web\Controller;
 
-use Twig_Loader_Filesystem;
-use Twig_Environment;
+use Twig;
 
 use Bybzmt\Framework\Controller;
 use Bybzmt\Blog\Web\Helper\TwigExtension;
@@ -64,8 +63,8 @@ abstract class Web extends Controller
         }
         $file = $name . '.tpl';
 
-        $loader = new Twig_Loader_Filesystem($dir);
-        $twig = new Twig_Environment($loader, array(
+        $loader = new Twig\Loader\FilesystemLoader($dir);
+        $twig = new Twig\Environment($loader, array(
             'cache' => VAR_PATH . '/cache/templates',
             'debug' => true,
             'auto_reload' => true,

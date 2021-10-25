@@ -2,14 +2,14 @@
 return array(
     //域名
     'host' => [
-        'api' => 'blogapi',
-        'web' => 'blog',
-        'static' => 's.blog',
-        'admin' => 'admin.blog',
-        'wap' => 'wap.blog',
-        'apph5' => 'apph5.blog',
-        'backend' => 'backend.blog',
-        'partner' => 'partner.blog',
+        'api' => 'api.blog.lan',
+        'web' => 'www.blog.lan',
+        'static' => 'static.blog.lan',
+        'admin' => 'admin.blog.lan',
+        'wap' => 'wap.blog.lan',
+        'apph5' => 'apph5.blog.lan',
+        'backend' => 'backend.blog.lan',
+        'partner' => 'partner.blog.lan',
     ],
     //数据库
     'db' => [

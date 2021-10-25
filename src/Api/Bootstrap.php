@@ -6,7 +6,7 @@ use Bybzmt\Blog\Api\GraphQL\StandardServer;
 use GraphQL\Utils\BuildSchema;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Executor\Executor;
-use GraphQL\Error\Debug;
+use GraphQL\Error\DebugFlag;
 
 
 class Bootstrap extends Base
@@ -32,14 +32,10 @@ class Bootstrap extends Base
         $ctx->request = $request;
         $ctx->response = $response;
 
-        $debug = Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE | Debug::RETHROW_INTERNAL_EXCEPTIONS;
-        //$debug = Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE;
-
         $config = array(
             'Context' => $ctx,
             'schema' => $this->schema,
             'QueryBatching' => true,
-            'debug' => $debug,
             'fieldResolver' => [$this, 'fieldResolver'],
         );
 

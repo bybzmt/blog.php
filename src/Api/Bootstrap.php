@@ -2,7 +2,7 @@
 namespace Bybzmt\Blog\Api;
 
 use Bybzmt\Framework\Bootstrap as Base;
-use Bybzmt\Blog\Api\GraphQL\StandardServer;
+use GraphQL\Server\StandardServer;
 use GraphQL\Utils\BuildSchema;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Executor\Executor;
